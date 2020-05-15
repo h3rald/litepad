@@ -14,8 +14,12 @@ const init = async (state) => {
     ? h3.dispatch("selection/set", selection)
     : h3.dispatch("selection/clear");
   h3.state.items.length === 0 && h3.dispatch("loading/set");
-  const items = (await getItems(h3.state.query)).results;
-  h3.dispatch("items/set", items);
+  let items = h3.state.items;
+  let redraw = false;
+  //if (items.length === 0) { // TODO: investigate
+    items = (await getItems(h3.state.query)).results;
+    h3.dispatch("items/set", items);
+  //}
   if (selection) {
     const item = await getItem(selection.replace(".", "/"));
     h3.dispatch("item/set", item);
@@ -23,7 +27,6 @@ const init = async (state) => {
     h3.dispatch("item/set", null);
   }
   h3.dispatch("loading/clear");
-  h3.redraw();
 };
 
 const render = (state) => {
