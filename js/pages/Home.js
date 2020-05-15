@@ -8,28 +8,19 @@ import Tile from "../controls/Tile.js";
 
 const title = "Home";
 
-const collections = {
-  notes: {
-    icon: "file",
-    type: "Note",
-  },
-};
-
-const initialState = {
-  items: [],
-  item: null,
-  query: { select: "$.title as title" },
-};
-
 const init = async (state) => {
   const selection = h3.route.params.s;
   selection
     ? h3.dispatch("selection/set", selection)
     : h3.dispatch("selection/clear");
-  h3.dispatch("loading/set");
-  state.items = (await getItems(state.query)).results;
+  h3.state.items.length === 0 && h3.dispatch("loading/set");
+  const items = (await getItems(h3.state.query)).results;
+  h3.dispatch("items/set", items);
   if (selection) {
-    state.item = await getItem(selection.replace(".", "/"));
+    const item = await getItem(selection.replace(".", "/"));
+    h3.dispatch("item/set", item);
+  } else {
+    h3.dispatch("item/set", null);
   }
   h3.dispatch("loading/clear");
   h3.redraw();
@@ -45,7 +36,7 @@ const render = (state) => {
     ]),
     h3("h3", "Nothin'"),
     h3("p", "There ain't nothin' selected."),
-    h3("p", "Just select an item from the left, will ya?"),
+    h3("p", "Just select an item on the left, will ya?"),
   ]);
   const empty = h3("div.blankslate", [
     h3("div.icons", [
@@ -77,26 +68,26 @@ const render = (state) => {
     },
   ];
   const content = h3("div.content", [
-    h3("p", [ActionBar(actions), `Total items: ${state.items.length}`]),
+    h3("p", [ActionBar(actions), `Total items: ${h3.state.items.length}`]),
     h3("div.master-detail.d-flex", [
       h3(
         "div.master.item-list",
-        state.items.map((item) => {
-          const collection = item.id.match(/([^\/]+)\//)[1];
-          const icon = collections[collection].icon;
-          const type = collections[collection].type;
-          return Tile({ item, icon, type });
+        h3.state.items.map((item) => {
+          return Tile({ item });
         })
       ),
-      state.item
+      h3.state.item
         ? h3("div.detail.px-4.flex-auto", [
-            h3("h2", state.item.data.title),
-            h3("div", state.item.data.text),
+            h3("h2", h3.state.item.data.title),
+            h3("div", h3.state.item.data.text),
           ])
         : h3("div.detail.flex-auto", notSelected),
     ]),
   ]);
-  return Page({ title, content: state.items.length === 0 ? empty : content });
+  return Page({
+    title,
+    content: h3.state.items.length === 0 ? empty : content,
+  });
 };
 
-export default routeComponent({ initialState, render, init });
+export default routeComponent({ render, init });

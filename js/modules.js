@@ -15,9 +15,38 @@ const config = () => {
   });
 };
 
+const items = () => {
+  h3.on("$init", () => ({
+    items: [],
+    item: null,
+    query: { select: "$.title as title" },
+  }));
+  h3.on("items/set", (state, items) => ({
+    item: state.item,
+    items,
+    query: state.query,
+  }));
+  h3.on("item/set", (state, item) => ({
+    item: item,
+    items: state.items,
+    query: state.query,
+  }));
+  h3.on("$navigation", (state, route) => {
+    return route.path === "/"
+      ? { ...state }
+      : { items: [], item: null, query: state.query };
+  });
+};
+
 const flags = () => {
   h3.on("$init", () => ({
-    flags: { help: false, loading: true, error: null, confirm: null, selection: null },
+    flags: {
+      help: false,
+      loading: true,
+      error: null,
+      confirm: null,
+      selection: null,
+    },
   }));
   h3.on("error/set", (state, error) => ({
     flags: { ...state.flags, error },
@@ -45,4 +74,4 @@ const flags = () => {
   }));
 };
 
-export default [debug, config, flags];
+export default [debug, config, flags, items];
