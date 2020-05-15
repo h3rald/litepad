@@ -3,8 +3,8 @@ import h3 from "../h3.js";
 const routeComponent = ({ initialState, render, init }) => {
   let state = {};
   let firstRun = true;
+  let route;
   const reset = () => {
-    let test = true;
     if (initialState) {
       state = { ...initialState };
     }
@@ -17,6 +17,7 @@ const routeComponent = ({ initialState, render, init }) => {
     init && init(state);
   };
   return () => {
+    route = h3.route;
     firstRun && start();
     return render(state);
   };
