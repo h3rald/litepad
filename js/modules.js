@@ -17,7 +17,7 @@ const config = () => {
 
 const flags = () => {
   h3.on("$init", () => ({
-    flags: { help: false, loading: true, error: null, confirm: null },
+    flags: { help: false, loading: true, error: null, confirm: null, selection: null },
   }));
   h3.on("error/set", (state, error) => ({
     flags: { ...state.flags, error },
@@ -31,11 +31,17 @@ const flags = () => {
   h3.on("confirm/clear", (state) => ({
     flags: { ...state.flags, confirm: null },
   }));
-  h3.on("loading/set", (state, text) => ({
-    flags: { ...state.flags, loading: text },
+  h3.on("loading/set", (state) => ({
+    flags: { ...state.flags, loading: true },
   }));
   h3.on("loading/clear", (state) => ({
     flags: { ...state.flags, loading: false },
+  }));
+  h3.on("selection/set", (state, selection) => ({
+    flags: { ...state.flags, selection },
+  }));
+  h3.on("selection/clear", (state) => ({
+    flags: { ...state.flags, selection: null },
   }));
 };
 
