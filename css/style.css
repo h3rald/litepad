@@ -4,7 +4,93 @@
   fill: currentColor;
 }
 
-.btn .icon {
+.tile {
+  margin: 1px;
+  padding: 8px;
+  border-top: 1px solid #e1e4e8;
+  cursor: pointer;
+}
+
+.tile.selected, .tile.selected:hover {
+  background-color: #d6ebff;
+}
+
+.tile:hover {
+  background-color: #f1f8ff;
+}
+
+.tile-title span {
+  font-weight: bold;
+  font-size: 120%;
+}
+
+.btn .icon,
+.tile-title .icon {
   vertical-align: middle;
   padding-right: 4px;
+}
+
+.btn-invisible:disabled {
+  background: none;
+}
+
+.btn-invisible:hover {
+  color: rgba(36, 41, 46, 0.4);
+}
+
+.master {
+  width: 350px;
+}
+
+
+
+/* Loading */
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.loading div {
+  position: absolute;
+  animation: loading 0.8s linear infinite;
+  width: 80px;
+  height: 80px;
+  top: 10px;
+  left: 10px;
+  border-radius: 50%;
+  box-shadow: 0 4.5px 0 0 #0366d6;
+  transform-origin: 40px 42.25px;
+}
+.spinner {
+  width: 40px;
+  height: 40px;
+  display: block;
+  margin: auto;
+  margin-top: 50px;
+  overflow: hidden;
+  background: none;
+}
+.loading {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: translateZ(0) scale(0.4);
+  backface-visibility: hidden;
+  transform-origin: 0 0; /* see note above */
+}
+.loading div {
+  box-sizing: content-box;
+}
+
+/******/
+
+
+a.Header-link {
+  cursor: pointer;
 }

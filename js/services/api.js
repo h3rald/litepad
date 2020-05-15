@@ -53,4 +53,18 @@ const addNote = async (data) => {
   );
 };
 
-export { addNote, withError, withLoading };
+const getItems = async (data) => {
+  const { filter, sort, select, limit, offset } = data;
+  const options = Object.entries(data)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&");
+  const url = `${h3.state.config.api}/${options ? "?" + options : ""}`;
+  return await withError(async () => await fetch(url, { ...opts() }));
+};
+
+const getItem = async (id) => {
+  const url = `${h3.state.config.api}/${id}?raw=true`;
+  return await withError(async () => await fetch(url, { ...opts() }));
+};
+
+export { addNote, withError, withLoading, getItems, getItem };

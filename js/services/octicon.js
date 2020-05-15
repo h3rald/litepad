@@ -1709,6 +1709,8 @@ Object.keys(data).forEach((key) => {
   };
 });
 
-export const icon = (name, options) => {
+const octicon = (name, options) => {
   return h3("span.icon", { $html: data[name].toSVG(options) });
 };
+
+export default octicon;
