@@ -3,3 +3,8 @@
   vertical-align: text-top;
   fill: currentColor;
 }
+
+.btn .icon {
+  vertical-align: middle;
+  padding-right: 4px;
+}
