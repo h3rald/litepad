@@ -4,6 +4,7 @@ const routeComponent = ({ initialState, render, init }) => {
   let state = {};
   let firstRun = true;
   const reset = () => {
+    let test = true;
     state = { ...initialState };
     firstRun = true;
   };

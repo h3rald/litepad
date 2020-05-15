@@ -19,7 +19,7 @@ const init = () => {
 };
 const save = async (state) => {
   state.data.validate() && (await addNote(state.data.get()));
-  h3.redraw();
+  h3.navigateTo("/");
 };
 
 const cancel = () => h3.navigateTo("/");
