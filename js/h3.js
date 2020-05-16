@@ -604,6 +604,7 @@ class Router {
       if (!this.route) {
         throw new Error(`[Router] No route matches '${fragment}'`);
       }
+      redraws = 1;
       this.store.dispatch("$navigation", this.route);
       // Display View
       while (this.element.firstChild) {
@@ -616,6 +617,7 @@ class Router {
       this.setRedraw(vnode);
       window.scrollTo(0, 0);
       this.store.dispatch("$redraw");
+      redraws = 0;
     };
     processPath();
     window.addEventListener("hashchange", processPath);
@@ -637,6 +639,7 @@ const h3 = (...args) => {
 
 let store = null;
 let router = null;
+let redraws = 0;
 
 h3.init = (config) => {
   let { element, routes, modules, preStart, postStart, location } = config;
@@ -721,7 +724,12 @@ h3.redraw = () => {
       "[h3.redraw] No application initialized, unable to update."
     );
   }
+  if (redraws) {
+    redraws++;
+    return;
+  }
   router.redraw();
+  redraws = 0;
 };
 
 export default h3;
