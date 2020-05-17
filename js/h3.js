@@ -1,9 +1,9 @@
 /**
+ * H3 v0.5.0 "Experienced El-Aurian"
  * Copyright 2020 Fabio Cevasco <h3rald@h3rald.com>
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 const checkProperties = (obj1, obj2) => {
   for (const key in obj1) {
@@ -604,7 +604,7 @@ class Router {
       if (!this.route) {
         throw new Error(`[Router] No route matches '${fragment}'`);
       }
-      redraws = 1;
+      redrawing = true;
       this.store.dispatch("$navigation", this.route);
       // Display View
       while (this.element.firstChild) {
@@ -617,7 +617,7 @@ class Router {
       this.setRedraw(vnode);
       window.scrollTo(0, 0);
       this.store.dispatch("$redraw");
-      redraws = 0;
+      redrawing = false;
     };
     processPath();
     window.addEventListener("hashchange", processPath);
@@ -639,7 +639,7 @@ const h3 = (...args) => {
 
 let store = null;
 let router = null;
-let redraws = 0;
+let redrawing = false;
 
 h3.init = (config) => {
   let { element, routes, modules, preStart, postStart, location } = config;
@@ -718,18 +718,18 @@ h3.dispatch = (event, data) => {
   return store.dispatch(event, data);
 };
 
-h3.redraw = () => {
+h3.redraw = (setRedrawing) => {
   if (!router || !router.redraw) {
     throw new Error(
       "[h3.redraw] No application initialized, unable to update."
     );
   }
-  if (redraws) {
-    redraws++;
+  if (redrawing) {
     return;
   }
+  redrawing = true;
   router.redraw();
-  redraws = 0;
+  redrawing = setRedrawing || false;
 };
 
 export default h3;
