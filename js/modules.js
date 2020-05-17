@@ -48,17 +48,11 @@ const flags = () => {
       selection: null,
     },
   }));
-  h3.on("error/set", (state, error) => ({
-    flags: { ...state.flags, error },
+  h3.on("alert/set", (state, alert) => ({
+    flags: { ...state.flags, alert },
   }));
-  h3.on("error/clear", (state) => ({
-    flags: { ...state.flags, error: null },
-  }));
-  h3.on("confirm/set", (state, confirm) => ({
-    flags: { ...state.flags, confirm },
-  }));
-  h3.on("confirm/clear", (state) => ({
-    flags: { ...state.flags, confirm: null },
+  h3.on("alert/clear", (state) => ({
+    flags: { ...state.flags, alert: null },
   }));
   h3.on("loading/set", (state) => ({
     flags: { ...state.flags, loading: true },

@@ -11,7 +11,8 @@
   cursor: pointer;
 }
 
-.tile.selected, .tile.selected:hover {
+.tile.selected,
+.tile.selected:hover {
   background-color: #d6ebff;
 }
 
@@ -34,15 +35,13 @@
   background: none;
 }
 
-.btn-invisible:hover {
+.btn-invisible:disabled:hover {
   color: rgba(36, 41, 46, 0.4);
 }
 
 .master {
   width: 350px;
 }
-
-
 
 /* Loading */
 @keyframes loading {
@@ -90,7 +89,13 @@
 
 /******/
 
-
 a.Header-link {
   cursor: pointer;
+}
+
+.flash-action {
+  margin-left: 5px;
+}
+.flash .btn-invisible {
+  background-color: transparent;
 }

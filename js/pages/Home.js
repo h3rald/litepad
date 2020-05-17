@@ -65,7 +65,24 @@ const render = (state) => {
       disabled: !h3.state.flags.selection,
     },
     {
-      onclick: () => {},
+      onclick: () => {
+        const alert = {
+          type: "warn",
+          buttonType: "danger",
+          label: "Aye, scrap it!",
+          action: () => { 
+            h3.dispatch("alert/clear");
+            h3.redraw();
+          },
+          cancelAction: () => { 
+            h3.dispatch("alert/clear");
+            h3.redraw();
+          },
+          message: "Oi! Do ya really wanna scrap this?!"
+        };
+        h3.dispatch("alert/set", alert);
+        h3.redraw();
+      },
       icon: "trashcan",
       label: "Delete",
       disabled: !h3.state.flags.selection,
