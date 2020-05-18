@@ -58,7 +58,7 @@ const flags = () => {
   h3.on("alert/clear", (state) => ({
     flags: { ...state.flags, alert: null },
   }));
-  
+
   h3.on("loading/set", (state) => ({
     flags: { ...state.flags, loading: true },
   }));
@@ -72,9 +72,11 @@ const flags = () => {
     flags: { ...state.flags, selection: null },
   }));
   h3.on("$navigation", (state) => ({
-    ...state.flags,
-    alert: false,
-    selection: null,
+    flags: {
+      ...state.flags,
+      alert: null,
+      selection: null,
+    },
   }));
 };
 
