@@ -4,27 +4,28 @@ import octicon from "../services/octicon.js";
 import { addItem, getItem, saveItem } from "../services/api.js";
 import { routeComponent } from "../services/utils.js";
 import Field from "../controls/Field.js";
-import Note from "../models/Note.js";
+import Item from "../models/Item.js";
 import ActionBar from "../controls/ActionBar.js";
 
 const initialState = () => ({
   title: null,
   id: null,
-  data: new Note(),
+  data: null,
   type: "note",
 });
 
 const init = async (state) => {
   state.id = h3.route.parts.id && h3.route.parts.id.replace(".", "/");
+  state.data = new Item();
   if (state.id) {
     const item = await getItem(state.id);
     state.title = "Edit Item";
     state.data.set(item);
+    h3.redraw();
   } else {
     state.title = "New Item";
   }
   h3.dispatch("loading/clear");
-  h3.redraw();
 };
 const save = async (state) => {
   if (state.data.validate()) {
