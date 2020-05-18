@@ -1,7 +1,6 @@
 import h3 from "../h3.js";
 
-const CmOptions = {
-  mode: "gfm",
+const EditorOptions = {
   tabSize: 2,
   autoCloseBrackets: true,
   matchBrackets: true,
@@ -17,13 +16,12 @@ const CmOptions = {
   lineNumbers: true,
 };
 
-const MdOptions = { ...CmOptions, mode: "gfm" };
-
 export default (props) => {
   const {
     label,
     name,
     type,
+    mode,
     placeholder,
     options,
     editable,
@@ -72,13 +70,13 @@ export default (props) => {
       },
       props.value || ""
     );
-  controls.markdown = () =>
+  controls.editor = () =>
     h3(
       `textarea.form-control`,
       {
         placeholder,
         $onrender: (element) => {
-          const editor = CodeMirror.fromTextArea(element, MdOptions);
+          const editor = CodeMirror.fromTextArea(element, {EditorOptions, ...mode: mode});
           editor.display.wrapper.classList.add("form-control");
           setTimeout(() => void editor.refresh(), 0);
           editor.on("change", (cm, change) => {
