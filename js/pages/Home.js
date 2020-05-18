@@ -1,12 +1,17 @@
 import h3 from "../h3.js";
 import Page from "../controls/Page.js";
-import { routeComponent } from "../services/utils.js";
-import { getItems, getItem } from "../services/api.js";
+import { routeComponent, getType } from "../services/utils.js";
+import { getItems, getItem, deleteItem } from "../services/api.js";
 import octicon from "../services/octicon.js";
 import ActionBar from "../controls/ActionBar.js";
 import Tile from "../controls/Tile.js";
 
 const title = "Home";
+
+const loadItems = async () => {
+  const items = (await getItems(h3.state.query)).results;
+  h3.dispatch("items/set", items);
+}
 
 const init = async (state) => {
   const selection = h3.route.params.s;
@@ -16,9 +21,8 @@ const init = async (state) => {
   h3.state.items.length === 0 && h3.dispatch("loading/set");
   let items = h3.state.items;
   let redraw = false;
-  if (items.length === 0) { // TODO: investigate
-    items = (await getItems(h3.state.query)).results;
-    h3.dispatch("items/set", items);
+  if (items.length === 0) {
+    await loadItems();
   }
   if (selection) {
     const item = await getItem(selection.replace(".", "/"));
@@ -27,7 +31,7 @@ const init = async (state) => {
     h3.dispatch("item/set", null);
   }
   h3.dispatch("loading/clear");
-  h3.redraw()
+  h3.redraw();
 };
 
 const render = (state) => {
@@ -56,6 +60,10 @@ const render = (state) => {
       "Add some stuff"
     ),
   ]);
+  const cancelAction = () => {
+    h3.dispatch("alert/clear");
+    h3.redraw();
+  };
   const actions = [
     { onclick: () => h3.navigateTo("/add"), icon: "plus", label: "Add" },
     {
@@ -66,21 +74,29 @@ const render = (state) => {
     },
     {
       onclick: () => {
-        const alert = {
+        const error = {
+          type: "error",
+          message: `Can't do it. Something bad happened, tough luck!`,
+          cancelAction,
+          dismiss: true
+        }
+        const confirm = {
           type: "warn",
           buttonType: "danger",
           label: "Aye, scrap it!",
-          action: () => { 
+          action: async () => {
+            await deleteItem(h3.state.item.id);
             h3.dispatch("alert/clear");
+            h3.navigateTo("/");
+            await loadItems();
             h3.redraw();
           },
-          cancelAction: () => { 
-            h3.dispatch("alert/clear");
-            h3.redraw();
-          },
-          message: "Oi! Do ya really wanna scrap this?!"
+          cancelAction,
+          message: `Oi! Do ya really wanna scrap ${getType(
+            h3.state.item.id
+          )} '${h3.state.item.data.title}'?!`,
         };
-        h3.dispatch("alert/set", alert);
+        h3.dispatch("alert/set", confirm);
         h3.redraw();
       },
       icon: "trashcan",

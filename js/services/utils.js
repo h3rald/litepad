@@ -5,9 +5,7 @@ const routeComponent = ({ initialState, render, init }) => {
   let firstRun = true;
   let route;
   const reset = () => {
-    if (initialState) {
-      state = { ...initialState };
-    }
+    state = { ...initialState };
     firstRun = true;
   };
   const start = () => {
@@ -23,4 +21,14 @@ const routeComponent = ({ initialState, render, init }) => {
   };
 };
 
-export { routeComponent };
+const getType = (id) => {
+  const collection = id.match(/([^\/]+)\//)[1];
+  return h3.state.config.collections[collection].type;
+};
+
+const getIcon = (id) => {
+  const collection = id.match(/([^\/]+)\//)[1];
+  return h3.state.config.collections[collection].icon;
+};
+
+export { routeComponent, getType, getIcon };
