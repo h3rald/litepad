@@ -44,9 +44,8 @@ const render = (state) => {
       octicon("file-code", { class: "blankslate-icon", height: 32 }),
       octicon("checklist", { class: "blankslate-icon", height: 32 }),
     ]),
-    h3("h3", "Nothin'"),
-    h3("p", "There ain't nothin' selected."),
-    h3("p", "Just select an item on the left, will ya?"),
+    h3("h3", "No item selected"),
+    h3("p", "Please select an item from the left-hand side."),
   ]);
   const empty = h3("div.blankslate", [
     h3("div.icons", [
@@ -54,12 +53,12 @@ const render = (state) => {
       octicon("file-code", { class: "blankslate-icon", height: 32 }),
       octicon("checklist", { class: "blankslate-icon", height: 32 }),
     ]),
-    h3("h3", "Nothin'"),
-    h3("p", "There ain't nothin' here. Too bad."),
+    h3("h3", "No data"),
+    h3("p", "There is no data available"),
     h3(
       "button.btn.btn-primary",
       { type: "button", onclick: add },
-      "Add some stuff"
+      "Add something"
     ),
   ]);
   const cancelAction = () => {
@@ -76,16 +75,10 @@ const render = (state) => {
     },
     {
       onclick: () => {
-        const error = {
-          type: "error",
-          message: `Can't do it. Something bad happened, tough luck!`,
-          cancelAction,
-          dismiss: true,
-        };
         const confirm = {
           type: "warn",
           buttonType: "danger",
-          label: "Aye, scrap it!",
+          label: "Yes, delete!",
           action: async () => {
             await deleteItem(h3.state.flags.selection.replace(".", "/"));
             h3.dispatch("alert/clear");
@@ -94,7 +87,7 @@ const render = (state) => {
             h3.redraw();
           },
           cancelAction,
-          message: `Oi! Do ya really wanna scrap ${getType(
+          message: `Do you really want to delete ${getType(
             h3.state.item.id
           )} '${h3.state.item.data.title}'?!`,
         };
