@@ -5,13 +5,15 @@ import { getItems, getItem, deleteItem } from "../services/api.js";
 import octicon from "../services/octicon.js";
 import ActionBar from "../controls/ActionBar.js";
 import Tile from "../controls/Tile.js";
+import DOMPurify from "../../vendor/purify.es.js";
+import marked from "../../vendor/marked.js";
 
 const title = "Home";
 
 const loadItems = async () => {
   const items = (await getItems(h3.state.query)).results;
   h3.dispatch("items/set", items);
-}
+};
 
 const init = async (state) => {
   const selection = h3.route.params.s;
@@ -67,7 +69,7 @@ const render = (state) => {
   const actions = [
     { onclick: () => h3.navigateTo("/add"), icon: "plus", label: "Add" },
     {
-      onclick: () => {},
+      onclick: () => h3.navigateTo(`/edit/${h3.state.flags.selection}`),
       icon: "pencil",
       label: "Edit",
       disabled: !h3.state.flags.selection,
@@ -78,14 +80,14 @@ const render = (state) => {
           type: "error",
           message: `Can't do it. Something bad happened, tough luck!`,
           cancelAction,
-          dismiss: true
-        }
+          dismiss: true,
+        };
         const confirm = {
           type: "warn",
           buttonType: "danger",
           label: "Aye, scrap it!",
           action: async () => {
-            await deleteItem(h3.state.item.id);
+            await deleteItem(h3.state.flags.selection.replace(".", "/"));
             h3.dispatch("alert/clear");
             h3.navigateTo("/");
             await loadItems();
@@ -116,7 +118,9 @@ const render = (state) => {
       h3.state.item
         ? h3("div.detail.px-4.flex-auto", [
             h3("h2", h3.state.item.data.title),
-            h3("div", h3.state.item.data.text),
+            h3("div.markdown", {
+              $html: marked(DOMPurify.sanitize(h3.state.item.data.text)),
+            }),
           ])
         : h3("div.detail.flex-auto", notSelected),
     ]),

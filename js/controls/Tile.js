@@ -13,7 +13,7 @@ export default (props) => {
   const id = item.id.replace("/", ".");
   return h3(
     `div.tile${h3.state.flags.selection === id ? ".selected" : ""}`,
-    { $key: id, onclick: () => select(id) },
+    { data: { id }, onclick: (e) => select(e.currentTarget.dataset.id) },
     [
       h3("p.tile-title", [octicon(icon), h3("span", item.data.title)]),
       h3("div.tile-data", {

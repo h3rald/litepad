@@ -19,7 +19,7 @@ const items = () => {
   h3.on("$init", () => ({
     items: [],
     item: null,
-    query: { select: "$.title as title" },
+    query: { select: "$.title as title", sort: "-modified" },
   }));
   h3.on("items/set", (state, items) => ({
     item: state.item,

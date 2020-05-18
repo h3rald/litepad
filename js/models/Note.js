@@ -18,8 +18,8 @@ export default class Note {
     };
   }
 
-  set(data) {
-    const { title, text } = data;
+  set(item) {
+    const { title, text } = item.data;
     this.title.value = title;
     this.text.value = text;
   }
