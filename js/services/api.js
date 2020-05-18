@@ -44,10 +44,22 @@ const withError = async (cbk) => {
   }
 };
 
-const addNote = async (data) => {
-  const url = `${h3.state.config.api}/notes/`;
+const addItem = async (collection, data) => {
+  const url = `${h3.state.config.api}/${collection}/`;
   const body = JSON.stringify(data);
   const method = "POST";
+  return await withError(
+    async () =>
+      await withLoading(
+        async () => await fetch(url, { ...opts(), method, body })
+      )
+  );
+};
+
+const saveItem = async (id, data) => {
+  const url = `${h3.state.config.api}/${id}`;
+  const body = JSON.stringify(data);
+  const method = "PUT";
   return await withError(
     async () =>
       await withLoading(
@@ -76,4 +88,4 @@ const deleteItem = async (id) => {
   return await withError(async () => await fetch(url, { ...opts(), method }));
 };
 
-export { addNote, withError, withLoading, getItems, getItem, deleteItem };
+export { addItem, withError, withLoading, getItems, getItem, deleteItem, saveItem };

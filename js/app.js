@@ -1,7 +1,7 @@
 import h3 from "./h3.js";
 import modules from "./modules.js";
 import Home from "./pages/Home.js";
-import Add from "./pages/Add.js";
+import Edit from "./pages/Edit.js";
 
 h3.init({
   preStart: async () => {
@@ -10,7 +10,8 @@ h3.init({
   },
   modules: modules,
   routes: {
-    "/add": Add,
+    "/add": Edit,
+    "/edit/:id": Edit,
     "/": Home,
   },
 });
