@@ -34,7 +34,7 @@ const withError = async (cbk) => {
   } catch (e) {
     h3.dispatch("alert/set", {
       type: "error",
-      message: e.message || "Something nasty happened... Sorry!",
+      message: e.message || "Something went wrong...",
       dismiss: true,
       cancelAction: () => {
         h3.dispatch("alert/clear");

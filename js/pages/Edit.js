@@ -18,10 +18,10 @@ const init = async (state) => {
   state.id = h3.route.parts.id && h3.route.parts.id.replace(".", "/");
   if (state.id) {
     const item = await getItem(state.id);
-    state.title = "Editing...";
+    state.title = "Edit Item";
     state.data.set(item);
   } else {
-    state.title = "Somethin' new";
+    state.title = "New Item";
   }
   h3.dispatch("loading/clear");
   h3.redraw();
@@ -47,12 +47,12 @@ const render = (state) => {
     {
       onclick: () => save(state),
       icon: "check",
-      label: "Make it so!",
+      label: "Save",
     },
     {
       onclick: () => cancel(state),
       icon: "circle-slash",
-      label: "Only kiddin'",
+      label: "Cancel",
     },
   ];
   const content = h3("div.content", [
