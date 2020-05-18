@@ -21,31 +21,17 @@ export default class Note {
         { label: "Code Snippet", value: "snippet" },
       ],
     };
-    this.text = {
-      label: "Text",
-      name: "text",
-      type: "markdown",
-      value: "",
-      validation: (data) =>
-        data.value.length > 0 ? null : "Text is required.",
-    };
   }
 
   set(item) {
     const { title, text } = item.data;
     this.title.value = title;
-    if (text) {
-      this.text.value = text;
-    }
   }
 
   get() {
-    const result = {};
-    result.title = this.title.value;
-    if (this.text) {
-      result.text = this.text.value;
+    return {
+      title: this.title.value
     }
-    return result;
   }
 
   validate() {
