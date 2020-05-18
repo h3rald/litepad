@@ -18,8 +18,11 @@ const init = () => {
   h3.dispatch("loading/clear");
 };
 const save = async (state) => {
-  state.data.validate() && (await addNote(state.data.get()));
-  h3.navigateTo("/");
+  if (state.data.validate()) {
+    await addNote(state.data.get());
+    h3.navigateTo("/");
+  }
+  h3.redraw();
 };
 
 const cancel = () => h3.navigateTo("/");
