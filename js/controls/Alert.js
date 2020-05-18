@@ -29,7 +29,7 @@ export default ({
       h3(
         `button.btn.btn-invisible.flash-action`,
         { onclick: cancelAction },
-        "Naaah..."
+        "Cancel"
       ),
     message,
   ]);
