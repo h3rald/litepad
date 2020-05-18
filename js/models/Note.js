@@ -11,7 +11,7 @@ export default class Note {
     this.text = {
       label: "Text",
       name: "text",
-      type: "textarea",
+      type: "markdown",
       value: "",
       validation: (data) =>
         data.value.length > 0 ? null : "Text is required.",

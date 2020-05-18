@@ -1,11 +1,13 @@
 import h3 from "../h3.js";
 
 const routeComponent = ({ initialState, render, init }) => {
-  let state = {};
+  let state;
   let firstRun = true;
   let route;
   const reset = () => {
-    state = { ...initialState };
+    if (initialState) {
+      state = { ...initialState() };
+    }
     firstRun = true;
   };
   const start = () => {

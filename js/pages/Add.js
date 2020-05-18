@@ -9,10 +9,10 @@ import ActionBar from "../controls/ActionBar.js";
 
 const title = "Somethin' new";
 
-const initialState = {
+const initialState = () => ({
   data: new Note(),
   type: "note",
-};
+});
 
 const init = () => {
   h3.dispatch("loading/clear");

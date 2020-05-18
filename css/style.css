@@ -103,3 +103,8 @@ a.Header-link {
 button {
   outline: none;
 }
+
+.CodeMirror.form-control {
+  width: 100%;
+  height: calc(100vh - 350px);
+}
