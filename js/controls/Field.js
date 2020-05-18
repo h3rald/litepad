@@ -51,6 +51,22 @@ export default (props) => {
       },
       props.value || ""
     );
+  controls.markdown = () =>
+    h3(
+      `textarea.form-control`,
+      {
+        placeholder,
+        oninput,
+        $onrender: (element) => {
+          const editor = CodeMirror.fromTextArea(element);
+          editor.display.wrapper.classList.add("form-control");
+          editor.on("change", (cm, change) => {
+            oninput({ target: { value: cm.doc.getValue() } });
+          });
+        },
+      },
+      props.value || ""
+    );
   controls.radio = () =>
     h3(
       `div`,
