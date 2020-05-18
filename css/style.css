@@ -99,3 +99,7 @@ a.Header-link {
 .flash .btn-invisible {
   background-color: transparent;
 }
+
+button {
+  outline: none;
+}

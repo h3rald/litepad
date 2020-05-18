@@ -41,19 +41,24 @@ const items = () => {
 const flags = () => {
   h3.on("$init", () => ({
     flags: {
-      help: false,
+      alert: null,
       loading: true,
-      error: null,
-      confirm: null,
       selection: null,
     },
   }));
   h3.on("alert/set", (state, alert) => ({
     flags: { ...state.flags, alert },
   }));
+  h3.on("alert/flash", (state, alert) => {
+    setTimeout(() => h3.dispatch("alert/clear"), 5000);
+    return {
+      flags: { ...state.flags, alert },
+    };
+  });
   h3.on("alert/clear", (state) => ({
     flags: { ...state.flags, alert: null },
   }));
+  
   h3.on("loading/set", (state) => ({
     flags: { ...state.flags, loading: true },
   }));
@@ -65,6 +70,11 @@ const flags = () => {
   }));
   h3.on("selection/clear", (state) => ({
     flags: { ...state.flags, selection: null },
+  }));
+  h3.on("$navigation", (state) => ({
+    ...state.flags,
+    alert: false,
+    selection: null,
   }));
 };
 

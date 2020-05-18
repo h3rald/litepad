@@ -32,11 +32,14 @@ const withError = async (cbk) => {
     }
     return data;
   } catch (e) {
-    e.title = e.title || "Error";
-    h3.dispatch("error/set", {
-      title: e.name || e.title || "Error",
+    h3.dispatch("alert/set", {
+      type: "error",
       message: e.message || "Something nasty happened... Sorry!",
-      active: true,
+      dismiss: true,
+      cancelAction: () => {
+        h3.dispatch("alert/clear");
+        h3.redraw();
+      }  
     });
   }
 };
@@ -67,4 +70,10 @@ const getItem = async (id) => {
   return await withError(async () => await fetch(url, { ...opts() }));
 };
 
-export { addNote, withError, withLoading, getItems, getItem };
+const deleteItem = async (id) => {
+  const url = `${h3.state.config.api}/${id}`;
+  const method = "DELETE";
+  return await withError(async () => await fetch(url, { ...opts(), method }));
+};
+
+export { addNote, withError, withLoading, getItems, getItem, deleteItem };
