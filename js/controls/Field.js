@@ -1,20 +1,23 @@
 import h3 from "../h3.js";
 
-
 const CmOptions = {
   mode: "gfm",
   tabSize: 2,
   autoCloseBrackets: true,
   matchBrackets: true,
   foldGutter: true,
-  inputStyle: 'contenteditable',
+  inputStyle: "contenteditable",
   //lint: true,
-  gutters: [ "CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers" ],
+  gutters: [
+    "CodeMirror-linenumbers",
+    "CodeMirror-foldgutter",
+    "CodeMirror-lint-markers",
+  ],
   lineWrapping: true,
-  lineNumbers: true
+  lineNumbers: true,
 };
 
-const MdOptions = {...CmOptions, mode: "gfm"};
+const MdOptions = { ...CmOptions, mode: "gfm" };
 
 export default (props) => {
   const {
@@ -25,6 +28,7 @@ export default (props) => {
     options,
     editable,
     activate,
+    onchange,
     validation,
   } = props;
   const oninput = (e) => {
@@ -45,6 +49,7 @@ export default (props) => {
     if (props.activate) {
       props.activate = false;
     }
+    onchange && onchange(e);
     wasInvalid != obj.invalid && !activate && h3.redraw();
   };
   if (activate) {
@@ -75,7 +80,7 @@ export default (props) => {
         $onrender: (element) => {
           const editor = CodeMirror.fromTextArea(element, MdOptions);
           editor.display.wrapper.classList.add("form-control");
-          setTimeout(() => void editor.refresh(), 0)
+          setTimeout(() => void editor.refresh(), 0);
           editor.on("change", (cm, change) => {
             oninput({ target: { value: cm.doc.getValue() } });
           });
@@ -98,7 +103,7 @@ export default (props) => {
       "div.select",
       h3(
         "select.form-control",
-        { name: id, oninput },
+        { name, oninput },
         options.map((o) => h3("option", { value: o.value }, o.label))
       )
     );

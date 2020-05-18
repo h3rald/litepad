@@ -124,3 +124,8 @@ button {
 .markdown ul, .markdown ol {
   margin-left: 2em;
 }
+
+.item-type {
+  width: 150px;
+  margin-right: 1em;
+}

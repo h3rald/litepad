@@ -59,7 +59,10 @@ const render = (state) => {
   const content = h3("div.content", [
     h3("div", [
       ActionBar(actions),
-      Field(state.data.title),
+      h3("div.d-flex", [
+        h3("div.item-type", Field(state.data.type)),
+        h3("div.flex-auto", Field(state.data.title)),
+      ]),
       Field(state.data.text),
     ]),
   ]);
