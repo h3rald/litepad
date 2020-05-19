@@ -1,10 +1,10 @@
 import h3 from "../h3.js";
 import octicon from "../services/octicon.js";
-import { getType, getIcon } from "../services/utils.js";
+import { getType, getTypeIcon } from "../services/utils.js";
 
 export default (props) => {
   const { item } = props;
-  const icon = getIcon(item.id);
+  const icon = getTypeIcon(item.id);
   const type = getType(item.id);
   const date = new Date(item.updated || item.created);
   const select = (id) => {
