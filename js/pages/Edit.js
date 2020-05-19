@@ -33,10 +33,10 @@ const enter = async (state) => {
 };
 const save = async (state) => {
   if (state.data.validate()) {
-    state.id
+    const result = state.id
       ? await saveItem(state.collection, state.id, state.data.get())
       : await addItem(state.collection, state.data.get());
-    h3.navigateTo(`/${state.collection}/${state.id}`);
+    h3.navigateTo(`/${result.id}`);
   }
   h3.redraw();
 };

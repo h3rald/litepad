@@ -1,12 +1,16 @@
 import h3 from "../h3.js";
 import Loading from "./Loading.js";
 import Alert from "./Alert.js";
+import octicon from "../services/octicon.js";
 
 export default ({ content }) => {
   return h3("div.page", [
     h3("div.Header", [
       h3("div.Header-item", [
-        h3("a.Header-link", { onclick: () => h3.navigateTo("/") }, "LitePad"),
+        h3("a.Header-link.logo", { onclick: () => h3.navigateTo("/") }, [
+          octicon("repo", {height: 24}),
+          "LitePad",
+        ]),
       ]),
       h3("div.Header-item", [
         h3("input.form-control.input-dark", {
