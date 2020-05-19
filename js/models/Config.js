@@ -3,12 +3,14 @@ export default class Config {
     this.api = "/docs";
     this.collections = {
       notes: {
-        icon: "file",
+        typeIcon: "file",
         type: "Note",
+        icon: "markdown",
       },
       snippets: {
-        icon: "file-code",
+        typeIcon: "file-code",
         type: "Snippet",
+        icon: "code",
       },
     };
   }

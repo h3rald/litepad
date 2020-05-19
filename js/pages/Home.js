@@ -2,6 +2,7 @@ import h3 from "../h3.js";
 import Page from "../controls/Page.js";
 import { routeComponent, getType } from "../services/utils.js";
 import { getItems, getItem, deleteItem } from "../services/api.js";
+import { getObject, getIcon } from "../services/utils.js";
 import octicon from "../services/octicon.js";
 import ActionBar from "../controls/ActionBar.js";
 import Tile from "../controls/Tile.js";
@@ -11,7 +12,6 @@ import TabNav from "../controls/TabNav.js";
 import Config from "../models/Config.js";
 
 const title = "Home";
-const config = new Config();
 
 const loadItems = async () => {
   const items = (await getItems(h3.state.collection, h3.state.query)).results;
@@ -44,27 +44,23 @@ const render = (state) => {
   const add = () => h3.navigateTo(`/${h3.state.collection}/add`);
   const notSelected = h3("div.blankslate", [
     h3("div.icons", [
-      octicon(config.collections[h3.state.collection].icon, {
+      octicon(getIcon(h3.state.collection), {
         class: "blankslate-icon",
         height: 32,
       }),
     ]),
     h3(
       "h3",
-      `No ${config.collections[
-        h3.state.collection
-      ].type.toLowerCase()} selected`
+      `No ${getObject(h3.state.collection)} selected`
     ),
     h3(
       "p",
-      `Please select a ${config.collections[
-        h3.state.collection
-      ].type.toLowerCase()} from the left-hand side.`
+      `Please select a ${getObject(h3.state.collection)} from the left-hand side.`
     ),
   ]);
   const empty = h3("div.blankslate", [
     h3("div.icons", [
-      octicon(config.collections[h3.state.collection].icon, {
+      octicon(getIcon(h3.state.collection), {
         class: "blankslate-icon",
         height: 32,
       }),
@@ -74,7 +70,7 @@ const render = (state) => {
     h3(
       "button.btn.btn-primary",
       { type: "button", onclick: add },
-      `Add a ${config.collections[h3.state.collection].type.toLowerCase()}`
+      `Add a ${getObject(h3.state.collection)}`
     ),
   ]);
   const cancelAction = () => {
@@ -135,7 +131,7 @@ const render = (state) => {
           !h3.route.path.match(/^\/notes/) && h3.navigateTo("/notes");
         },
         selected: h3.state.collection === "notes",
-        icon: "file",
+        icon: getIcon("notes"),
       },
       {
         title: "Snippets",
@@ -143,7 +139,7 @@ const render = (state) => {
           !h3.route.path.match(/^\/snippet/) && h3.navigateTo("/snippets");
         },
         selected: h3.state.collection === "snippets",
-        icon: "file-code",
+        icon: getIcon("snippets"),
       },
     ],
   };

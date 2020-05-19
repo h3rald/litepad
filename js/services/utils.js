@@ -22,13 +22,23 @@ const routeComponent = ({ initialState, render, init }) => {
 };
 
 const getType = (id) => {
-  const collection = id.match(/([^\/]+)\//)[1];
+  const collection = id.match(/([^\/]+)\/?/)[1];
   return h3.state.config.collections[collection].type;
 };
 
+const getObject = (id) => {
+  const collection = id.match(/([^\/]+)\/?/)[1];
+  return h3.state.config.collections[collection].type.toLowerCase();
+};
+
+const getTypeIcon = (id) => {
+  const collection = id.match(/([^\/]+)\/?/)[1];
+  return h3.state.config.collections[collection].typeIcon;
+};
+
 const getIcon = (id) => {
-  const collection = id.match(/([^\/]+)\//)[1];
+  const collection = id.match(/([^\/]+)\/?/)[1];
   return h3.state.config.collections[collection].icon;
 };
 
-export { routeComponent, getType, getIcon };
+export { routeComponent, getType, getIcon, getTypeIcon, getObject };
