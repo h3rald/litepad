@@ -6,6 +6,10 @@ export default class Config {
         icon: "file",
         type: "Note",
       },
+      snippets: {
+        icon: "file-code",
+        type: "Snippet",
+      },
     };
   }
 }
