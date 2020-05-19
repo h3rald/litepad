@@ -12,6 +12,8 @@ h3.init({
   routes: {
     "/add": Edit,
     "/edit/:id": Edit,
+    "/:collection/:id": Home,
+    "/:collection": Home,
     "/": Home,
   },
 });

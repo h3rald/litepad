@@ -68,17 +68,17 @@ const saveItem = async (id, data) => {
   );
 };
 
-const getItems = async (data) => {
+const getItems = async (collection, data) => {
   const { filter, sort, select, limit, offset } = data;
   const options = Object.entries(data)
     .map(([key, value]) => `${key}=${value}`)
     .join("&");
-  const url = `${h3.state.config.api}/${options ? "?" + options : ""}`;
+  const url = `${h3.state.config.api}/${collection || "notes"}/${options ? "?" + options : ""}`;
   return await withError(async () => await fetch(url, { ...opts() }));
 };
 
-const getItem = async (id) => {
-  const url = `${h3.state.config.api}/${id}?raw=true`;
+const getItem = async (collection, id) => {
+  const url = `${h3.state.config.api}/${collection}/${id}?raw=true`;
   return await withError(async () => await fetch(url, { ...opts() }));
 };
 

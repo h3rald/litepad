@@ -19,22 +19,32 @@ const items = () => {
   h3.on("$init", () => ({
     items: [],
     item: null,
+    collection: "notes",
     query: { select: "$.title as title", sort: "-modified" },
+  }));
+  h3.on("collection/set", (state, collection) => ({
+    item: state.item,
+    items: state.items,
+    collection,
+    query: state.query,
   }));
   h3.on("items/set", (state, items) => ({
     item: state.item,
     items,
+    collection: state.collection,
     query: state.query,
   }));
   h3.on("item/set", (state, item) => ({
-    item: item,
+    item,
+    collection: state.collection,
     items: state.items,
     query: state.query,
   }));
   h3.on("$navigation", (state, route) => {
-    return route.path === "/"
+    console.log(h3.route, route);
+    return ["/:collection/:id", "/:collection"].includes(route.def)
       ? { ...state }
-      : { items: [], item: null, query: state.query };
+      : { items: [], item: null, query: state.query, collection: "notes" };
   });
 };
 

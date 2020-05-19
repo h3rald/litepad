@@ -11,23 +11,25 @@ import marked from "../../vendor/marked.js";
 const title = "Home";
 
 const loadItems = async () => {
-  const items = (await getItems(h3.state.query)).results;
+  const items = (await getItems(h3.state.collection, h3.state.query)).results;
   h3.dispatch("items/set", items);
 };
 
 const init = async (state) => {
-  const selection = h3.route.params.s;
+  const collection = h3.route.parts.collection || "notes";
+  const selection = h3.route.parts.id || "";
   selection
     ? h3.dispatch("selection/set", selection)
     : h3.dispatch("selection/clear");
   h3.state.items.length === 0 && h3.dispatch("loading/set");
+  h3.state.collection !== collection && h3.dispatch("collection/set", collection);
   let items = h3.state.items;
   let redraw = false;
   if (items.length === 0) {
     await loadItems();
   }
   if (selection) {
-    const item = await getItem(selection.replace(".", "/"));
+    const item = await getItem(collection, selection);
     h3.dispatch("item/set", item);
   } else {
     h3.dispatch("item/set", null);
@@ -82,7 +84,7 @@ const render = (state) => {
           action: async () => {
             await deleteItem(h3.state.flags.selection.replace(".", "/"));
             h3.dispatch("alert/clear");
-            h3.navigateTo("/");
+            h3.navigateTo(`/${h3.state.collection}`);
             await loadItems();
             h3.redraw();
           },

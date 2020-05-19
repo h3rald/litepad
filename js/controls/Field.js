@@ -76,7 +76,7 @@ export default (props) => {
       {
         placeholder,
         $onrender: (element) => {
-          const editor = CodeMirror.fromTextArea(element, {EditorOptions, ...mode: mode});
+          const editor = CodeMirror.fromTextArea(element, {...EditorOptions, mode: mode});
           editor.display.wrapper.classList.add("form-control");
           setTimeout(() => void editor.refresh(), 0);
           editor.on("change", (cm, change) => {

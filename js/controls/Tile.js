@@ -8,9 +8,11 @@ export default (props) => {
   const type = getType(item.id);
   const date = new Date(item.updated || item.created);
   const select = (id) => {
-    h3.navigateTo("/", h3.state.flags.selection === id ? {} : { s: id });
+    h3.navigateTo(
+      `/${h3.state.collection}/${h3.state.flags.selection === id ? "" : id}`
+    );
   };
-  const id = item.id.replace("/", ".");
+  const id = item.id.replace(`${h3.state.collection}/`, "");
   return h3(
     `div.tile${h3.state.flags.selection === id ? ".selected" : ""}`,
     { data: { id }, onclick: (e) => select(e.currentTarget.dataset.id) },
