@@ -5,6 +5,7 @@ import { routeComponent } from "../services/utils.js";
 import Field from "../controls/Field.js";
 import Note from "../models/Note.js";
 import ActionBar from "../controls/ActionBar.js";
+import Loading from "../controls/Loading.js";
 
 const initialState = () => ({
   title: null,
@@ -23,7 +24,6 @@ const init = async (state) => {
     state.title = "Edit Note";
     state.data.set(item);
     h3.dispatch("loading/clear");
-    h3.redraw();
   } else {
     state.title = "New Note";
     h3.dispatch("loading/clear");
@@ -45,6 +45,9 @@ const cancel = (state) => {
 };
 
 const render = (state) => {
+  if (!state.data) {
+    return Loading();
+  }
   const actions = [
     {
       onclick: () => save(state),

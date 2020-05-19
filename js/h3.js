@@ -569,7 +569,7 @@ class Router {
   }
 
   start() {
-    const processPath = (data) => {
+    const processPath = async (data) => {
       const fragment =
         (data &&
           data.newURL &&
@@ -604,13 +604,16 @@ class Router {
       if (!this.route) {
         throw new Error(`[Router] No route matches '${fragment}'`);
       }
-      redrawing = true;
+      // Route component initialization
+      const obj = this.routes[this.route.def];
+      obj.init && await obj.init();
       this.store.dispatch("$navigation", this.route);
+      redrawing = true;
       // Display View
       while (this.element.firstChild) {
         this.element.removeChild(this.element.firstChild);
       }
-      const vnode = this.routes[this.route.def]();
+      const vnode = obj();
       const node = vnode.render();
       this.element.appendChild(node);
       vnode.$onrender && vnode.$onrender(node);

@@ -10,37 +10,38 @@ import DOMPurify from "../../vendor/purify.es.js";
 import marked from "../../vendor/marked.js";
 import TabNav from "../controls/TabNav.js";
 import Config from "../models/Config.js";
+import Loading from "../controls/Loading.js";
 
 const title = "Home";
 
-const loadItems = async () => {
-  const items = (await getItems(h3.state.collection, h3.state.query)).results;
+const loadItems = async (collection) => {
+  const items = (await getItems(collection, h3.state.query)).results;
   h3.dispatch("items/set", items);
 };
 
 const init = async (state) => {
   const collection = h3.route.parts.collection || "notes";
   const selection = h3.route.parts.id || "";
-  selection
-    ? h3.dispatch("selection/set", selection)
-    : h3.dispatch("selection/clear");
-  h3.state.items.length === 0 && h3.dispatch("loading/set");
-  const differentCollection = h3.state.collection !== collection;
-  differentCollection && h3.dispatch("collection/set", collection);
-  if ( differentCollection) {
-    await loadItems();
+  if (h3.state.collection !== collection || h3.state.items.length === 0) {
+    await loadItems(collection);
+    h3.dispatch("collection/set", collection);
   }
   if (selection) {
     const item = await getItem(collection, selection);
     h3.dispatch("item/set", item);
+    h3.dispatch("selection/set", selection);
   } else {
+    h3.dispatch("selection/clear");
     h3.dispatch("item/set", null);
   }
   h3.dispatch("loading/clear");
-  h3.redraw();
 };
 
 const render = (state) => {
+  if (!h3.state.collection) {
+    // First redraw
+    return Loading();
+  }
   const add = () => h3.navigateTo(`/${h3.state.collection}/add`);
   const notSelected = h3("div.blankslate", [
     h3("div.icons", [
@@ -103,7 +104,7 @@ const render = (state) => {
             if (result) {
               h3.dispatch("alert/clear");
               h3.navigateTo(`/${h3.state.collection}`);
-              await loadItems();
+              await loadItems(h3.state.collection);
             }
             h3.redraw();
           },
@@ -128,9 +129,6 @@ const render = (state) => {
         title: "Notes",
         onclick: async () => {
           if (!h3.route.path.match(/^\/notes/)) {
-            // To avoid complete re-rendering
-            h3.dispatch("collection/set", "notes");
-            await loadItems();
             h3.navigateTo("/notes");
           }
         },
@@ -141,9 +139,6 @@ const render = (state) => {
         title: "Snippets",
         onclick: async () => {
           if (!h3.route.path.match(/^\/snippet/)) {
-            // To avoid complete re-rendering
-            h3.dispatch("collection/set", "snippets");
-            await loadItems();
             h3.navigateTo("/snippets");
           }
         },
