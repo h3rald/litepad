@@ -39,7 +39,7 @@ const withError = async (cbk) => {
       cancelAction: () => {
         h3.dispatch("alert/clear");
         h3.redraw();
-      }  
+      },
     });
     return false;
   }
@@ -50,10 +50,7 @@ const addItem = async (collection, data) => {
   const body = JSON.stringify(data);
   const method = "POST";
   return await withError(
-    async () =>
-      await withLoading(
-        async () => await fetch(url, { ...opts(), method, body })
-      )
+    async () => await fetch(url, { ...opts(), method, body })
   );
 };
 
@@ -62,10 +59,7 @@ const saveItem = async (collection, id, data) => {
   const body = JSON.stringify(data);
   const method = "PUT";
   return await withError(
-    async () =>
-      await withLoading(
-        async () => await fetch(url, { ...opts(), method, body })
-      )
+    async () => await fetch(url, { ...opts(), method, body })
   );
 };
 
@@ -74,7 +68,9 @@ const getItems = async (collection, data) => {
   const options = Object.entries(data)
     .map(([key, value]) => `${key}=${value}`)
     .join("&");
-  const url = `${h3.state.config.api}/${collection || "notes"}/${options ? "?" + options : ""}`;
+  const url = `${h3.state.config.api}/${collection || "notes"}/${
+    options ? "?" + options : ""
+  }`;
   return await withError(async () => await fetch(url, { ...opts() }));
 };
 
@@ -89,4 +85,12 @@ const deleteItem = async (collection, id) => {
   return await withError(async () => await fetch(url, { ...opts(), method }));
 };
 
-export { addItem, withError, withLoading, getItems, getItem, deleteItem, saveItem };
+export {
+  addItem,
+  withError,
+  withLoading,
+  getItems,
+  getItem,
+  deleteItem,
+  saveItem,
+};

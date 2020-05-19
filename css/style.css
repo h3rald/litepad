@@ -149,3 +149,7 @@ button {
   background-color: #fff;
   border-color: #e36209 #e1e4e8 transparent;
 }
+
+.tabnav {
+  margin-top: 10px;
+}
