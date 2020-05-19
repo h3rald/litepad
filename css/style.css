@@ -27,7 +27,8 @@
 
 .btn .icon,
 .tile-title .icon,
-.tabnav-tab .icon {
+.tabnav-tab .icon,
+.Header, .icon {
   vertical-align: middle;
   padding-right: 4px;
 }
@@ -90,8 +91,16 @@
 
 /******/
 
+.Header {
+  padding: 8px;
+}
+
 a.Header-link {
   cursor: pointer;
+}
+
+.logo {
+  font-size: 1.3em;
 }
 
 .flash-action {
@@ -99,6 +108,10 @@ a.Header-link {
 }
 .flash .btn-invisible {
   background-color: transparent;
+}
+
+h2 {
+  margin-bottom: 24px;
 }
 
 button {
