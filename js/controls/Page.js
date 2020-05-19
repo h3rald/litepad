@@ -12,10 +12,10 @@ export default ({ content }) => {
           "LitePad",
         ]),
       ]),
-      h3("div.Header-item", [
-        h3("input.form-control.input-dark", {
+      !h3.route.def.match(/(add|edit)$/) && h3("div.Header-item", [
+        h3("input.form-control.input-dark.search", {
           type: "text",
-          placeholder: "Search...",
+          placeholder: `Search ${h3.state.collection}...`,
         }),
       ]),
     ]),
