@@ -7,7 +7,7 @@ import Note from "../models/Note.js";
 import ActionBar from "../controls/ActionBar.js";
 import Loading from "../controls/Loading.js";
 
-const state = () => ({
+const init = () => ({
   title: null,
   id: null,
   collection: null,
@@ -15,7 +15,7 @@ const state = () => ({
   type: "note",
 });
 
-const init = async (state) => {
+const enter = async (state) => {
   state.id = h3.route.parts.id || "";
   state.collection = h3.route.parts.collection;
   state.data = new Note();
@@ -69,6 +69,6 @@ const Edit = (state) => {
 };
 
 Edit.init = init;
-Edit.state = state;
+Edit.enter = enter;
 
 export default Edit;

@@ -17,7 +17,7 @@ const loadItems = async (collection) => {
   h3.dispatch("items/set", items);
 };
 
-const init = async () => {
+const enter = async () => {
   const collection = h3.route.parts.collection || "notes";
   const selection = h3.route.parts.id || "";
   let item;
@@ -169,6 +169,6 @@ const Home = () => {
   });
 };
 
-Home.init = init;
+Home.enter = enter;
 
 export default Home;
