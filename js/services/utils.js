@@ -4,6 +4,7 @@ const routeComponent = ({ initialState, render, init }) => {
   let state;
   let firstRun = true;
   const reset = () => {
+    console.log(">>> Reset called!");
     if (initialState) {
       state = { ...initialState() };
     }
@@ -12,13 +13,20 @@ const routeComponent = ({ initialState, render, init }) => {
   const start = () => {
     reset();
     firstRun = false;
-    h3.on("$navigation", reset);
-    init && init(state);
+    //init && init(state);
   };
-  return () => {
+  const fn = () => {
     firstRun && start();
     return render(state);
   };
+  fn.init = async () => {
+    console.log(">>> Init called!");
+    console.log(h3.state);
+    start();
+    //h3.on("$navigation", reset);
+    return await init(state);
+  };
+  return fn;
 };
 
 const getType = (id) => {
