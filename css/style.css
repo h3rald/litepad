@@ -26,7 +26,8 @@
 }
 
 .btn .icon,
-.tile-title .icon {
+.tile-title .icon,
+.tabnav-tab .icon {
   vertical-align: middle;
   padding-right: 4px;
 }
@@ -128,4 +129,23 @@ button {
 .item-type {
   width: 150px;
   margin-right: 1em;
+}
+
+.tabnav-extra {
+  padding-top: 0;
+  margin-top: -5px;
+}
+
+.tabnav-tab {
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-top: 3px solid transparent;
+  border-radius: 3px 3px 0 0;
+  cursor: pointer;
+}
+
+.tabnav-tab.selected {
+  color: #24292e;
+  background-color: #fff;
+  border-color: #e36209 #e1e4e8 transparent;
 }

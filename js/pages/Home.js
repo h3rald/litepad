@@ -7,6 +7,7 @@ import ActionBar from "../controls/ActionBar.js";
 import Tile from "../controls/Tile.js";
 import DOMPurify from "../../vendor/purify.es.js";
 import marked from "../../vendor/marked.js";
+import TabNav from "../controls/TabNav.js";
 
 const title = "Home";
 
@@ -76,9 +77,7 @@ const render = (state) => {
     },
     {
       onclick: () =>
-        h3.navigateTo(
-          `/${h3.state.collection}/${h3.state.selection}/edit`
-        ),
+        h3.navigateTo(`/${h3.state.collection}/${h3.state.selection}/edit`),
       icon: "pencil",
       label: "Edit",
       disabled: !h3.state.selection,
@@ -114,8 +113,32 @@ const render = (state) => {
       disabled: !h3.state.selection,
     },
   ];
+  const tabnav = {
+    title: "Main Navigation",
+    extras: ActionBar(actions),
+    tabs: [
+      {
+        title: "Notes",
+        onclick: () => {
+          h3.dispatch("collection/set", "notes");
+          h3.redraw();
+        },
+        selected: h3.state.collection === "notes",
+        icon: "file",
+      },
+      {
+        title: "Snippets",
+        onclick: () => {
+          h3.dispatch("collection/set", "snippets");
+          h3.redraw();
+        },
+        selected: h3.state.collection === "snippets",
+        icon: "file-code",
+      },
+    ],
+  };
   const content = h3("div.content", [
-    h3("p", [ActionBar(actions), `Total items: ${h3.state.items.length}`]),
+    TabNav(tabnav),
     h3("div.master-detail.d-flex", [
       h3(
         "div.master.item-list",
