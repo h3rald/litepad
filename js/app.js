@@ -10,8 +10,8 @@ h3.init({
   },
   modules: modules,
   routes: {
-    "/add": Edit,
-    "/edit/:id": Edit,
+    "/:collection/add": Edit,
+    "/:collection/:id/edit": Edit,
     "/:collection/:id": Home,
     "/:collection": Home,
     "/": Home,

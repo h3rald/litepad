@@ -16,13 +16,13 @@ export default class Note extends Item {
   }
 
   set(note) {
-    super(note);
-    this.text = note.text.value;
+    super.set(note);
+    this.text.value = note.data.text;
   }
 
   get() {
     return {
-      ...super(),
+      ...super.get(),
       text: this.text.value
     }
   }

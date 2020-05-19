@@ -22,7 +22,8 @@ const init = async (state) => {
     ? h3.dispatch("selection/set", selection)
     : h3.dispatch("selection/clear");
   h3.state.items.length === 0 && h3.dispatch("loading/set");
-  h3.state.collection !== collection && h3.dispatch("collection/set", collection);
+  h3.state.collection !== collection &&
+    h3.dispatch("collection/set", collection);
   let items = h3.state.items;
   let redraw = false;
   if (items.length === 0) {
@@ -68,9 +69,16 @@ const render = (state) => {
     h3.redraw();
   };
   const actions = [
-    { onclick: () => h3.navigateTo("/add"), icon: "plus", label: "Add" },
     {
-      onclick: () => h3.navigateTo(`/edit/${h3.state.flags.selection}`),
+      onclick: () => h3.navigateTo(`/${h3.state.collection}/add`),
+      icon: "plus",
+      label: "Add",
+    },
+    {
+      onclick: () =>
+        h3.navigateTo(
+          `/${h3.state.collection}/${h3.state.flags.selection}/edit`
+        ),
       icon: "pencil",
       label: "Edit",
       disabled: !h3.state.flags.selection,
@@ -82,10 +90,15 @@ const render = (state) => {
           buttonType: "danger",
           label: "Yes, delete!",
           action: async () => {
-            await deleteItem(h3.state.flags.selection.replace(".", "/"));
-            h3.dispatch("alert/clear");
-            h3.navigateTo(`/${h3.state.collection}`);
-            await loadItems();
+            const result = await deleteItem(
+              h3.state.collection,
+              h3.state.flags.selection
+            );
+            if (result) {
+              h3.dispatch("alert/clear");
+              h3.navigateTo(`/${h3.state.collection}`);
+              await loadItems();
+            }
             h3.redraw();
           },
           cancelAction,
