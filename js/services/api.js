@@ -41,6 +41,7 @@ const withError = async (cbk) => {
         h3.redraw();
       }  
     });
+    return false;
   }
 };
 
@@ -56,8 +57,8 @@ const addItem = async (collection, data) => {
   );
 };
 
-const saveItem = async (id, data) => {
-  const url = `${h3.state.config.api}/${id}`;
+const saveItem = async (collection, id, data) => {
+  const url = `${h3.state.config.api}/${collection}/${id}`;
   const body = JSON.stringify(data);
   const method = "PUT";
   return await withError(
@@ -82,8 +83,8 @@ const getItem = async (collection, id) => {
   return await withError(async () => await fetch(url, { ...opts() }));
 };
 
-const deleteItem = async (id) => {
-  const url = `${h3.state.config.api}/${id}`;
+const deleteItem = async (collection, id) => {
+  const url = `${h3.state.config.api}/${collection}/${id}`;
   const method = "DELETE";
   return await withError(async () => await fetch(url, { ...opts(), method }));
 };
