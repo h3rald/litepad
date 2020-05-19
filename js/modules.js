@@ -19,7 +19,7 @@ const items = () => {
   h3.on("$init", () => ({
     items: [],
     item: null,
-    collection: "notes",
+    collection: null,
     selection: null,
     query: { select: "$.title as title", sort: "-modified" },
   }));
@@ -38,7 +38,6 @@ const items = () => {
   h3.on("selection/set", (state, selection) => ({ ...state, selection }));
   h3.on("selection/clear", (state) => ({ ...state, selection: null }));
   h3.on("$navigation", (state, route) => {
-    console.log(h3.route, route);
     return ["/:collection/:id", "/:collection"].includes(route.def)
       ? { ...state }
       : {
