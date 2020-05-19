@@ -12,32 +12,28 @@ import TabNav from "../controls/TabNav.js";
 import Config from "../models/Config.js";
 import Loading from "../controls/Loading.js";
 
-const title = "Home";
-
 const loadItems = async (collection) => {
   const items = (await getItems(collection, h3.state.query)).results;
   h3.dispatch("items/set", items);
 };
 
-const init = async (state) => {
+const init = async () => {
   const collection = h3.route.parts.collection || "notes";
   const selection = h3.route.parts.id || "";
+  let item;
   if (h3.state.collection !== collection || h3.state.items.length === 0) {
     await loadItems(collection);
     h3.dispatch("collection/set", collection);
   }
   if (selection) {
-    const item = await getItem(collection, selection);
-    h3.dispatch("item/set", item);
-    h3.dispatch("selection/set", selection);
-  } else {
-    h3.dispatch("selection/clear");
-    h3.dispatch("item/set", null);
+    item = await getItem(collection, selection);
   }
+  h3.dispatch("item/set", item);
+  h3.dispatch("selection/set", selection);
   h3.dispatch("loading/clear");
 };
 
-const render = (state) => {
+const Home = () => {
   if (!h3.state.collection) {
     // First redraw
     return Loading();
@@ -169,9 +165,10 @@ const render = (state) => {
         ]),
   ]);
   return Page({
-    title,
     content,
   });
 };
 
-export default routeComponent({ render, init });
+Home.init = init;
+
+export default Home;

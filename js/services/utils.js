@@ -2,28 +2,13 @@ import h3 from "../h3.js";
 
 const routeComponent = ({ initialState, render, init }) => {
   let state;
-  let firstRun = true;
-  const reset = () => {
-    console.log(">>> Reset called!");
-    if (initialState) {
-      state = { ...initialState() };
-    }
-    firstRun = true;
-  };
-  const start = () => {
-    reset();
-    firstRun = false;
-    //init && init(state);
-  };
   const fn = () => {
-    firstRun && start();
     return render(state);
   };
   fn.init = async () => {
-    console.log(">>> Init called!");
-    console.log(h3.state);
-    start();
-    //h3.on("$navigation", reset);
+    if (initialState) {
+      state = { ...initialState() };
+    }
     return await init(state);
   };
   return fn;

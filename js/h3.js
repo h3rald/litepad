@@ -558,11 +558,11 @@ class Router {
     this.routes = routes;
   }
 
-  setRedraw(vnode) {
+  setRedraw(vnode, state) {
     this.redraw = () => {
       vnode.redraw({
         node: this.element.childNodes[0],
-        vnode: this.routes[this.route.def](),
+        vnode: this.routes[this.route.def](state),
       });
       this.store.dispatch("$redraw");
     };
@@ -606,18 +606,20 @@ class Router {
       }
       // Route component initialization
       const obj = this.routes[this.route.def];
-      obj.init && await obj.init();
-      this.store.dispatch("$navigation", this.route);
+      // Initialize component
+      const state = obj.state && obj.state();
+      obj.init && await obj.init(state);
       redrawing = true;
+      this.store.dispatch("$navigation", this.route);
       // Display View
       while (this.element.firstChild) {
         this.element.removeChild(this.element.firstChild);
       }
-      const vnode = obj();
+      const vnode = obj(state);
       const node = vnode.render();
       this.element.appendChild(node);
       vnode.$onrender && vnode.$onrender(node);
-      this.setRedraw(vnode);
+      this.setRedraw(vnode, state);
       window.scrollTo(0, 0);
       this.store.dispatch("$redraw");
       redrawing = false;

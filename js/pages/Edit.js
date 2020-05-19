@@ -7,7 +7,7 @@ import Note from "../models/Note.js";
 import ActionBar from "../controls/ActionBar.js";
 import Loading from "../controls/Loading.js";
 
-const initialState = () => ({
+const state = () => ({
   title: null,
   id: null,
   collection: null,
@@ -23,18 +23,16 @@ const init = async (state) => {
     const item = await getItem(state.collection, state.id);
     state.title = "Edit Note";
     state.data.set(item);
-    h3.dispatch("loading/clear");
   } else {
     state.title = "New Note";
-    h3.dispatch("loading/clear");
   }
+  h3.dispatch("loading/clear");
 };
 const save = async (state) => {
   if (state.data.validate()) {
-    const params = h3.route.parts.id ? { s: h3.route.parts.id } : {};
-    await (state.id
-      ? saveItem(state.collection, state.id, state.data.get())
-      : addItem(state.collection, state.data.get()));
+    state.id
+      ? await saveItem(state.collection, state.id, state.data.get())
+      : await addItem(state.collection, state.data.get());
     h3.navigateTo(`/${state.collection}/${state.id}`);
   }
   h3.redraw();
@@ -44,7 +42,7 @@ const cancel = (state) => {
   h3.navigateTo(`/${state.collection}/${state.id}`);
 };
 
-const render = (state) => {
+const Edit = (state) => {
   if (!state.data) {
     return Loading();
   }
@@ -70,4 +68,7 @@ const render = (state) => {
   return Page({ title: state.title, content });
 };
 
-export default routeComponent({ initialState, render, init });
+Edit.init = init;
+Edit.state = state;
+
+export default Edit;
