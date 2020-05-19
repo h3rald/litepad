@@ -4,18 +4,6 @@ export default class Snippet extends Item {
 
   constructor(){
     super();
-    this.language = {
-      label: "Language",
-      name: "language",
-      type: "dropdown",
-      onchange: () =>  h3.redraw(),
-      value: "javascript",
-      options: [
-        { label: "JavaScript", value: "javascript" },
-        { label: "HTML", value: "html" },
-        { label: "CSS", value: "css" },
-      ],
-    };
     this.code = {
       label: "Code",
       name: "code",
@@ -27,16 +15,14 @@ export default class Snippet extends Item {
     };
   }
 
-  set(note) {
-    super(note);
-    this.language = note.language.value;
-    this.code = note.code.value;
+  set(snippet) {
+    super.set(snippet);
+    this.code.value = snippet.data.code;
   }
 
   get() {
     return {
-      ...super(),
-      language: this.language.value
+      ...super.get(),
       code: this.code.value
     }
   }
