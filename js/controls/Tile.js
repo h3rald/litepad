@@ -9,12 +9,12 @@ export default (props) => {
   const date = new Date(item.updated || item.created);
   const select = (id) => {
     h3.navigateTo(
-      `/${h3.state.collection}/${h3.state.flags.selection === id ? "" : id}`
+      `/${h3.state.collection}/${h3.state.selection === id ? "" : id}`
     );
   };
   const id = item.id.replace(`${h3.state.collection}/`, "");
   return h3(
-    `div.tile${h3.state.flags.selection === id ? ".selected" : ""}`,
+    `div.tile${h3.state.selection === id ? ".selected" : ""}`,
     { data: { id }, onclick: (e) => select(e.currentTarget.dataset.id) },
     [
       h3("p.tile-title", [octicon(icon), h3("span", item.data.title)]),

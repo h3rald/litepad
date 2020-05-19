@@ -20,31 +20,34 @@ const items = () => {
     items: [],
     item: null,
     collection: "notes",
+    selection: null,
     query: { select: "$.title as title", sort: "-modified" },
   }));
   h3.on("collection/set", (state, collection) => ({
-    item: state.item,
-    items: state.items,
+    ...state,
     collection,
-    query: state.query,
   }));
   h3.on("items/set", (state, items) => ({
-    item: state.item,
+    ...state,
     items,
-    collection: state.collection,
-    query: state.query,
   }));
   h3.on("item/set", (state, item) => ({
+    ...state,
     item,
-    collection: state.collection,
-    items: state.items,
-    query: state.query,
   }));
+  h3.on("selection/set", (state, selection) => ({ ...state, selection }));
+  h3.on("selection/clear", (state) => ({ ...state, selection: null }));
   h3.on("$navigation", (state, route) => {
     console.log(h3.route, route);
     return ["/:collection/:id", "/:collection"].includes(route.def)
       ? { ...state }
-      : { items: [], item: null, query: state.query, collection: "notes" };
+      : {
+          items: [],
+          item: null,
+          query: state.query,
+          collection: "notes",
+          selection: null,
+        };
   });
 };
 
@@ -53,7 +56,6 @@ const flags = () => {
     flags: {
       alert: null,
       loading: true,
-      selection: null,
     },
   }));
   h3.on("alert/set", (state, alert) => ({
@@ -75,17 +77,10 @@ const flags = () => {
   h3.on("loading/clear", (state) => ({
     flags: { ...state.flags, loading: false },
   }));
-  h3.on("selection/set", (state, selection) => ({
-    flags: { ...state.flags, selection },
-  }));
-  h3.on("selection/clear", (state) => ({
-    flags: { ...state.flags, selection: null },
-  }));
   h3.on("$navigation", (state) => ({
     flags: {
       ...state.flags,
       alert: null,
-      selection: null,
     },
   }));
 };

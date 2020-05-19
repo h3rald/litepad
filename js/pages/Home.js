@@ -77,11 +77,11 @@ const render = (state) => {
     {
       onclick: () =>
         h3.navigateTo(
-          `/${h3.state.collection}/${h3.state.flags.selection}/edit`
+          `/${h3.state.collection}/${h3.state.selection}/edit`
         ),
       icon: "pencil",
       label: "Edit",
-      disabled: !h3.state.flags.selection,
+      disabled: !h3.state.selection,
     },
     {
       onclick: () => {
@@ -92,7 +92,7 @@ const render = (state) => {
           action: async () => {
             const result = await deleteItem(
               h3.state.collection,
-              h3.state.flags.selection
+              h3.state.selection
             );
             if (result) {
               h3.dispatch("alert/clear");
@@ -111,7 +111,7 @@ const render = (state) => {
       },
       icon: "trashcan",
       label: "Delete",
-      disabled: !h3.state.flags.selection,
+      disabled: !h3.state.selection,
     },
   ];
   const content = h3("div.content", [
