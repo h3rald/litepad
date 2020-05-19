@@ -1,7 +1,7 @@
 import h3 from "../h3.js";
 import Page from "../controls/Page.js";
 import { getItems, getItem, deleteItem } from "../services/api.js";
-import { getIcon, getType } from "../services/utils.js";
+import { getIcon, getObject } from "../services/utils.js";
 import ActionBar from "../controls/ActionBar.js";
 import TabNav from "../controls/TabNav.js";
 import MasterDetail from "../controls/MasterDetail.js";
@@ -28,10 +28,6 @@ const enter = async () => {
 };
 
 const Home = () => {
-  if (!h3.state.collection) {
-    // First redraw
-    return Loading();
-  }
   const add = () => h3.navigateTo(`/${h3.state.collection}/add`);
   const cancelAction = () => h3.dispatch("alert/clear") || h3.redraw();
   const deleteAction = async () => {
@@ -64,7 +60,7 @@ const Home = () => {
           label: "Yes, delete!",
           action: deleteAction,
           cancelAction,
-          message: `Do you really want to delete ${getType(
+          message: `Do you really want to delete ${getObject(
             h3.state.item.id
           )} '${h3.state.item.data.title}'?!`,
         };

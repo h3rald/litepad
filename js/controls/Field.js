@@ -76,8 +76,15 @@ export default (props) => {
       {
         placeholder,
         $onrender: (element) => {
-          const editor = CodeMirror.fromTextArea(element, {...EditorOptions, mode: mode});
+          const editor = CodeMirror.fromTextArea(element, {
+            ...EditorOptions,
+            readOnly: props.editable === false,
+            mode: mode,
+          });
           editor.display.wrapper.classList.add("form-control");
+          if (props.editable !== false) {
+            editor.display.wrapper.classList.add("editable");
+          }
           setTimeout(() => void editor.refresh(), 0);
           editor.on("change", (cm, change) => {
             oninput({ target: { value: cm.doc.getValue() } });
@@ -116,9 +123,13 @@ export default (props) => {
       ` ${label || props.value}`,
     ]);
   const control =
-    editable === false ? String(props.value) : controls[type || "textbox"]();
+    editable === false && type !== "editor"
+      ? String(props.value)
+      : controls[type || "textbox"]();
   return h3(`div.form-group${props.invalid ? ".errored" : ""}`, [
-    h3("div.form-group-header", [h3("label", { for: name }, `${label}:`)]),
+    h3("div.form-group-header", [
+      editable !== false && h3("label", { for: name }, `${label}:`),
+    ]),
     h3("div.form-group-header", [
       control,
       props.invalid && h3("p.note.error", props.invalid),
