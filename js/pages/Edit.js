@@ -1,16 +1,21 @@
 import h3 from "../h3.js";
 import Page from "../controls/Page.js";
 import { addItem, getItem, saveItem } from "../services/api.js";
-import { routeComponent } from "../services/utils.js";
 import Field from "../controls/Field.js";
 import Note from "../models/Note.js";
+import Snippet from "../models/Snippet.js";
 import ActionBar from "../controls/ActionBar.js";
 import Loading from "../controls/Loading.js";
 
+const types = {
+  snippets: Snippet,
+  notes: Note
+}
+
 const init = () => ({
-  title: null,
   id: null,
   collection: null,
+  collectionData: null,
   data: null,
   type: "note",
 });
@@ -18,14 +23,12 @@ const init = () => ({
 const enter = async (state) => {
   state.id = h3.route.parts.id || "";
   state.collection = h3.route.parts.collection;
-  state.data = new Note();
+  state.collectionData = h3.state.config.collections[state.collection];
+  state.data = new types[state.collection]();
   if (state.id) {
     const item = await getItem(state.collection, state.id);
-    state.title = "Edit Note";
     state.data.set(item);
-  } else {
-    state.title = "New Note";
-  }
+  } 
   h3.dispatch("loading/clear");
 };
 const save = async (state) => {
@@ -62,10 +65,11 @@ const Edit = (state) => {
     h3("div", [
       ActionBar(actions),
       h3("div.d-flex", [h3("div.flex-auto", Field(state.data.title))]),
-      Field(state.data.text),
+      state.data.text && Field(state.data.text),
+      state.data.code && Field(state.data.code),
     ]),
   ]);
-  return Page({ title: state.title, content });
+  return Page({ content });
 };
 
 Edit.init = init;

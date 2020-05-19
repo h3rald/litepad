@@ -1,6 +1,5 @@
 import h3 from "../h3.js";
 import Page from "../controls/Page.js";
-import { routeComponent, getType } from "../services/utils.js";
 import { getItems, getItem, deleteItem } from "../services/api.js";
 import { getObject, getIcon } from "../services/utils.js";
 import octicon from "../services/octicon.js";

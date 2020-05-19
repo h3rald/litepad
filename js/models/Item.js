@@ -10,17 +10,6 @@ export default class Note {
       validation: (data) =>
         data.value.length > 0 ? null : "Title is required.",
     };
-    this.type = {
-      label: "Type",
-      name: "type",
-      type: "dropdown",
-      onchange: () =>  h3.redraw(),
-      value: "note",
-      options: [
-        { label: "Note", value: "note" },
-        { label: "Code Snippet", value: "snippet" },
-      ],
-    };
   }
 
   set(item) {
