@@ -27,7 +27,7 @@ const init = async (state) => {
   h3.state.items.length === 0 && h3.dispatch("loading/set");
   const differentCollection = h3.state.collection !== collection;
   differentCollection && h3.dispatch("collection/set", collection);
-  if (h3.state.items.length === 0 || differentCollection) {
+  if ( differentCollection) {
     await loadItems();
   }
   if (selection) {
@@ -49,13 +49,12 @@ const render = (state) => {
         height: 32,
       }),
     ]),
-    h3(
-      "h3",
-      `No ${getObject(h3.state.collection)} selected`
-    ),
+    h3("h3", `No ${getObject(h3.state.collection)} selected`),
     h3(
       "p",
-      `Please select a ${getObject(h3.state.collection)} from the left-hand side.`
+      `Please select a ${getObject(
+        h3.state.collection
+      )} from the left-hand side.`
     ),
   ]);
   const empty = h3("div.blankslate", [
@@ -127,16 +126,26 @@ const render = (state) => {
     tabs: [
       {
         title: "Notes",
-        onclick: () => {
-          !h3.route.path.match(/^\/notes/) && h3.navigateTo("/notes");
+        onclick: async () => {
+          if (!h3.route.path.match(/^\/notes/)) {
+            // To avoid complete re-rendering
+            h3.dispatch("collection/set", "notes");
+            await loadItems();
+            h3.navigateTo("/notes");
+          }
         },
         selected: h3.state.collection === "notes",
         icon: getIcon("notes"),
       },
       {
         title: "Snippets",
-        onclick: () => {
-          !h3.route.path.match(/^\/snippet/) && h3.navigateTo("/snippets");
+        onclick: async () => {
+          if (!h3.route.path.match(/^\/snippet/)) {
+            // To avoid complete re-rendering
+            h3.dispatch("collection/set", "snippets");
+            await loadItems();
+            h3.navigateTo("/snippets");
+          }
         },
         selected: h3.state.collection === "snippets",
         icon: getIcon("snippets"),
