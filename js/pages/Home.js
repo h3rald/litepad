@@ -1,15 +1,10 @@
 import h3 from "../h3.js";
 import Page from "../controls/Page.js";
 import { getItems, getItem, deleteItem } from "../services/api.js";
-import { getObject, getIcon } from "../services/utils.js";
-import octicon from "../services/octicon.js";
+import { getIcon, getType } from "../services/utils.js";
 import ActionBar from "../controls/ActionBar.js";
-import Tile from "../controls/Tile.js";
-import DOMPurify from "../../vendor/purify.es.js";
-import marked from "../../vendor/marked.js";
 import TabNav from "../controls/TabNav.js";
-import Config from "../models/Config.js";
-import Loading from "../controls/Loading.js";
+import MasterDetail from "../controls/MasterDetail.js";
 
 const loadItems = async (collection) => {
   const items = (await getItems(collection, h3.state.query)).results;
@@ -38,38 +33,14 @@ const Home = () => {
     return Loading();
   }
   const add = () => h3.navigateTo(`/${h3.state.collection}/add`);
-  const notSelected = h3("div.blankslate", [
-    h3("div.icons", [
-      octicon(getIcon(h3.state.collection), {
-        class: "blankslate-icon",
-        height: 32,
-      }),
-    ]),
-    h3("h3", `No ${getObject(h3.state.collection)} selected`),
-    h3(
-      "p",
-      `Please select a ${getObject(
-        h3.state.collection
-      )} from the left-hand side.`
-    ),
-  ]);
-  const empty = h3("div.blankslate", [
-    h3("div.icons", [
-      octicon(getIcon(h3.state.collection), {
-        class: "blankslate-icon",
-        height: 32,
-      }),
-    ]),
-    h3("h3", "No data"),
-    h3("p", `There are no ${h3.state.collection}.`),
-    h3(
-      "button.btn.btn-primary",
-      { type: "button", onclick: add },
-      `Add a ${getObject(h3.state.collection)}`
-    ),
-  ]);
-  const cancelAction = () => {
-    h3.dispatch("alert/clear");
+  const cancelAction = () => h3.dispatch("alert/clear") || h3.redraw();
+  const deleteAction = async () => {
+    const result = await deleteItem(h3.state.collection, h3.state.selection);
+    if (result) {
+      h3.dispatch("alert/clear");
+      h3.navigateTo(`/${h3.state.collection}`);
+      await loadItems(h3.state.collection);
+    }
     h3.redraw();
   };
   const actions = [
@@ -91,18 +62,7 @@ const Home = () => {
           type: "warn",
           buttonType: "danger",
           label: "Yes, delete!",
-          action: async () => {
-            const result = await deleteItem(
-              h3.state.collection,
-              h3.state.selection
-            );
-            if (result) {
-              h3.dispatch("alert/clear");
-              h3.navigateTo(`/${h3.state.collection}`);
-              await loadItems(h3.state.collection);
-            }
-            h3.redraw();
-          },
+          action: deleteAction,
           cancelAction,
           message: `Do you really want to delete ${getType(
             h3.state.item.id
@@ -144,24 +104,12 @@ const Home = () => {
   };
   const content = h3("div.content", [
     TabNav(tabnav),
-    h3.state.items.length === 0
-      ? empty
-      : h3("div.master-detail.d-flex", [
-          h3(
-            "div.master.item-list",
-            h3.state.items.map((item) => {
-              return Tile({ item });
-            })
-          ),
-          h3.state.item
-            ? h3("div.detail.px-4.flex-auto", [
-                h3("h2", h3.state.item.data.title),
-                h3("div.markdown", {
-                  $html: marked(DOMPurify.sanitize(h3.state.item.data.text)),
-                }),
-              ])
-            : h3("div.detail.flex-auto", notSelected),
-        ]),
+    MasterDetail({
+      items: h3.state.items,
+      item: h3.state.item,
+      add,
+      collection: h3.state.collection,
+    }),
   ]);
   return Page({
     content,
