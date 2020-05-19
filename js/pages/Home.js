@@ -8,8 +8,10 @@ import Tile from "../controls/Tile.js";
 import DOMPurify from "../../vendor/purify.es.js";
 import marked from "../../vendor/marked.js";
 import TabNav from "../controls/TabNav.js";
+import Config from "../models/Config.js";
 
 const title = "Home";
+const config = new Config();
 
 const loadItems = async () => {
   const items = (await getItems(h3.state.collection, h3.state.query)).results;
@@ -23,11 +25,9 @@ const init = async (state) => {
     ? h3.dispatch("selection/set", selection)
     : h3.dispatch("selection/clear");
   h3.state.items.length === 0 && h3.dispatch("loading/set");
-  h3.state.collection !== collection &&
-    h3.dispatch("collection/set", collection);
-  let items = h3.state.items;
-  let redraw = false;
-  if (items.length === 0) {
+  const differentCollection = h3.state.collection !== collection;
+  differentCollection && h3.dispatch("collection/set", collection);
+  if (h3.state.items.length === 0 || differentCollection) {
     await loadItems();
   }
   if (selection) {
@@ -41,28 +41,40 @@ const init = async (state) => {
 };
 
 const render = (state) => {
-  const add = () => h3.navigateTo("/add");
+  const add = () => h3.navigateTo(`/${h3.state.collection}/add`);
   const notSelected = h3("div.blankslate", [
     h3("div.icons", [
-      octicon("file", { class: "blankslate-icon", height: 32 }),
-      octicon("file-code", { class: "blankslate-icon", height: 32 }),
-      octicon("checklist", { class: "blankslate-icon", height: 32 }),
+      octicon(config.collections[h3.state.collection].icon, {
+        class: "blankslate-icon",
+        height: 32,
+      }),
     ]),
-    h3("h3", "No item selected"),
-    h3("p", "Please select an item from the left-hand side."),
+    h3(
+      "h3",
+      `No ${config.collections[
+        h3.state.collection
+      ].type.toLowerCase()} selected`
+    ),
+    h3(
+      "p",
+      `Please select a ${config.collections[
+        h3.state.collection
+      ].type.toLowerCase()} from the left-hand side.`
+    ),
   ]);
   const empty = h3("div.blankslate", [
     h3("div.icons", [
-      octicon("file", { class: "blankslate-icon", height: 32 }),
-      octicon("file-code", { class: "blankslate-icon", height: 32 }),
-      octicon("checklist", { class: "blankslate-icon", height: 32 }),
+      octicon(config.collections[h3.state.collection].icon, {
+        class: "blankslate-icon",
+        height: 32,
+      }),
     ]),
     h3("h3", "No data"),
-    h3("p", "There is no data available"),
+    h3("p", `There are no ${h3.state.collection}.`),
     h3(
       "button.btn.btn-primary",
       { type: "button", onclick: add },
-      "Add something"
+      `Add a ${config.collections[h3.state.collection].type.toLowerCase()}`
     ),
   ]);
   const cancelAction = () => {
@@ -120,8 +132,7 @@ const render = (state) => {
       {
         title: "Notes",
         onclick: () => {
-          h3.dispatch("collection/set", "notes");
-          h3.redraw();
+          !h3.route.path.match(/^\/notes/) && h3.navigateTo("/notes");
         },
         selected: h3.state.collection === "notes",
         icon: "file",
@@ -129,8 +140,7 @@ const render = (state) => {
       {
         title: "Snippets",
         onclick: () => {
-          h3.dispatch("collection/set", "snippets");
-          h3.redraw();
+          !h3.route.path.match(/^\/snippet/) && h3.navigateTo("/snippets");
         },
         selected: h3.state.collection === "snippets",
         icon: "file-code",
@@ -139,26 +149,28 @@ const render = (state) => {
   };
   const content = h3("div.content", [
     TabNav(tabnav),
-    h3("div.master-detail.d-flex", [
-      h3(
-        "div.master.item-list",
-        h3.state.items.map((item) => {
-          return Tile({ item });
-        })
-      ),
-      h3.state.item
-        ? h3("div.detail.px-4.flex-auto", [
-            h3("h2", h3.state.item.data.title),
-            h3("div.markdown", {
-              $html: marked(DOMPurify.sanitize(h3.state.item.data.text)),
-            }),
-          ])
-        : h3("div.detail.flex-auto", notSelected),
-    ]),
+    h3.state.items.length === 0
+      ? empty
+      : h3("div.master-detail.d-flex", [
+          h3(
+            "div.master.item-list",
+            h3.state.items.map((item) => {
+              return Tile({ item });
+            })
+          ),
+          h3.state.item
+            ? h3("div.detail.px-4.flex-auto", [
+                h3("h2", h3.state.item.data.title),
+                h3("div.markdown", {
+                  $html: marked(DOMPurify.sanitize(h3.state.item.data.text)),
+                }),
+              ])
+            : h3("div.detail.flex-auto", notSelected),
+        ]),
   ]);
   return Page({
     title,
-    content: h3.state.items.length === 0 ? empty : content,
+    content,
   });
 };
 
