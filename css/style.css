@@ -1,3 +1,11 @@
+html, body {
+  height: 100%;
+}
+
+.page {
+  height: 100%;
+}
+
 .octicon {
   display: inline-block;
   vertical-align: text-top;
@@ -125,7 +133,7 @@ button {
 
 .CodeMirror.form-control {
   width: 100%;
-  height: calc(100vh - 20px);
+  height: calc(100vh - 230px);
   font-size: 1em;
 }
 

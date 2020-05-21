@@ -12,7 +12,7 @@ const loadItems = async (collection) => {
   h3.dispatch("total/set", result.total);
 };
 
-const enter = async () => {
+const setup = async () => {
   const collection = h3.route.parts.collection || "notes";
   const selection = h3.route.parts.id || "";
   let item;
@@ -112,7 +112,7 @@ const Home = () => {
       },
     ],
   };
-  const content = h3("div.content", [
+  const content = h3("div.content.d-flex.flex-1.flex-column", [
     TabNav(tabnav),
     h3("p", [`Total ${h3.state.collection}: `, h3("strong", String(h3.state.total))]),
     MasterDetail({
@@ -127,6 +127,6 @@ const Home = () => {
   });
 };
 
-Home.enter = enter;
+Home.setup = setup;
 
 export default Home;

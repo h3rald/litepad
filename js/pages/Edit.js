@@ -12,15 +12,7 @@ const types = {
   notes: Note,
 };
 
-const init = () => ({
-  id: null,
-  collection: null,
-  collectionData: null,
-  data: null,
-  type: "note",
-});
-
-const enter = async (state) => {
+const setup = async (state) => {
   state.id = h3.route.parts.id || "";
   state.collection = h3.route.parts.collection;
   state.collectionData = h3.state.config.collections[state.collection];
@@ -31,6 +23,7 @@ const enter = async (state) => {
   }
   h3.dispatch("loading/clear");
 };
+
 const save = async (state) => {
   if (state.data.validate()) {
     const result = state.id
@@ -77,7 +70,6 @@ const Edit = (state) => {
   return Page({ content });
 };
 
-Edit.init = init;
-Edit.enter = enter;
+Edit.setup = setup;
 
 export default Edit;
