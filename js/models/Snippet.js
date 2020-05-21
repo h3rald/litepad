@@ -19,7 +19,7 @@ export default class Snippet extends Item {
       value: "javascript",
       onchange: (e) => {
         this.code.mode = e.currentTarget.value;
-        h3.redraw();
+        this.code.editor.setOption("mode", this.code.mode);
       },
       options: [
         {
@@ -28,7 +28,7 @@ export default class Snippet extends Item {
         },
         {
           label: "HTML",
-          value: "html",
+          value: "xml",
         },
         {
           label: "CSS",
@@ -40,12 +40,15 @@ export default class Snippet extends Item {
 
   set(snippet) {
     super.set(snippet);
+    this.language.value = snippet.data.language;
     this.code.value = snippet.data.code;
+    this.code.mode = snippet.data.language;
   }
 
   get() {
     return {
       ...super.get(),
+      language: this.language.value,
       code: this.code.value,
     };
   }

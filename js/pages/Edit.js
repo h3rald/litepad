@@ -66,8 +66,8 @@ const Edit = (state) => {
       ActionBar(actions),
       h3("div.d-flex.edit-form", [
         h3("div.flex-auto.flex-row", [
-            Field(state.data.language),
-            Field(state.data.title),
+          state.data.language && Field(state.data.language),
+          Field(state.data.title),
         ]),
       ]),
       state.data.text && Field(state.data.text),

@@ -6,6 +6,7 @@ const EditorOptions = {
   matchBrackets: true,
   foldGutter: true,
   inputStyle: "contenteditable",
+  theme: "github",
   //lint: true,
   gutters: [
     "CodeMirror-linenumbers",
@@ -22,6 +23,7 @@ export default (props) => {
     name,
     type,
     mode,
+    value,
     placeholder,
     options,
     editable,
@@ -93,6 +95,7 @@ export default (props) => {
           editor.on("change", (cm, change) => {
             oninput({ target: { value: cm.doc.getValue() } });
           });
+          props.editor = editor;
         },
       },
       props.value || ""
@@ -112,8 +115,8 @@ export default (props) => {
       "div.select",
       h3(
         "select.form-control",
-        { name, oninput },
-        options.map((o) => h3("option", { value: o.value }, o.label))
+        { name, oninput, value },
+        options.map((o) => h3("option", { value: o.value, selected: o.value === value }, o.label))
       )
     );
   controls.checkbox = () =>
