@@ -7,8 +7,9 @@ import TabNav from "../controls/TabNav.js";
 import MasterDetail from "../controls/MasterDetail.js";
 
 const loadItems = async (collection) => {
-  const items = (await getItems(collection, h3.state.query)).results;
-  h3.dispatch("items/set", items);
+  const result = (await getItems(collection, h3.state.query));
+  h3.dispatch("items/set", result.results);
+  h3.dispatch("total/set", result.total);
 };
 
 const enter = async () => {
@@ -113,6 +114,7 @@ const Home = () => {
   };
   const content = h3("div.content", [
     TabNav(tabnav),
+    h3("p", [`Total ${h3.state.collection}: `, h3("strong", String(h3.state.total))]),
     MasterDetail({
       items: h3.state.items,
       item: h3.state.item,
