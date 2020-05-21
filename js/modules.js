@@ -21,8 +21,13 @@ const items = () => {
     item: null,
     collection: null,
     selection: null,
+    total: 0,
     query: { select: "$.title as title", sort: "-modified" },
   }));
+  h3.on("total/set", (state, total) => ({
+    ...state,
+    total,
+  }))
   h3.on("collection/set", (state, collection) => ({
     ...state,
     collection,

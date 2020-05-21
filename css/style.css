@@ -93,7 +93,7 @@
 
 .Header {
   padding: 8px;
-  height: 50px;
+  height: 55px;
 }
 
 .search {
@@ -125,12 +125,12 @@ button {
 
 .CodeMirror.form-control {
   width: 100%;
-  height: calc(100vh - 220px);
+  height: calc(100vh - 20px);
   font-size: 1em;
 }
 
 .detail .CodeMirror.form-control {
-  height: calc(100vh - 230px);
+  height: calc(100vh - 280px);
   border: none;
   box-shadow: none;
 }
@@ -181,4 +181,8 @@ button {
 
 .edit-form {
   margin-top: -50px;
+}
+
+.flash {
+  margin-bottom: 20px;
 }
