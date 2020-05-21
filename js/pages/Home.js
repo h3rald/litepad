@@ -71,6 +71,19 @@ const Home = () => {
       label: "Delete",
       disabled: !h3.state.selection,
     },
+    {
+      onclick: () => {
+        const textArea = document.createElement("textarea");
+        textArea.value = h3.state.item.data.text || h3.state.item.data.code;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("Copy");
+        textArea.remove();
+      },
+      icon: "clippy",
+      label: "Copy",
+      disabled: !h3.state.selection,
+    },
   ];
   const tabnav = {
     title: "Main Navigation",
