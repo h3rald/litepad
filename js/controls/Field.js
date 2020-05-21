@@ -7,7 +7,6 @@ const EditorOptions = {
   foldGutter: true,
   inputStyle: "contenteditable",
   theme: "github",
-  //lint: true,
   gutters: [
     "CodeMirror-linenumbers",
     "CodeMirror-foldgutter",
@@ -15,6 +14,57 @@ const EditorOptions = {
   ],
   lineWrapping: true,
   lineNumbers: true,
+};
+
+const EditorShortcuts = {
+  "Ctrl-F": function (cm) {
+    CodeMirror.commands.find(cm);
+  },
+  "Alt-F": function (cm) {
+    CodeMirror.commands.findPersistent(cm);
+  },
+  "Alt-G": function (cm) {
+    CodeMirror.commands.jumpToLine(cm);
+  },
+  "Ctrl-G": function (cm) {
+    CodeMirror.commands.findNext(cm);
+  },
+  "Shift-Ctrl-G": function (cm) {
+    CodeMirror.commands.findPrev(cm);
+  },
+  "Shift-Ctrl-F": function (cm) {
+    CodeMirror.commands.replace(cm);
+  },
+  "Shift-Ctrl-R": function (cm) {
+    CodeMirror.commands.replaceAll(cm);
+  },
+  "Ctrl-Y": function (cm) {
+    CodeMirror.commands.foldAll(cm);
+  },
+  "Ctrl-I": function (cm) {
+    CodeMirror.commands.unfoldAll(cm);
+  },
+  "Shift-Alt-F": function (cm) {
+    var code;
+    if (cm.options.mode.name === "xml") {
+      code = html_beautify(cm.getValue(), {
+        indent_size: 2,
+        preserve_newlines: false,
+      });
+    } else if (cm.options.mode.name === "css") {
+      code = css_beautify(cm.getValue(), {
+        indent_size: 2,
+        preserve_newlines: false,
+      });
+    } else {
+      code = js_beautify(cm.getValue(), {
+        indent_size: 2,
+        preserve_newlines: false,
+        break_chained_methods: true,
+      });
+    }
+    cm.setValue(code);
+  },
 };
 
 export default (props) => {
@@ -78,7 +128,7 @@ export default (props) => {
       {
         placeholder,
         data: {
-          mode
+          mode,
         },
         $onrender: (element) => {
           const editor = CodeMirror.fromTextArea(element, {
@@ -90,6 +140,9 @@ export default (props) => {
           editor.display.wrapper.classList.add("form-control");
           if (props.editable !== false) {
             editor.display.wrapper.classList.add("editable");
+            editor.setOption("lint", { esversion: 6 });
+            editor.setOption("htmlMode", true);
+            editor.setOption("extraKeys", EditorShortcuts);
           }
           setTimeout(() => void editor.refresh(), 0);
           editor.on("change", (cm, change) => {
@@ -116,7 +169,9 @@ export default (props) => {
       h3(
         "select.form-control",
         { name, oninput, value },
-        options.map((o) => h3("option", { value: o.value, selected: o.value === value }, o.label))
+        options.map((o) =>
+          h3("option", { value: o.value, selected: o.value === value }, o.label)
+        )
       )
     );
   controls.checkbox = () =>

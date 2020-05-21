@@ -1,5 +1,12 @@
 import Item from "./Item.js";
 
+const modes = {
+  javascript: "text/javascript",
+  json: "application/json",
+  html: "text/html",
+  css: "text/css"
+}
+
 export default class Snippet extends Item {
   constructor() {
     super();
@@ -18,7 +25,7 @@ export default class Snippet extends Item {
       type: "dropdown",
       value: "javascript",
       onchange: (e) => {
-        this.code.mode = e.currentTarget.value;
+        this.code.mode = modes[e.currentTarget.value];
         this.code.editor.setOption("mode", this.code.mode);
       },
       options: [
@@ -27,8 +34,12 @@ export default class Snippet extends Item {
           value: "javascript",
         },
         {
+          label: "JSON",
+          value: "json",
+        },
+        {
           label: "HTML",
-          value: "xml",
+          value: "html",
         },
         {
           label: "CSS",
@@ -42,7 +53,7 @@ export default class Snippet extends Item {
     super.set(snippet);
     this.language.value = snippet.data.language;
     this.code.value = snippet.data.code;
-    this.code.mode = snippet.data.language;
+    this.code.mode = modes[snippet.data.language];
   }
 
   get() {
