@@ -23,15 +23,15 @@ export default ({ items, item, collection, add }) => {
   }
   return items.length === 0
     ? Empty({ collection: collection, add })
-    : h3("div.master-detail.d-flex", [
+    : h3("div.master-detail.d-flex.flex-1", [
         h3(
-          "div.master.item-list",
+          "div.master.item-list.d-flex.flex-column",
           items.map((item) => {
             return Tile({ item });
           })
         ),
         item
-          ? h3("div.detail.px-4.flex-auto", [
+          ? h3("div.detail.px-4.d.flex.flex-auto", [
               h3("h2", item.data.title),
               collection === "notes" &&
                 h3("div.markdown", {
