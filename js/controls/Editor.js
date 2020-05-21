@@ -1,3 +1,5 @@
+import h3 from "../h3.js";
+
 const EditorOptions = {
     tabSize: 2,
     autoCloseBrackets: true,
@@ -65,8 +67,8 @@ const EditorOptions = {
     },
   };
 
-export default (props) => {
-  const { editable, placeholder, mode, oninput } = props;
+export default (props, oninput) => {
+  const { editable, placeholder, mode } = props;
   return h3(
     `textarea.form-control`,
     {

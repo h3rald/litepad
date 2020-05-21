@@ -56,7 +56,7 @@ export default (props) => {
       },
       props.value || ""
     );
-  controls.editor = () => Editor({...props, oninput});
+  controls.editor = () => Editor(props, oninput);
   controls.radio = () =>
     h3(
       `div`,
