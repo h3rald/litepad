@@ -75,12 +75,16 @@ export default (props) => {
       `textarea.form-control`,
       {
         placeholder,
+        data: {
+          mode
+        },
         $onrender: (element) => {
           const editor = CodeMirror.fromTextArea(element, {
             ...EditorOptions,
             readOnly: props.editable === false,
             mode: mode,
           });
+          console.log(editor, editor.getMode());
           editor.display.wrapper.classList.add("form-control");
           if (props.editable !== false) {
             editor.display.wrapper.classList.add("editable");
