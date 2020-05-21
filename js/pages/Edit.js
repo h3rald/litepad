@@ -9,8 +9,8 @@ import Loading from "../controls/Loading.js";
 
 const types = {
   snippets: Snippet,
-  notes: Note
-}
+  notes: Note,
+};
 
 const init = () => ({
   id: null,
@@ -28,7 +28,7 @@ const enter = async (state) => {
   if (state.id) {
     const item = await getItem(state.collection, state.id);
     state.data.set(item);
-  } 
+  }
   h3.dispatch("loading/clear");
 };
 const save = async (state) => {
@@ -64,7 +64,12 @@ const Edit = (state) => {
   const content = h3("div.content", [
     h3("div", [
       ActionBar(actions),
-      h3("div.d-flex", [h3("div.flex-auto", Field(state.data.title))]),
+      h3("div.d-flex.edit-form", [
+        h3("div.flex-auto.flex-row", [
+            Field(state.data.language),
+            Field(state.data.title),
+        ]),
+      ]),
       state.data.text && Field(state.data.text),
       state.data.code && Field(state.data.code),
     ]),

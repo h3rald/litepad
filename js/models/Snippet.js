@@ -1,8 +1,7 @@
 import Item from "./Item.js";
 
 export default class Snippet extends Item {
-
-  constructor(){
+  constructor() {
     super();
     this.code = {
       label: "Code",
@@ -12,6 +11,30 @@ export default class Snippet extends Item {
       value: "",
       validation: (data) =>
         data.value.length > 0 ? null : "Code is required.",
+    };
+    this.language = {
+      label: "Language",
+      name: "language",
+      type: "dropdown",
+      value: "javascript",
+      onchange: (e) => {
+        this.code.mode = e.currentTarget.value;
+        h3.redraw();
+      },
+      options: [
+        {
+          label: "JavaScript",
+          value: "javascript",
+        },
+        {
+          label: "HTML",
+          value: "html",
+        },
+        {
+          label: "CSS",
+          value: "css",
+        },
+      ],
     };
   }
 
@@ -23,7 +46,7 @@ export default class Snippet extends Item {
   get() {
     return {
       ...super.get(),
-      code: this.code.value
-    }
+      code: this.code.value,
+    };
   }
 }

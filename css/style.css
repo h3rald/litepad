@@ -125,7 +125,7 @@ button {
 
 .CodeMirror.form-control {
   width: 100%;
-  height: calc(100vh - 280px);
+  height: calc(100vh - 220px);
   font-size: 1em;
 }
 
@@ -175,4 +175,8 @@ button {
 
 .tabnav {
   margin-top: 10px;
+}
+
+.edit-form {
+  margin-top: -50px;
 }
