@@ -131,6 +131,8 @@ button {
 
 .detail .CodeMirror.form-control {
   height: calc(100vh - 230px);
+  border: none;
+  box-shadow: none;
 }
 
 .CodeMirror-focused.editable {
