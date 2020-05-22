@@ -1,9 +1,6 @@
-html, body {
+html, body, .page {
   height: 100%;
-}
-
-.page {
-  height: 100%;
+  max-height: 100%;
 }
 
 .octicon {
@@ -101,7 +98,10 @@ html, body {
 
 .Header {
   padding: 8px;
-  height: 55px;
+}
+
+.Header-item {
+  height: 34px;
 }
 
 .search {
@@ -133,12 +133,10 @@ button {
 
 .CodeMirror.form-control {
   width: 100%;
-  height: calc(100vh - 230px);
   font-size: 1em;
 }
 
 .detail .CodeMirror.form-control {
-  height: calc(100vh - 280px);
   border: none;
   box-shadow: none;
 }
@@ -193,4 +191,12 @@ button {
 
 .flash {
   margin-bottom: 20px;
+}
+
+.top-info-bar {
+  margin-bottom: 10px;
+}
+
+.flex-1 {
+  flex: 1 1 1px !important; 
 }

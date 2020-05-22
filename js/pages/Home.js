@@ -114,7 +114,7 @@ const Home = () => {
   };
   const content = h3("div.content.d-flex.flex-1.flex-column", [
     TabNav(tabnav),
-    h3("p", [`Total ${h3.state.collection}: `, h3("strong", String(h3.state.total))]),
+    h3("div.top-info-bar", [`Total ${h3.state.collection}: `, h3("strong", String(h3.state.total))]),
     MasterDetail({
       items: h3.state.items,
       item: h3.state.item,

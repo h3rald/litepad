@@ -12,8 +12,8 @@ import Note from "../models/Item.js";
 
 const types = {
   snippets: Snippet,
-  notes: Note
-}
+  notes: Note,
+};
 
 export default ({ items, item, collection, add }) => {
   let data;
@@ -23,21 +23,26 @@ export default ({ items, item, collection, add }) => {
   }
   return items.length === 0
     ? Empty({ collection: collection, add })
-    : h3("div.master-detail.d-flex.flex-1", [
+    : h3("div.master-detail.d-flex.flex-row.flex-1", [
         h3(
-          "div.master.item-list.d-flex.flex-column",
-          items.map((item) => {
-            return Tile({ item });
-          })
+          "div.master.d-flex.flex-column",
+          h3(
+            "div.d-flex.flex-column.flex-1",
+            { style: "overflow: auto;" },
+            items.map((item) => {
+              return Tile({ item });
+            })
+          )
         ),
         item
-          ? h3("div.detail.px-4.d.flex.flex-auto", [
+          ? h3("div.detail.px-4.d-flex.flex-column.flex-1", [
               h3("h2", item.data.title),
               collection === "notes" &&
                 h3("div.markdown", {
                   $html: marked(DOMPurify.sanitize(item.data.text)),
                 }),
-              collection === "snippets" && Field({...data.code, editable: false})
+              collection === "snippets" &&
+                Field({ ...data.code, editable: false }),
             ])
           : h3("div.detail.flex-auto", UnSelected({ collection })),
       ]);
