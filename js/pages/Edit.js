@@ -54,18 +54,17 @@ const Edit = (state) => {
       label: "Cancel",
     },
   ];
-  const content = h3("div.content", [
-    h3("div", [
-      ActionBar(actions),
-      h3("div.d-flex.edit-form", [
-        h3("div.flex-auto.flex-row", [
-          state.data.language && Field(state.data.language),
-          Field(state.data.title),
-        ]),
+  const content = h3("div.content.d-flex.flex-column.flex-1", [
+    ActionBar(actions),
+    h3("div.d-flex.edit-form", [
+      h3("div.d-flex.flex-row", [
+        state.data.language &&
+          h3("div", { style: "width: 150px; margin-right: 15px;" }, Field(state.data.language)),
+        Field(state.data.title),
       ]),
-      state.data.text && Field(state.data.text),
-      state.data.code && Field(state.data.code),
     ]),
+    state.data.text && Field(state.data.text),
+    state.data.code && Field(state.data.code),
   ]);
   return Page({ content });
 };
