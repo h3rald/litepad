@@ -15,9 +15,15 @@ export default (props) => {
   const id = item.id.replace(`${h3.state.collection}/`, "");
   return h3(
     `div.tile.d-flex.flex-row${h3.state.selection === id ? ".selected" : ""}`,
-    { data: { id }, onclick: (e) => select(e.currentTarget.dataset.id) },
+    {
+      data: { id },
+      onclick: (e) => select(e.currentTarget.dataset.id),
+    },
     [
-      h3("div.tile-icon.d-flex.flex-column.flex-items-center.flex-justify-center.p-2", octicon(icon, {height: 32})),
+      h3(
+        "div.tile-icon.d-flex.flex-column.flex-items-center.flex-justify-center.p-2",
+        octicon(icon, { height: 32 })
+      ),
       h3("div.tile-body", [
         h3("p.tile-title", item.data.title),
         h3("div.tile-data", {

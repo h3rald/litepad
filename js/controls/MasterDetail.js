@@ -15,7 +15,7 @@ const types = {
   notes: Note,
 };
 
-export default ({ items, item, collection, add }) => {
+export default ({ items, item, collection, add, state }) => {
   let data;
   if (item) {
     data = new types[collection]();
@@ -28,6 +28,14 @@ export default ({ items, item, collection, add }) => {
           "div.master.d-flex.flex-column",
           h3(
             "div.d-flex.flex-column.flex-1.scrollable-area",
+            {
+              onscroll: (e) => {
+                h3.dispatch("masterScroll/set", e.currentTarget.scrollTop);
+              },
+              $onrender: (node) => {
+                node.scrollTo(0, h3.state.masterScroll);
+              },
+            },
             items.map((item) => {
               return Tile({ item });
             })
