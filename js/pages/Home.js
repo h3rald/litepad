@@ -129,16 +129,19 @@ const Home = () => {
     h3(
       "div.top-info-bar.d-flex.flex-row.flex-justify-between.flex-items-center",
       [
-        h3("div", [
-          h3("span", `Total ${h3.state.collection}: `),
-          h3("strong", String(h3.state.total)),
+        h3("div.d-flex.flex-row.flex-items-center", [
+          h3("div.total.d-flex.flex-row.flex-items-center", [
+            h3("span", { $html: `Total ${h3.state.collection}:&nbsp;` }),
+            h3("strong", String(h3.state.total)),
+          ]),
           h3.state.query.search &&
-            h3("span", [
-              h3("span", { $html: " &middot; Searching for: " }),
+            h3("div-search.d-flex.flex-row.flex-items-center", [
+              h3("span", { $html: "&nbsp;&middot;&nbsp;Searching for:&nbsp;" }),
               h3("strong", h3.state.query.search),
               h3(
                 "button.btn.btn-invisible",
                 {
+                  style: "margin-bottom: -1px;",
                   onclick: () => h3.navigateTo(h3.route.path, { reload: true }),
                 },
                 [octicon("x"), "Clear"]
