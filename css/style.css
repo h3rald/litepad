@@ -17,6 +17,10 @@ body,
   cursor: pointer;
 }
 
+.tile:first-child {
+  border: none;
+}
+
 .tile-icon {
   color: #bbbbbb;
 }
@@ -59,6 +63,11 @@ body,
 
 .master {
   width: 350px;
+}
+
+.master .scrollable-area {
+  padding-left: 1px;
+  border: 1px solid #ccc;
 }
 
 /* Loading */
@@ -194,6 +203,12 @@ button {
 
 .tabnav {
   margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.paginate-container {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .edit-form {
@@ -202,10 +217,6 @@ button {
 
 .flash {
   margin-bottom: 20px;
-}
-
-.top-info-bar {
-  margin-bottom: 10px;
 }
 
 .flex-1 {

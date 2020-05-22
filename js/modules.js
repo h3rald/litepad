@@ -4,7 +4,7 @@ import Config from "./models/Config.js";
 const debug = () => {
   if (window.location.search.match(/debug/)) {
     window.h3 = h3;
-    h3.on("$log", (state, data) => console.log(data));
+    h3.on("$log", (state, data) => console.log(data, state));
   }
 };
 
@@ -22,12 +22,18 @@ const items = () => {
     collection: null,
     selection: null,
     total: 0,
-    query: { select: "$.title as title", sort: "-modified" },
+    page: 1,
+    query: {
+      select: "$.title as title",
+      sort: "-modified",
+      limit: 10,
+      offset: 0,
+    },
   }));
   h3.on("total/set", (state, total) => ({
     ...state,
     total,
-  }))
+  }));
   h3.on("collection/set", (state, collection) => ({
     ...state,
     collection,
@@ -40,9 +46,13 @@ const items = () => {
     ...state,
     item,
   }));
+  h3.on("page/set", (state, page) => {
+    const offset = (page - 1) * state.query.limit;
+    return { ...state, page, query: { ...state.query, offset } };
+  });
   h3.on("selection/set", (state, selection) => ({ ...state, selection }));
   h3.on("selection/clear", (state) => ({ ...state, selection: null }));
-  h3.on("$navigation", (state, route) => {
+  /*h3.on("$navigation", (state, route) => {
     return ["/:collection/:id", "/:collection"].includes(route.def)
       ? { ...state }
       : {
@@ -52,7 +62,7 @@ const items = () => {
           collection: "notes",
           selection: null,
         };
-  });
+  });*/
 };
 
 const flags = () => {

@@ -5,6 +5,7 @@ import { getIcon, getObject } from "../services/utils.js";
 import ActionBar from "../controls/ActionBar.js";
 import TabNav from "../controls/TabNav.js";
 import MasterDetail from "../controls/MasterDetail.js";
+import Paginator from "../controls/Paginator.js";
 
 const loadItems = async (collection) => {
   const result = await getItems(collection, h3.state.query);
@@ -13,11 +14,12 @@ const loadItems = async (collection) => {
 };
 
 const setup = async (state) => {
-  state.masterScroll = state.masterScroll || 0;
   const collection = h3.route.parts.collection || "notes";
   const selection = h3.route.parts.id || "";
   let item;
-  if (h3.state.collection !== collection || h3.state.items.length === 0) {
+  const oldPage = h3.state.page;
+  h3.dispatch("page/set", parseInt(h3.route.parts.page || 1));
+  if (h3.state.collection !== collection || h3.state.page !== oldPage) {
     await loadItems(collection);
     h3.dispatch("collection/set", collection);
   }
@@ -29,13 +31,8 @@ const setup = async (state) => {
   h3.dispatch("loading/clear");
 };
 
-const teardown = () => {
-  const masterScroll = document.querySelector(".master").scrollTop;
-  console.log(masterScroll); 
-  return { masterScroll };
-};
-
 const Home = () => {
+  const page = parseInt(h3.route.parts.page || 1);
   const add = () => h3.navigateTo(`/${h3.state.collection}/add`);
   const cancelAction = () => h3.dispatch("alert/clear") || h3.redraw();
   const deleteAction = async () => {
@@ -119,15 +116,18 @@ const Home = () => {
       },
     ],
   };
-  const content = h3("div.content.d-flex.flex-1.flex-column", {
-    /*$onrender: () => {
-      document.querySelector(".master").scrollTo(0, state.masterScroll);
-    }*/
-  }, [
+  const content = h3("div.content.d-flex.flex-1.flex-column", [
     TabNav(tabnav),
-    h3("div.top-info-bar", [
-      `Total ${h3.state.collection}: `,
-      h3("strong", String(h3.state.total)),
+    h3("div.top-info-bar.d-flex.flex-row.flex-justify-between.flex-items-center", [
+      h3("div", [
+        `Total ${h3.state.collection}: `,
+        h3("strong", String(h3.state.total)),
+      ]),
+      Paginator({
+        current: page,
+        total: Math.ceil(h3.state.total / h3.state.query.limit),
+        callback: (n) => h3.navigateTo(`/${h3.state.collection}/${n}`),
+      }),
     ]),
     MasterDetail({
       items: h3.state.items,
@@ -142,6 +142,5 @@ const Home = () => {
 };
 
 Home.setup = setup;
-Home.teardown = teardown;
 
 export default Home;

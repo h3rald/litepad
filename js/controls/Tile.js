@@ -9,7 +9,7 @@ export default (props) => {
   const date = new Date(item.updated || item.created);
   const select = (id) => {
     h3.navigateTo(
-      `/${h3.state.collection}/${h3.state.selection === id ? "" : id}`
+      `/${h3.state.collection}/${h3.state.page}/${h3.state.selection === id ? "" : id}`
     );
   };
   const id = item.id.replace(`${h3.state.collection}/`, "");
