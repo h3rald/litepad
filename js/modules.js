@@ -28,10 +28,6 @@ const items = () => {
     ...state,
     total,
   }))
-  h3.on("masterScroll/set", (state, masterScroll) => ({
-    ...state,
-    masterScroll,
-  }));
   h3.on("collection/set", (state, collection) => ({
     ...state,
     collection,
