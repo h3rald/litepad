@@ -37,11 +37,9 @@ export default ({ items, item, collection, add }) => {
             {
               data: { collection },
               onscroll: (e) => {
-                console.log(e.currentTarget.scrollTop);
                 state.current.scrollTop = e.currentTarget.scrollTop;
               },
               $onrender: (node) => {
-                console.log(state);
                 node.scrollTo(0, state.current.scrollTop);
               },
             },
