@@ -6,6 +6,7 @@ import ActionBar from "../controls/ActionBar.js";
 import TabNav from "../controls/TabNav.js";
 import MasterDetail from "../controls/MasterDetail.js";
 import Paginator from "../controls/Paginator.js";
+import octicon from "../services/octicon.js";
 
 const loadItems = async (collection) => {
   const result = await getItems(collection, h3.state.query);
@@ -18,8 +19,14 @@ const setup = async (state) => {
   const selection = h3.route.parts.id || "";
   let item;
   const oldPage = h3.state.page;
+  h3.dispatch("search/set", h3.route.params.q);
   h3.dispatch("page/set", parseInt(h3.route.parts.page || 1));
-  if (h3.state.collection !== collection || h3.state.page !== oldPage || h3.route.params.reload) {
+  if (
+    h3.state.collection !== collection ||
+    h3.state.page !== oldPage ||
+    h3.route.params.reload ||
+    h3.route.params.q
+  ) {
     await loadItems(collection);
     h3.dispatch("collection/set", collection);
   }
@@ -119,17 +126,34 @@ const Home = () => {
   const totalPages = Math.ceil(h3.state.total / h3.state.query.limit);
   const content = h3("div.content.d-flex.flex-1.flex-column", [
     TabNav(tabnav),
-    h3("div.top-info-bar.d-flex.flex-row.flex-justify-between.flex-items-center", [
-      h3("div", [
-        `Total ${h3.state.collection}: `,
-        h3("strong", String(h3.state.total)),
-      ]),
-      totalPages > 1 && Paginator({
-        current: page,
-        total: totalPages,
-        callback: (n) => h3.navigateTo(`/${h3.state.collection}/${n}`),
-      }),
-    ]),
+    h3(
+      "div.top-info-bar.d-flex.flex-row.flex-justify-between.flex-items-center",
+      [
+        h3("div", [
+          h3("span", `Total ${h3.state.collection}: `),
+          h3("strong", String(h3.state.total)),
+          h3.state.query.search &&
+            h3("span", [
+              h3("span", { $html: " &middot; Searching for: " }),
+              h3("strong", h3.state.query.search),
+              h3(
+                "button.btn.btn-invisible",
+                {
+                  onclick: () => h3.navigateTo(h3.route.path, { reload: true }),
+                },
+                [octicon("x"), "Clear"]
+              ),
+            ]),
+        ]),
+
+        totalPages > 1 &&
+          Paginator({
+            current: page,
+            total: totalPages,
+            callback: (n) => h3.navigateTo(`/${h3.state.collection}/${n}`),
+          }),
+      ]
+    ),
     MasterDetail({
       items: h3.state.items,
       item: h3.state.item,

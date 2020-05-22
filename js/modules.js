@@ -46,23 +46,16 @@ const items = () => {
     ...state,
     item,
   }));
+  h3.on("search/set", (state, search) => ({
+    ...state,
+    query: { ...state.query, search },
+  }));
   h3.on("page/set", (state, page) => {
     const offset = (page - 1) * state.query.limit;
     return { ...state, page, query: { ...state.query, offset } };
   });
   h3.on("selection/set", (state, selection) => ({ ...state, selection }));
   h3.on("selection/clear", (state) => ({ ...state, selection: null }));
-  /*h3.on("$navigation", (state, route) => {
-    return ["/:collection/:id", "/:collection"].includes(route.def)
-      ? { ...state }
-      : {
-          items: [],
-          item: null,
-          query: state.query,
-          collection: "notes",
-          selection: null,
-        };
-  });*/
 };
 
 const flags = () => {
