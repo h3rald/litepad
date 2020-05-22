@@ -82,7 +82,6 @@ export default (props, oninput) => {
           readOnly: editable === false,
           mode,
         });
-        console.log(editor, editor.getMode());
         editor.display.wrapper.classList.add("form-control", "d-flex", "flex-column", "flex-1");
         if (props.editable !== false) {
           editor.display.wrapper.classList.add("editable");

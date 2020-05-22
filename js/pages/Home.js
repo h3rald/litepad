@@ -7,12 +7,13 @@ import TabNav from "../controls/TabNav.js";
 import MasterDetail from "../controls/MasterDetail.js";
 
 const loadItems = async (collection) => {
-  const result = (await getItems(collection, h3.state.query));
+  const result = await getItems(collection, h3.state.query);
   h3.dispatch("items/set", result.results);
   h3.dispatch("total/set", result.total);
 };
 
-const setup = async () => {
+const setup = async (state) => {
+  state.masterScroll = state.masterScroll || 0;
   const collection = h3.route.parts.collection || "notes";
   const selection = h3.route.parts.id || "";
   let item;
@@ -26,6 +27,12 @@ const setup = async () => {
   h3.dispatch("item/set", item);
   h3.dispatch("selection/set", selection);
   h3.dispatch("loading/clear");
+};
+
+const teardown = () => {
+  const masterScroll = document.querySelector(".master").scrollTop;
+  console.log(masterScroll); 
+  return { masterScroll };
 };
 
 const Home = () => {
@@ -112,9 +119,16 @@ const Home = () => {
       },
     ],
   };
-  const content = h3("div.content.d-flex.flex-1.flex-column", [
+  const content = h3("div.content.d-flex.flex-1.flex-column", {
+    /*$onrender: () => {
+      document.querySelector(".master").scrollTo(0, state.masterScroll);
+    }*/
+  }, [
     TabNav(tabnav),
-    h3("div.top-info-bar", [`Total ${h3.state.collection}: `, h3("strong", String(h3.state.total))]),
+    h3("div.top-info-bar", [
+      `Total ${h3.state.collection}: `,
+      h3("strong", String(h3.state.total)),
+    ]),
     MasterDetail({
       items: h3.state.items,
       item: h3.state.item,
@@ -128,5 +142,6 @@ const Home = () => {
 };
 
 Home.setup = setup;
+Home.teardown = teardown;
 
 export default Home;
