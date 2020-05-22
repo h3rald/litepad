@@ -1,4 +1,6 @@
-html, body, .page {
+html,
+body,
+.page {
   height: 100%;
   max-height: 100%;
 }
@@ -33,7 +35,8 @@ html, body, .page {
 .btn .icon,
 .tile-title .icon,
 .tabnav-tab .icon,
-.Header, .icon {
+.Header,
+.icon {
   vertical-align: middle;
   padding-right: 4px;
 }
@@ -198,5 +201,25 @@ button {
 }
 
 .flex-1 {
-  flex: 1 1 1px !important; 
+  flex: 1 1 1px !important;
+}
+
+.scrollable-area {
+  overflow-y: hidden;
+}
+
+.scrollable-area:hover {
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  opacity: 0.2;
+  border-radius: 4px;
+  background: #cccccc;
+  border: 0px solid #cccccc;
 }

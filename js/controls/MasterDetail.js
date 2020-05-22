@@ -27,8 +27,7 @@ export default ({ items, item, collection, add }) => {
         h3(
           "div.master.d-flex.flex-column",
           h3(
-            "div.d-flex.flex-column.flex-1",
-            { style: "overflow: auto;" },
+            "div.d-flex.flex-column.flex-1.scrollable-area",
             items.map((item) => {
               return Tile({ item });
             })

@@ -83,7 +83,7 @@ export default (props, oninput) => {
           mode,
         });
         console.log(editor, editor.getMode());
-        editor.display.wrapper.classList.add("form-control");
+        editor.display.wrapper.classList.add("form-control", "d-flex", "flex-column", "flex-1");
         if (props.editable !== false) {
           editor.display.wrapper.classList.add("editable");
           editor.setOption("lint", { esversion: 6 });
