@@ -15,11 +15,17 @@ const types = {
   notes: Note,
 };
 
-export default ({ items, item, collection, add, state }) => {
+const state = {};
+
+export default ({ items, item, collection, add }) => {
   let data;
   if (item) {
     data = new types[collection]();
     data.set(item);
+  }
+  state.current = state.current || {};
+  if (state.current.collection !== collection) {
+    state.current = { collection };
   }
   return items.length === 0
     ? Empty({ collection: collection, add })
@@ -29,11 +35,14 @@ export default ({ items, item, collection, add, state }) => {
           h3(
             "div.d-flex.flex-column.flex-1.scrollable-area",
             {
+              data: { collection },
               onscroll: (e) => {
-                h3.dispatch("masterScroll/set", e.currentTarget.scrollTop);
+                console.log(e.currentTarget.scrollTop);
+                state.current.scrollTop = e.currentTarget.scrollTop;
               },
               $onrender: (node) => {
-                node.scrollTo(0, h3.state.masterScroll);
+                console.log(state);
+                node.scrollTo(0, state.current.scrollTop);
               },
             },
             items.map((item) => {
