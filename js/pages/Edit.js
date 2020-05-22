@@ -29,13 +29,19 @@ const save = async (state) => {
     const result = state.id
       ? await saveItem(state.collection, state.id, state.data.get())
       : await addItem(state.collection, state.data.get());
-    h3.navigateTo(`/${result.id}`);
+    h3.navigateTo(
+      `/${state.collection}/${state.id ? h3.state.page : 1}/${result.id.replace(
+        `${state.collection}/`,
+        ""
+      )}`,
+      { reload: true }
+    );
   }
   h3.redraw();
 };
 
 const cancel = (state) => {
-  h3.navigateTo(`/${state.collection}/${state.id}`);
+  h3.navigateTo(`/${state.collection}/${h3.state.page}/${state.id}`);
 };
 
 const Edit = (state) => {
@@ -59,7 +65,11 @@ const Edit = (state) => {
     h3("div.d-flex.edit-form", [
       h3("div.d-flex.flex-row", [
         state.data.language &&
-          h3("div", { style: "width: 150px; margin-right: 15px;" }, Field(state.data.language)),
+          h3(
+            "div",
+            { style: "width: 150px; margin-right: 15px;" },
+            Field(state.data.language)
+          ),
         Field(state.data.title),
       ]),
     ]),

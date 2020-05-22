@@ -19,7 +19,7 @@ const setup = async (state) => {
   let item;
   const oldPage = h3.state.page;
   h3.dispatch("page/set", parseInt(h3.route.parts.page || 1));
-  if (h3.state.collection !== collection || h3.state.page !== oldPage) {
+  if (h3.state.collection !== collection || h3.state.page !== oldPage || h3.route.params.reload) {
     await loadItems(collection);
     h3.dispatch("collection/set", collection);
   }
@@ -32,7 +32,6 @@ const setup = async (state) => {
 };
 
 const Home = () => {
-  const page = parseInt(h3.route.parts.page || 1);
   const add = () => h3.navigateTo(`/${h3.state.collection}/add`);
   const cancelAction = () => h3.dispatch("alert/clear") || h3.redraw();
   const deleteAction = async () => {
@@ -116,6 +115,8 @@ const Home = () => {
       },
     ],
   };
+  const page = parseInt(h3.route.parts.page || 1);
+  const totalPages = Math.ceil(h3.state.total / h3.state.query.limit);
   const content = h3("div.content.d-flex.flex-1.flex-column", [
     TabNav(tabnav),
     h3("div.top-info-bar.d-flex.flex-row.flex-justify-between.flex-items-center", [
@@ -123,9 +124,9 @@ const Home = () => {
         `Total ${h3.state.collection}: `,
         h3("strong", String(h3.state.total)),
       ]),
-      Paginator({
+      totalPages > 1 && Paginator({
         current: page,
-        total: Math.ceil(h3.state.total / h3.state.query.limit),
+        total: totalPages,
         callback: (n) => h3.navigateTo(`/${h3.state.collection}/${n}`),
       }),
     ]),

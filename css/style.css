@@ -39,7 +39,7 @@ body,
   white-space: nowrap;
   overflow: hidden;
   width: 280px;
-  display:block;
+  display: block;
   font-weight: bold;
   font-size: 120%;
 }
@@ -206,6 +206,10 @@ button {
   margin-bottom: 5px;
 }
 
+.top-info-bar {
+  height: 40px;
+}
+
 .paginate-container {
   margin-top: 0;
   margin-bottom: 0;
@@ -216,7 +220,14 @@ button {
 }
 
 .flash {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
+  padding: 8px;
+}
+
+.flash-action {
+  float: none;
+  margin-top: 0;
+  margin-left: 0;
 }
 
 .flex-1 {
