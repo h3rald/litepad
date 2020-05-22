@@ -66,7 +66,7 @@ const saveItem = async (collection, id, data) => {
 const getItems = async (collection, data) => {
   const { filter, sort, select, limit, offset } = data;
   const options = Object.entries(data)
-    .map(([key, value]) => `${key}=${value}`)
+    .map(([key, value]) => (value ? `${key}=${value}` : ""))
     .join("&");
   const url = `${h3.state.config.api}/${collection || "notes"}/${
     options ? "?" + options : ""

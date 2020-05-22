@@ -5,7 +5,7 @@ import octicon from "../services/octicon.js";
 export default ({ collection, add }) => {
   const icon = getIcon(collection);
   const object = getObject(collection);
-  h3("div.blankslate", [
+  return h3("div.blankslate", [
     h3("div.icons", [
       octicon(icon, {
         class: "blankslate-icon",
@@ -13,8 +13,8 @@ export default ({ collection, add }) => {
       }),
     ]),
     h3("h3", "No data"),
-    h3("p", `There are no ${collection}.`),
-    h3(
+    h3("p", `There are no ${collection}${h3.route.params.q ? " matching the specified criteria" : ""}.`),
+    !h3.route.params.q && h3(
       "button.btn.btn-primary",
       { type: "button", onclick: add },
       `Add a ${object}`
