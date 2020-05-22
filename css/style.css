@@ -12,10 +12,13 @@ body,
 }
 
 .tile {
-  margin: 1px;
   padding: 8px;
   border-top: 1px solid #e1e4e8;
   cursor: pointer;
+}
+
+.tile-icon {
+  color: #bbbbbb;
 }
 
 .tile.selected,
@@ -27,7 +30,12 @@ body,
   background-color: #f1f8ff;
 }
 
-.tile-title span {
+.tile-title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 280px;
+  display:block;
   font-weight: bold;
   font-size: 120%;
 }
@@ -50,7 +58,7 @@ body,
 }
 
 .master {
-  width: 300px;
+  width: 350px;
 }
 
 /* Loading */
@@ -205,11 +213,7 @@ button {
 }
 
 .scrollable-area {
-  overflow-y: hidden;
-}
-
-.scrollable-area:hover {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 ::-webkit-scrollbar {

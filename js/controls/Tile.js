@@ -14,13 +14,16 @@ export default (props) => {
   };
   const id = item.id.replace(`${h3.state.collection}/`, "");
   return h3(
-    `div.tile${h3.state.selection === id ? ".selected" : ""}`,
+    `div.tile.d-flex.flex-row${h3.state.selection === id ? ".selected" : ""}`,
     { data: { id }, onclick: (e) => select(e.currentTarget.dataset.id) },
     [
-      h3("p.tile-title", [octicon(icon), h3("span", item.data.title)]),
-      h3("div.tile-data", {
-        $html: `${type} &middot; ${date.toDateString()} @ ${date.toLocaleTimeString()}`,
-      }),
+      h3("div.tile-icon.d-flex.flex-column.flex-items-center.flex-justify-center.p-2", octicon(icon, {height: 32})),
+      h3("div.tile-body", [
+        h3("p.tile-title", item.data.title),
+        h3("div.tile-data", {
+          $html: `${type} &middot; ${date.toDateString()} @ ${date.toLocaleTimeString()}`,
+        }),
+      ]),
     ]
   );
 };
