@@ -7,6 +7,7 @@ import TabNav from "../controls/TabNav.js";
 import MasterDetail from "../controls/MasterDetail.js";
 import Paginator from "../controls/Paginator.js";
 import octicon from "../services/octicon.js";
+import { shortcutsFor } from "../services/shortcuts.js";
 
 const loadItems = async (collection) => {
   const result = await getItems(collection, h3.state.query);
@@ -15,6 +16,7 @@ const loadItems = async (collection) => {
 };
 
 const setup = async (state) => {
+  shortcutsFor("main");
   const collection = h3.route.parts.collection || "notes";
   const selection = h3.route.parts.id || "";
   let item;

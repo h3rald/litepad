@@ -14,7 +14,7 @@ export default ({ content }) => {
       ]),
       !h3.route.def.match(/(add|edit)$/) &&
         h3("div.Header-item", [
-          h3("input.form-control.input-dark.search", {
+          h3("input#search.form-control.input-dark.search", {
             type: "text",
             placeholder: `Search ${h3.state.collection}...`,
             onkeypress: (e) => {
