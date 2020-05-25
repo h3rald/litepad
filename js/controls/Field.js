@@ -41,7 +41,7 @@ export default (props) => {
   }
   const controls = {};
   controls.textbox = () =>
-    h3(`input.form-control`, {
+    h3(`input.form-control.focusable-input`, {
       type: "text",
       placeholder,
       value: props.value,
@@ -71,7 +71,7 @@ export default (props) => {
     h3(
       "div.select",
       h3(
-        "select.form-control",
+        "select.form-control.focusable-input",
         { name, oninput, value },
         options.map((o) =>
           h3("option", { value: o.value, selected: o.value === value }, o.label)
@@ -95,17 +95,15 @@ export default (props) => {
   let groupClassList = [];
   let groupBodyClassList = [];
   if (type === "editor") {
-    groupClassList = ["d-flex", "flex-column", "flex-1"];
-    groupBodyClassList = ["d-flex", "flex-column", "flex-1"];
+    groupClassList = ".d-flex.flex-column.flex-1";
+    groupBodyClassList = ".d-flex.flex-column.flex-1";
   }
   return h3(
-    `div.form-group${props.invalid ? ".errored" : ""}`,
-    { classList: groupClassList },
+    `div.form-group${props.invalid ? ".errored" : ""}${groupClassList}`,
     [
       editable !== false &&
-        type !== "editor" &&
         h3("div.form-group-header", [h3("label", { for: name }, `${label}:`)]),
-      h3("div.form-group-body", { classList: groupBodyClassList }, [
+      h3(`div.form-group-body${groupBodyClassList}`, [
         control,
         props.invalid && h3("p.note.error", props.invalid),
       ]),

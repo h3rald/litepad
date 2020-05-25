@@ -8,6 +8,7 @@ export default (actions) => {
       h3(
         `button.btn.btn-${index === 0 ? "primary" : "invisible"}`,
         {
+          id: a.id,
           onclick: a.onclick,
           disabled: a.disabled,
         },

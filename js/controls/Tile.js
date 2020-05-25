@@ -17,6 +17,7 @@ export default (props) => {
     `div.tile.d-flex.flex-row${h3.state.selection === id ? ".selected" : ""}`,
     {
       data: { id },
+      $onrender: (node) => h3.state.selection === node.dataset.id && setTimeout(() => node.scrollIntoViewIfNeeded(), 0),
       onclick: (e) => select(e.currentTarget.dataset.id),
     },
     [

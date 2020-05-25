@@ -35,7 +35,7 @@ export default ({
           action &&
           h3(
             `button.btn.btn-${buttonType || "info"}.flash-action`,
-            { onclick: action },
+            { onclick: action, id: "alert-confirm" },
             label
           ),
       ]),
