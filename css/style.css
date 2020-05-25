@@ -249,3 +249,7 @@ button {
   background: #cccccc;
   border: 0px solid #cccccc;
 }
+
+.cm-fat-cursor .CodeMirror-cursor {
+  background: #999;
+}
