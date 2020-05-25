@@ -56,6 +56,7 @@ const Home = () => {
     {
       onclick: () => h3.navigateTo(`/${h3.state.collection}/add`),
       icon: "plus",
+      id: "add",
       label: "Add",
     },
     {
@@ -63,6 +64,7 @@ const Home = () => {
         h3.navigateTo(`/${h3.state.collection}/${h3.state.selection}/edit`),
       icon: "pencil",
       label: "Edit",
+      id: "edit",
       disabled: !h3.state.selection,
     },
     {
@@ -75,11 +77,12 @@ const Home = () => {
           cancelAction,
           message: `Do you really want to delete ${getObject(
             h3.state.item.id
-          )} '${h3.state.item.data.title}'?!`,
+          )} '${h3.state.item.data.title}'?`,
         };
         h3.dispatch("alert/set", confirm);
         h3.redraw();
       },
+      id: "delete",
       icon: "trashcan",
       label: "Delete",
       disabled: !h3.state.selection,
@@ -95,6 +98,7 @@ const Home = () => {
       },
       icon: "clippy",
       label: "Copy",
+      id: "copy",
       disabled: !h3.state.selection,
     },
   ];
