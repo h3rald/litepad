@@ -89,6 +89,12 @@ export default (props, oninput) => {
           "flex-1"
         );
         if (props.editable !== false) {
+          editor.constructor.Vim.defineEx("wq", null, (cm) => {
+            document.getElementById("save").click();
+          });
+          editor.constructor.Vim.defineEx("q", null, (cm) => {
+            document.getElementById("back").click();
+          });
           editor.on("focus", () => editor.setOption("keyMap", "vim"));
           editor.on("blur", () => editor.setOption("keyMap", {}));
           editor.display.wrapper.classList.add("editable");
