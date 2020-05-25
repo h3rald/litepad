@@ -162,11 +162,7 @@ editShortcut("tab", () => {
   controls[index].focus();
 });
 
-editShortcut("s", () => {
-  document.getElementById("save").click();
-});
-
-editShortcut("ctrl+s", () => {
+editShortcut("s,ctrl+s", () => {
   document.getElementById("save").click();
 });
 
@@ -176,10 +172,6 @@ editShortcut("b", () => {
 
 editShortcut("ctrl+b", () => {
   document.getElementById("back").click();
-});
-
-editShortcut("esc", () => {
-  document.activeElement.blur();
 });
 
 const shortcutsFor = (scope) => {

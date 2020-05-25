@@ -5,7 +5,6 @@ const EditorOptions = {
   autoCloseBrackets: true,
   matchBrackets: true,
   foldGutter: true,
-  inputStyle: "contenteditable",
   theme: "github",
   gutters: [
     "CodeMirror-linenumbers",
@@ -90,6 +89,8 @@ export default (props, oninput) => {
           "flex-1"
         );
         if (props.editable !== false) {
+          editor.on("focus", () => editor.setOption("keyMap", "vim"));
+          editor.on("blur", () => editor.setOption("keyMap", {}));
           editor.display.wrapper.classList.add("editable");
           editor.setOption("lint", { esversion: 6 });
           editor.setOption("htmlMode", true);
