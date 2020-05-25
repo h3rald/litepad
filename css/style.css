@@ -253,3 +253,8 @@ button {
 .cm-fat-cursor .CodeMirror-cursor {
   background: #999;
 }
+
+.note.error.editor {
+  position: absolute;
+  bottom: 1px;
+}

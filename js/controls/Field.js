@@ -105,7 +105,7 @@ export default (props) => {
         h3("div.form-group-header", [h3("label", { for: name }, `${label}:`)]),
       h3(`div.form-group-body${groupBodyClassList}`, [
         control,
-        props.invalid && h3("p.note.error", props.invalid),
+        props.invalid && h3(`p.note.error.${type}`, props.invalid),
       ]),
     ]
   );
