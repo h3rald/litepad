@@ -65,6 +65,7 @@ export default (props, oninput) => {
             }
             cm.setValue(code);
           });
+          editor.constructor.Vim.map(",,", "`", "insert");
           editor.on("focus", () => editor.setOption("keyMap", "vim"));
           editor.on("blur", () => editor.setOption("keyMap", {}));
           editor.display.wrapper.classList.add("editable");
