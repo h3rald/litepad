@@ -1655,7 +1655,8 @@
           }
           if (match.type == "none") {
             clearInputState(cm);
-            return false;
+            cm.replaceSelection(keys); // ADDED BY FC
+            return true; // was: return false
           } else if (match.type == "partial") {
             if (lastInsertModeKeyTimer) {
               window.clearTimeout(lastInsertModeKeyTimer);
