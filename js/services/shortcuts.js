@@ -134,7 +134,7 @@ mainShortcut("a", () => {
   document.getElementById("add").click();
 });
 
-mainShortcut("esc", (e) => {
+globalShortcut("esc", (e) => {
   if (h3.state.flags.alert && h3.state.flags.alert.cancelAction) {
     h3.state.flags.alert.cancelAction();
   }
@@ -166,12 +166,8 @@ editShortcut("s,ctrl+s", () => {
   document.getElementById("save").click();
 });
 
-editShortcut("esc,b,ctrl+b", () => {
-  if (h3.state.flags.alert && h3.state.flags.alert.cancelAction) {
-    h3.state.flags.alert.cancelAction();
-  } else {
-    document.getElementById("back").click();
-  }
+editShortcut("b,ctrl+b", () => {
+  document.getElementById("back").click();
 });
 
 const shortcutsFor = (scope) => {
