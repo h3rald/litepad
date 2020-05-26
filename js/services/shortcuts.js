@@ -128,18 +128,15 @@ mainShortcut("c", () => {
 
 mainShortcut("e,space,enter", () => {
   document.getElementById("edit").click();
-})
+});
 
 mainShortcut("a", () => {
   document.getElementById("add").click();
 });
 
-globalShortcut("esc", (e) => {
+mainShortcut("esc", (e) => {
   if (h3.state.flags.alert && h3.state.flags.alert.cancelAction) {
     h3.state.flags.alert.cancelAction();
-  }
-  if (h3.route.def.match(/(add|edit)/) && e.target.tagName !== "TEXTAREA") {
-    window.history.back();
   }
 });
 
@@ -169,12 +166,12 @@ editShortcut("s,ctrl+s", () => {
   document.getElementById("save").click();
 });
 
-editShortcut("b", () => {
-  document.getElementById("back").click();
-});
-
-editShortcut("ctrl+b", () => {
-  document.getElementById("back").click();
+editShortcut("esc,b,ctrl+b", () => {
+  if (h3.state.flags.alert && h3.state.flags.alert.cancelAction) {
+    h3.state.flags.alert.cancelAction();
+  } else {
+    document.getElementById("back").click();
+  }
 });
 
 const shortcutsFor = (scope) => {
