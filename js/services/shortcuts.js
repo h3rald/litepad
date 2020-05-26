@@ -126,7 +126,7 @@ mainShortcut("c", () => {
   document.getElementById("copy").click();
 });
 
-mainShortcut("e", () => {
+mainShortcut("e,space,enter", () => {
   document.getElementById("edit").click();
 })
 
@@ -134,9 +134,12 @@ mainShortcut("a", () => {
   document.getElementById("add").click();
 });
 
-globalShortcut("esc", () => {
+globalShortcut("esc", (e) => {
   if (h3.state.flags.alert && h3.state.flags.alert.cancelAction) {
     h3.state.flags.alert.cancelAction();
+  }
+  if (h3.route.def.match(/(add|edit)/) && e.target.tagName !== "TEXTAREA") {
+    window.history.back();
   }
 });
 
