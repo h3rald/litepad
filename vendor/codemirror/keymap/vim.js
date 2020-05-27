@@ -1655,8 +1655,11 @@
           }
           if (match.type == "none") {
             clearInputState(cm);
-            cm.replaceSelection(keys); // ADDED BY FC
-            return true; // was: return false
+            if (keysAreChars) { // ADDED BY FC
+              cm.replaceSelection(keys); 
+              return true;
+            }
+            return false;
           } else if (match.type == "partial") {
             if (lastInsertModeKeyTimer) {
               window.clearTimeout(lastInsertModeKeyTimer);

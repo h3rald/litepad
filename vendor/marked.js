@@ -32,6 +32,7 @@ function getDefaults() {
     smartLists: false,
     smartypants: false,
     tokenizer: null,
+    walkTokens: null,
     xhtml: false
   };
 }
@@ -325,6 +326,34 @@ function outputLink(cap, link, raw) {
   }
 }
 
+function indentCodeCompensation(raw, text) {
+  const matchIndentToCode = raw.match(/^(\s+)(?:```)/);
+
+  if (matchIndentToCode === null) {
+    return text;
+  }
+
+  const indentToCode = matchIndentToCode[1];
+
+  return text
+    .split('\n')
+    .map(node => {
+      const matchIndentInNode = node.match(/^\s+/);
+      if (matchIndentInNode === null) {
+        return node;
+      }
+
+      const [indentInNode] = matchIndentInNode;
+
+      if (indentInNode.length >= indentToCode.length) {
+        return node.slice(indentToCode.length);
+      }
+
+      return node;
+    })
+    .join('\n');
+}
+
 /**
  * Tokenizer
  */
@@ -352,32 +381,35 @@ var Tokenizer_1 = class Tokenizer {
       const lastToken = tokens[tokens.length - 1];
       // An indented code block cannot interrupt a paragraph.
       if (lastToken && lastToken.type === 'paragraph') {
-        tokens.pop();
-        lastToken.text += '\n' + cap[0].trimRight();
-        lastToken.raw += '\n' + cap[0];
-        return lastToken;
-      } else {
-        const text = cap[0].replace(/^ {4}/gm, '');
         return {
-          type: 'code',
           raw: cap[0],
-          codeBlockStyle: 'indented',
-          text: !this.options.pedantic
-            ? rtrim$1(text, '\n')
-            : text
+          text: cap[0].trimRight()
         };
       }
+
+      const text = cap[0].replace(/^ {4}/gm, '');
+      return {
+        type: 'code',
+        raw: cap[0],
+        codeBlockStyle: 'indented',
+        text: !this.options.pedantic
+          ? rtrim$1(text, '\n')
+          : text
+      };
     }
   }
 
   fences(src) {
     const cap = this.rules.block.fences.exec(src);
     if (cap) {
+      const raw = cap[0];
+      const text = indentCodeCompensation(raw, cap[3] || '');
+
       return {
         type: 'code',
-        raw: cap[0],
+        raw,
         lang: cap[2] ? cap[2].trim() : cap[2],
-        text: cap[3] || ''
+        text
       };
     }
   }
@@ -534,6 +566,7 @@ var Tokenizer_1 = class Tokenizer {
         }
 
         list.items.push({
+          type: 'list_item',
           raw,
           task: istask,
           checked: ischecked,
@@ -639,9 +672,17 @@ var Tokenizer_1 = class Tokenizer {
     }
   }
 
-  text(src) {
+  text(src, tokens) {
     const cap = this.rules.block.text.exec(src);
     if (cap) {
+      const lastToken = tokens[tokens.length - 1];
+      if (lastToken && lastToken.type === 'text') {
+        return {
+          raw: cap[0],
+          text: cap[0]
+        };
+      }
+
       return {
         type: 'text',
         raw: cap[0],
@@ -769,10 +810,17 @@ var Tokenizer_1 = class Tokenizer {
   codespan(src) {
     const cap = this.rules.inline.code.exec(src);
     if (cap) {
+      let text = cap[2].replace(/\n/g, ' ');
+      const hasNonSpaceChars = /[^ ]/.test(text);
+      const hasSpaceCharsOnBothEnds = text.startsWith(' ') && text.endsWith(' ');
+      if (hasNonSpaceChars && hasSpaceCharsOnBothEnds) {
+        text = text.substring(1, text.length - 1);
+      }
+      text = escape$1(text, true);
       return {
         type: 'codespan',
         raw: cap[0],
-        text: escape$1(cap[2].trim(), true)
+        text
       };
     }
   }
@@ -1052,7 +1100,7 @@ const inline = {
   reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
   strong: /^__([^\s_])__(?!_)|^\*\*([^\s*])\*\*(?!\*)|^__([^\s][\s\S]*?[^\s])__(?!_)|^\*\*([^\s][\s\S]*?[^\s])\*\*(?!\*)/,
-  em: /^_([^\s_])_(?!_)|^_([^\s_<][\s\S]*?[^\s_])_(?!_|[^\spunctuation])|^_([^\s_<][\s\S]*?[^\s])_(?!_|[^\spunctuation])|^\*([^\s*<\[])\*(?!\*)|^\*([^\s<"][\s\S]*?[^\s\[\*])\*(?![\]`punctuation])|^\*([^\s*"<\[][\s\S]*[^\s])\*(?!\*)/,
+  em: /^_([^\s_])_(?!_)|^_([^\s_<][\s\S]*?[^\s_])_(?!_|[^\s,punctuation])|^_([^\s_<][\s\S]*?[^\s])_(?!_|[^\s,punctuation])|^\*([^\s*<\[])\*(?!\*)|^\*([^\s<"][\s\S]*?[^\s\[\*])\*(?![\]`punctuation])|^\*([^\s*"<\[][\s\S]*[^\s])\*(?!\*)/,
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
   del: noopTest$1,
@@ -1061,6 +1109,7 @@ const inline = {
 
 // list of punctuation marks from common mark spec
 // without ` and ] to workaround Rule 17 (inline code blocks/links)
+// without , to work around example 393
 inline._punctuation = '!"#$%&\'()*+\\-./:;<=>?@\\[^_{|}~';
 inline.em = edit$1(inline.em).replace(/punctuation/g, inline._punctuation).getRegex();
 
@@ -1261,7 +1310,7 @@ var Lexer_1 = class Lexer {
    */
   blockTokens(src, tokens = [], top = true) {
     src = src.replace(/^ +$/gm, '');
-    let token, i, l;
+    let token, i, l, lastToken;
 
     while (src) {
       // newline
@@ -1276,7 +1325,13 @@ var Lexer_1 = class Lexer {
       // code
       if (token = this.tokenizer.code(src, tokens)) {
         src = src.substring(token.raw.length);
-        tokens.push(token);
+        if (token.type) {
+          tokens.push(token);
+        } else {
+          lastToken = tokens[tokens.length - 1];
+          lastToken.raw += '\n' + token.raw;
+          lastToken.text += '\n' + token.text;
+        }
         continue;
       }
 
@@ -1368,9 +1423,15 @@ var Lexer_1 = class Lexer {
       }
 
       // text
-      if (token = this.tokenizer.text(src)) {
+      if (token = this.tokenizer.text(src, tokens)) {
         src = src.substring(token.raw.length);
-        tokens.push(token);
+        if (token.type) {
+          tokens.push(token);
+        } else {
+          lastToken = tokens[tokens.length - 1];
+          lastToken.raw += '\n' + token.raw;
+          lastToken.text += '\n' + token.text;
+        }
         continue;
       }
 
@@ -1594,7 +1655,7 @@ var Renderer_1 = class Renderer {
     if (!lang) {
       return '<pre><code>'
         + (escaped ? code : escape$2(code, true))
-        + '</code></pre>';
+        + '</code></pre>\n';
     }
 
     return '<pre><code class="'
@@ -1938,7 +1999,7 @@ var Parser_1 = class Parser {
             if (item.task) {
               checkbox = this.renderer.checkbox(checked);
               if (loose) {
-                if (item.tokens[0].type === 'text') {
+                if (item.tokens.length > 0 && item.tokens[0].type === 'text') {
                   item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
                   if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === 'text') {
                     item.tokens[0].tokens[0].text = checkbox + ' ' + item.tokens[0].tokens[0].text;
@@ -1958,7 +2019,7 @@ var Parser_1 = class Parser {
             body += this.renderer.listitem(itemBody, task, checked);
           }
 
-          out += this.renderer.list(body, ordered, start);
+          out += this.renderer.list(body, ordered, start, token); // {FC} - Added token as last parameter
           continue;
         }
         case 'html': {
@@ -2086,18 +2147,17 @@ function marked(src, opt, callback) {
       + Object.prototype.toString.call(src) + ', string expected');
   }
 
-  if (callback || typeof opt === 'function') {
-    if (!callback) {
-      callback = opt;
-      opt = null;
-    }
+  if (typeof opt === 'function') {
+    callback = opt;
+    opt = null;
+  }
 
-    opt = merge$2({}, marked.defaults, opt || {});
-    checkSanitizeDeprecation$1(opt);
+  opt = merge$2({}, marked.defaults, opt || {});
+  checkSanitizeDeprecation$1(opt);
+
+  if (callback) {
     const highlight = opt.highlight;
-    let tokens,
-      pending,
-      i = 0;
+    let tokens;
 
     try {
       tokens = Lexer_1.lex(src, opt);
@@ -2105,20 +2165,15 @@ function marked(src, opt, callback) {
       return callback(e);
     }
 
-    pending = tokens.length;
-
     const done = function(err) {
-      if (err) {
-        opt.highlight = highlight;
-        return callback(err);
-      }
-
       let out;
 
-      try {
-        out = Parser_1.parse(tokens, opt);
-      } catch (e) {
-        err = e;
+      if (!err) {
+        try {
+          out = Parser_1.parse(tokens, opt);
+        } catch (e) {
+          err = e;
+        }
       }
 
       opt.highlight = highlight;
@@ -2134,34 +2189,45 @@ function marked(src, opt, callback) {
 
     delete opt.highlight;
 
-    if (!pending) return done();
+    if (!tokens.length) return done();
 
-    for (; i < tokens.length; i++) {
-      (function(token) {
-        if (token.type !== 'code') {
-          return --pending || done();
-        }
-        return highlight(token.text, token.lang, function(err, code) {
-          if (err) return done(err);
-          if (code == null || code === token.text) {
-            return --pending || done();
+    let pending = 0;
+    marked.walkTokens(tokens, function(token) {
+      if (token.type === 'code') {
+        pending++;
+        highlight(token.text, token.lang, function(err, code) {
+          if (err) {
+            return done(err);
           }
-          token.text = code;
-          token.escaped = true;
-          --pending || done();
+          if (code != null && code !== token.text) {
+            token.text = code;
+            token.escaped = true;
+          }
+
+          pending--;
+          if (pending === 0) {
+            done();
+          }
         });
-      })(tokens[i]);
+      }
+    });
+
+    if (pending === 0) {
+      done();
     }
 
     return;
   }
+
   try {
-    opt = merge$2({}, marked.defaults, opt || {});
-    checkSanitizeDeprecation$1(opt);
-    return Parser_1.parse(Lexer_1.lex(src, opt), opt);
+    const tokens = Lexer_1.lex(src, opt);
+    if (opt.walkTokens) {
+      marked.walkTokens(tokens, opt.walkTokens);
+    }
+    return Parser_1.parse(tokens, opt);
   } catch (e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
-    if ((opt || marked.defaults).silent) {
+    if (opt.silent) {
       return '<p>An error occurred:</p><pre>'
         + escape$3(e.message + '', true)
         + '</pre>';
@@ -2184,6 +2250,84 @@ marked.setOptions = function(opt) {
 marked.getDefaults = getDefaults;
 
 marked.defaults = defaults$5;
+
+/**
+ * Use Extension
+ */
+
+marked.use = function(extension) {
+  const opts = merge$2({}, extension);
+  if (extension.renderer) {
+    const renderer = marked.defaults.renderer || new Renderer_1();
+    for (const prop in extension.renderer) {
+      const prevRenderer = renderer[prop];
+      renderer[prop] = (...args) => {
+        let ret = extension.renderer[prop].apply(renderer, args);
+        if (ret === false) {
+          ret = prevRenderer.apply(renderer, args);
+        }
+        return ret;
+      };
+    }
+    opts.renderer = renderer;
+  }
+  if (extension.tokenizer) {
+    const tokenizer = marked.defaults.tokenizer || new Tokenizer_1();
+    for (const prop in extension.tokenizer) {
+      const prevTokenizer = tokenizer[prop];
+      tokenizer[prop] = (...args) => {
+        let ret = extension.tokenizer[prop].apply(tokenizer, args);
+        if (ret === false) {
+          ret = prevTokenizer.apply(tokenizer, args);
+        }
+        return ret;
+      };
+    }
+    opts.tokenizer = tokenizer;
+  }
+  if (extension.walkTokens) {
+    const walkTokens = marked.defaults.walkTokens;
+    opts.walkTokens = (token) => {
+      extension.walkTokens(token);
+      if (walkTokens) {
+        walkTokens(token);
+      }
+    };
+  }
+  marked.setOptions(opts);
+};
+
+/**
+ * Run callback for every token
+ */
+
+marked.walkTokens = function(tokens, callback) {
+  for (const token of tokens) {
+    callback(token);
+    switch (token.type) {
+      case 'table': {
+        for (const cell of token.tokens.header) {
+          marked.walkTokens(cell, callback);
+        }
+        for (const row of token.tokens.cells) {
+          for (const cell of row) {
+            marked.walkTokens(cell, callback);
+          }
+        }
+        break;
+      }
+      case 'list': {
+        marked.walkTokens(token.items, callback);
+        break;
+      }
+      default: {
+        if (token.tokens) {
+          marked.walkTokens(token.tokens, callback);
+        }
+      }
+    }
+  }
+};
 
 /**
  * Expose

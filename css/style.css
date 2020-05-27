@@ -258,3 +258,7 @@ button {
   position: absolute;
   bottom: 1px;
 }
+
+ul.checklist {
+  list-style-type: none;
+}
