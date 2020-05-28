@@ -49,7 +49,9 @@ const updateTask = async (event) => {
   let line = -1;
   const walkList = (list) => {
     for (let item of list.childNodes) {
-      line++;
+      if (item.tagName === "LI") {
+        line++;
+      }
       if (item === li) {
         return true;
       } else {
@@ -117,19 +119,23 @@ export default ({ items, item, collection, add }) => {
         ),
         item
           ? h3("div.detail.px-4.d-flex.flex-column.flex-1", [
-              h3("h2", item.data.title),
-              collection === "notes" &&
-                h3("div.markdown", {
-                  $html: marked(DOMPurify.sanitize(item.data.text)),
-                  $onrender: (node) => {
-                    const tasks = node.querySelectorAll(".checklist li input");
-                    tasks.forEach((task) =>
-                      task.addEventListener("change", updateTask)
-                    );
-                  },
-                }),
-              collection === "snippets" &&
-                Field({ ...data.code, editable: false }),
+              h3("h2.item-title", item.data.title),
+              h3("div.d-flex.flex-column.flex-1.scrollable-area", [
+                collection === "notes" &&
+                  h3("div.markdown", {
+                    $html: marked(DOMPurify.sanitize(item.data.text)),
+                    $onrender: (node) => {
+                      const tasks = node.querySelectorAll(
+                        ".checklist li input"
+                      );
+                      tasks.forEach((task) =>
+                        task.addEventListener("change", updateTask)
+                      );
+                    },
+                  }),
+                collection === "snippets" &&
+                  Field({ ...data.code, editable: false }),
+              ]),
             ])
           : h3("div.detail.flex-auto", UnSelected({ collection })),
       ]);

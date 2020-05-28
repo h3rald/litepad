@@ -43,6 +43,7 @@ export default (props, oninput) => {
           });
           editor.constructor.Vim.defineEx("q", null, (cm) => {
             document.getElementById("back").click();
+            document.activeElement.blur();
           });
           editor.constructor.Vim.defineOperator("indentAuto", (cm) => {
             let code;

@@ -154,18 +154,7 @@ globalShortcut("enter", () => {
 
 editShortcut("tab", () => {
   const controls = document.getElementsByClassName("focusable-input");
-  let focusedIndex = -1;
-  for (let i = 0; i < controls.length - 1; i++) {
-    if (controls[i] === document.activeElement) {
-      focusedIndex = i;
-      break;
-    }
-  }
-  const index =
-    focusedIndex >= 0 && focusedIndex < controls.length - 1
-      ? focusedIndex + 1
-      : 0;
-  controls[index].focus();
+  controls[0].focus();
 });
 
 editShortcut("s,ctrl+s", () => {
