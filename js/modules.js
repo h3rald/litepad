@@ -63,7 +63,15 @@ const flags = () => {
     flags: {
       alert: null,
       loading: true,
+      help: false,
+      location: "main",
     },
+  }));
+  h3.on("location/set", (state, location) => ({
+    flags: { ...state.flags, location },
+  }));
+  h3.on("help/toggle", (state) => ({
+    flags: { ...state.flags, help: !state.flags.help },
   }));
   h3.on("alert/set", (state, alert) => ({
     flags: { ...state.flags, alert },

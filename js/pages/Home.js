@@ -17,6 +17,7 @@ const loadItems = async (collection) => {
 
 const setup = async (state) => {
   shortcutsFor("main");
+  h3.dispatch("location/set", "main");
   const collection = h3.route.parts.collection || "notes";
   const selection = h3.route.parts.id || "";
   let item;

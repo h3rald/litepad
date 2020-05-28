@@ -15,6 +15,7 @@ const types = {
 
 const setup = async (state) => {
   shortcutsFor("edit");
+  h3.dispatch("location/set", "edit");
   state.id = h3.route.parts.id || "";
   state.collection = h3.route.parts.collection;
   state.collectionData = h3.state.config.collections[state.collection];

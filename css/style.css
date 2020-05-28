@@ -5,18 +5,55 @@ body,
   max-height: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
 }
 
 .item-title {
- margin-top: -40px;
- margin-bottom: 0;
+  margin-top: -40px;
+  margin-bottom: 0;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 50;
+}
+
+.overlay-popup {
+  position: absolute;
+  top: 90px;
+  right: 90px;
+  bottom: 90px;
+  left: 90px;
+  min-height: calc(100% - 180px);
+  z-index: 60;
+  opacity: 1;
+}
+
+.shortcut-key {
+  width: 100px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+}
+
+.Box h3 {
+  margin: 0;
 }
 
 .form-group {
   margin: 0;
+  opacity: 1;
 }
 
 .octicon {
