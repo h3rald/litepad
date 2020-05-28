@@ -43,7 +43,7 @@ const save = async (state) => {
 };
 
 const cancel = (state) => {
-  h3.navigateTo(`/${state.collection}/${h3.state.page}/${state.id}`);
+  window.history.back();
 };
 
 const cancelAction = () => h3.dispatch("alert/clear") || h3.redraw();
