@@ -34,15 +34,13 @@ h6 {
   position: absolute;
   top: 90px;
   right: 90px;
-  bottom: 90px;
   left: 90px;
-  min-height: calc(100% - 180px);
   z-index: 60;
   opacity: 1;
 }
 
 .shortcut-key {
-  width: 100px;
+  width: 80px;
   font-family: 'Courier New', Courier, monospace;
   font-weight: bold;
 }

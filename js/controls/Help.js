@@ -7,7 +7,7 @@ export default () =>
       h3(
         "div.Box-body",
         Object.keys(h3.state.config.shortcuts[h3.state.flags.location]).map((key) => {
-          return h3("div.shortcut.d-flex.p-2", [
+          return h3("div.Box-row.shortcut.d-flex.p-2", [
             h3("div.shortcut-key.d-flex", key),
             h3("div.shortcut-action.d-flex.flex-1", h3.state.config.shortcuts[h3.state.flags.location][key]),
           ]);

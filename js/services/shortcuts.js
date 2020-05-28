@@ -175,11 +175,11 @@ editShortcut("tab", () => {
   controls[0].focus();
 });
 
-editShortcut("s,ctrl+s", () => {
+editShortcut("s", () => {
   document.getElementById("save").click();
 });
 
-editShortcut("b,ctrl+b", () => {
+editShortcut("b", () => {
   document.getElementById("back").click();
 });
 
