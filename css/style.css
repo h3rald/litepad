@@ -57,6 +57,10 @@ body,
   background: none;
 }
 
+.btn-invisible:hover {
+  color: #5197e6;
+}
+
 .btn-invisible:disabled:hover {
   color: rgba(36, 41, 46, 0.4);
 }

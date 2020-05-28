@@ -56,7 +56,7 @@ export default (props, oninput) => {
                 indent_size: 2,
                 preserve_newlines: false,
               });
-            } else {
+            } else if (cm.options.mode.name === "javascript") {
               code = js_beautify(cm.getValue(), {
                 indent_size: 2,
                 preserve_newlines: false,
@@ -65,11 +65,18 @@ export default (props, oninput) => {
             }
             cm.setValue(code);
           });
+          if (editor.getOption("mode") === "gfm") {
+            editor.setOption("extraKeys", {
+              Enter: "newlineAndIndentContinueMarkdownList",
+            });
+          }
           editor.constructor.Vim.map(",,", "`", "insert");
           editor.on("focus", () => editor.setOption("keyMap", "vim"));
           editor.on("blur", () => editor.setOption("keyMap", {}));
           editor.display.wrapper.classList.add("editable");
-          editor.setOption("lint", { esversion: 6 });
+          if (["css", "html", "javascript"].includes(mode)) {
+            editor.setOption("lint", { esversion: 6 });
+          }
           editor.setOption("htmlMode", true);
         }
         setTimeout(() => void editor.refresh(), 0);

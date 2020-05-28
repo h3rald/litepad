@@ -62,6 +62,9 @@ mainShortcut("right", () => {
   const limit = h3.state.query.limit;
   const collection = h3.state.collection;
   const pages = Math.ceil(total / limit);
+  if (pages.length === 1) {
+    return;
+  }
   const next = page === pages ? 1 : page + 1;
   h3.navigateTo(`/${collection}/${next}`);
 });
@@ -72,6 +75,9 @@ mainShortcut("left", () => {
   const limit = h3.state.query.limit;
   const collection = h3.state.collection;
   const pages = Math.ceil(total / limit);
+  if (pages.length === 1) {
+    return;
+  }
   const previous = page === 1 ? pages : page - 1;
   h3.navigateTo(`/${collection}/${previous}`);
 });

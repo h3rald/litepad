@@ -4,6 +4,7 @@ import DOMPurify from "../../vendor/purify.es.js";
 import marked from "../../vendor/marked.js";
 import UnSelected from "./UnSelected.js";
 import Empty from "./Empty.js";
+import Field from "./Field.js";
 import Snippet from "../models/Snippet.js";
 import Note from "../models/Item.js";
 import { saveItem } from "../services/api.js";
@@ -128,7 +129,7 @@ export default ({ items, item, collection, add }) => {
                   },
                 }),
               collection === "snippets" &&
-                field({ ...data.code, editable: false }),
+                Field({ ...data.code, editable: false }),
             ])
           : h3("div.detail.flex-auto", UnSelected({ collection })),
       ]);

@@ -2,6 +2,9 @@ import Item from "./Item.js";
 
 const modes = {
   javascript: "text/javascript",
+  typescript: "application/typescript",
+  jsx: "text/jsx",
+  tsx: "text/typescript-jsx",
   json: "application/json",
   html: "text/html",
   css: "text/css"
@@ -36,6 +39,18 @@ export default class Snippet extends Item {
         {
           label: "JSON",
           value: "json",
+        },
+        {
+          label: "TypeScript",
+          value: "typescript",
+        },
+        {
+          label: "JSX",
+          value: "jsx",
+        },
+        {
+          label: "TSX",
+          value: "tsx",
         },
         {
           label: "HTML",
