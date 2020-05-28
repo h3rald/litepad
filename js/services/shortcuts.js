@@ -92,7 +92,8 @@ mainShortcut("down", () => {
   }
   if (items.length === 1 || !selection) {
     h3.navigateTo(
-      `/${collection}/${page}${items[0].id.replace(collection, "")}`
+      `/${collection}/${page}${items[0].id.replace(collection, "")}`,
+      h3.route.params
     );
     return;
   }
@@ -113,7 +114,8 @@ mainShortcut("up", () => {
   }
   if (items.length === 1 || !selection) {
     h3.navigateTo(
-      `/${collection}/${page}${items[0].id.replace(collection, "")}`
+      `/${collection}/${page}${items[0].id.replace(collection, "")}`,
+      h3.route.params
     );
     return;
   }
@@ -143,6 +145,10 @@ mainShortcut("a", () => {
 globalShortcut("esc", (e) => {
   if (h3.state.flags.alert && h3.state.flags.alert.cancelAction) {
     h3.state.flags.alert.cancelAction();
+    return;
+  }
+  if (h3.route.params.q) {
+    h3.navigateTo(h3.route.path, { reload: true });
   }
 });
 

@@ -159,7 +159,7 @@ const Home = () => {
           Paginator({
             current: page,
             total: totalPages,
-            callback: (n) => h3.navigateTo(`/${h3.state.collection}/${n}`),
+            callback: (n) => h3.navigateTo(`/${h3.state.collection}/${n}`, h3.route.params),
           }),
       ]
     ),

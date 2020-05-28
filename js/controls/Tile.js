@@ -9,7 +9,10 @@ export default (props) => {
   const date = new Date(item.updated || item.created);
   const select = (id) => {
     h3.navigateTo(
-      `/${h3.state.collection}/${h3.state.page}/${h3.state.selection === id ? "" : id}`
+      `/${h3.state.collection}/${h3.state.page}/${
+        h3.state.selection === id ? "" : id
+      }`,
+      h3.route.params
     );
   };
   const id = item.id.replace(`${h3.state.collection}/`, "");
@@ -17,7 +20,9 @@ export default (props) => {
     `div.tile.d-flex.flex-row${h3.state.selection === id ? ".selected" : ""}`,
     {
       data: { id },
-      $onrender: (node) => h3.state.selection === node.dataset.id && setTimeout(() => node.scrollIntoViewIfNeeded(), 0),
+      $onrender: (node) =>
+        h3.state.selection === node.dataset.id &&
+        setTimeout(() => node.scrollIntoViewIfNeeded(), 0),
       onclick: (e) => select(e.currentTarget.dataset.id),
     },
     [
