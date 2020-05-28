@@ -135,7 +135,9 @@ mainShortcut("c", () => {
 });
 
 mainShortcut("e,space,enter", () => {
-  document.getElementById("edit").click();
+  if (!h3.state.flags.alert) {
+    document.getElementById("edit").click();
+  }
 });
 
 mainShortcut("a", () => {
@@ -150,7 +152,7 @@ globalShortcut("h", () => {
 globalShortcut("esc", (e) => {
   if (h3.state.flags.help) {
     h3.dispatch("help/toggle");
-    h3.redraw(); 
+    h3.redraw();
   }
   if (h3.state.flags.alert && h3.state.flags.alert.cancelAction) {
     h3.state.flags.alert.cancelAction();
@@ -158,7 +160,7 @@ globalShortcut("esc", (e) => {
   }
   if (h3.route.params.q) {
     h3.navigateTo(h3.route.path, { reload: true });
-    return
+    return;
   }
 });
 

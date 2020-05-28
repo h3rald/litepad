@@ -45,28 +45,30 @@ export default (props, oninput) => {
             document.getElementById("back").click();
             document.activeElement.blur();
           });
-          editor.constructor.Vim.defineOperator("indentAuto", (cm) => {
-            let code;
-            if (cm.options.mode.name === "xml") {
-              code = html_beautify(cm.getValue(), {
-                indent_size: 2,
-                preserve_newlines: false,
-              });
-            } else if (cm.options.mode.name === "css") {
-              code = css_beautify(cm.getValue(), {
-                indent_size: 2,
-                preserve_newlines: false,
-              });
-            } else if (cm.options.mode.name === "javascript") {
-              code = js_beautify(cm.getValue(), {
-                indent_size: 2,
-                preserve_newlines: false,
-                break_chained_methods: true,
-              });
-            }
-            cm.setValue(code);
-          });
-          if (editor.getOption("mode") === "gfm") {
+          if (["text/javascript", "text/html", "text/css"].includes(mode)) {
+            editor.constructor.Vim.defineOperator("indentAuto", (cm) => {
+              let code;
+              if (cm.options.mode ===  "text/html") {
+                code = html_beautify(cm.getValue(), {
+                  indent_size: 2,
+                  preserve_newlines: false,
+                });
+              } else if (cm.options.mode === "text/css") {
+                code = css_beautify(cm.getValue(), {
+                  indent_size: 2,
+                  preserve_newlines: false,
+                });
+              } else if (cm.options.mode === "text/javascript") {
+                code = js_beautify(cm.getValue(), {
+                  indent_size: 2,
+                  preserve_newlines: false,
+                  break_chained_methods: true,
+                });
+              }
+              cm.setValue(code);
+            });
+          }
+          if (mode === "gfm") {
             editor.setOption("extraKeys", {
               Enter: "newlineAndIndentContinueMarkdownList",
             });
@@ -75,7 +77,7 @@ export default (props, oninput) => {
           editor.on("focus", () => editor.setOption("keyMap", "vim"));
           editor.on("blur", () => editor.setOption("keyMap", {}));
           editor.display.wrapper.classList.add("editable");
-          if (["css", "html", "javascript"].includes(mode)) {
+          if (["text/css", "text/html", "text/javascript"].includes(mode)) {
             editor.setOption("lint", { esversion: 6 });
           }
           editor.setOption("htmlMode", true);
