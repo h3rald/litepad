@@ -13,7 +13,7 @@ export default class Config {
         right: "Go to next page.",
         h: "Open help.",
         left: "Go to previous page.",
-        esc: "Clear search; cancel alert; close help;",
+        esc: "Clear search; cancel alert; close help.",
         r: "Reload data.",
         tab: "Cycle tabs.",
       },
@@ -23,7 +23,7 @@ export default class Config {
         esc: "Cancel alert; close help;",
         enter: "Confirm alert.",
         b: "Go without saving back (confirm).",
-        s: "Save current item",
+        s: "Save current item.",
       },
     }),
       (this.collections = {

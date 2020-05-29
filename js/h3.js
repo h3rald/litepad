@@ -60,7 +60,7 @@ const equal = (obj1, obj2) => {
 };
 
 let $onrenderCallbacks = [];
-const selectorRegex = /^([a-z0-9:_=-]+)(#[a-z0-9:_=-]+)?(\..+)?$/i;
+const selectorRegex = /^([a-z][a-z0-9:_=-]*)(#[a-z0-9:_=-]+)?(\.[^ ]+)*$/i;
 
 // Virtual Node Implementation with HyperScript-like syntax
 class VNode {
@@ -436,12 +436,16 @@ class VNode {
       }
       return map;
     }
-    // Map positions of newvnode children in relation to oldvnode children
-    let newmap = mapChildren(newvnode, oldvnode);
-    // Map positions of oldvnode children in relation to newvnode children
-    let oldmap = mapChildren(oldvnode, newvnode);
-    let notFoundInOld = newmap.indexOf(-1);
-    let notFoundInNew = oldmap.indexOf(-1);
+    let newmap, oldmap, notFoundInNew, notFoundInOld;
+    const remap = () => {
+      // Map positions of newvnode children in relation to oldvnode children
+      newmap = mapChildren(newvnode, oldvnode);
+      // Map positions of oldvnode children in relation to newvnode children
+      oldmap = mapChildren(oldvnode, newvnode);
+      notFoundInOld = newmap.indexOf(-1);
+      notFoundInNew = oldmap.indexOf(-1);
+    };
+    remap();
     if (newmap.length === oldmap.length) {
       if (equal(newmap, oldmap) && notFoundInNew >= 0) {
         // Something changed (some nodes are different at the same position)
@@ -466,10 +470,7 @@ class VNode {
               (c) => !equal(c, cnode)
             );
             oldvnode.children.splice(index, 0, cnode);
-            newmap = mapChildren(newvnode, oldvnode);
-            oldmap = mapChildren(oldvnode, newvnode);
-            notFoundInNew = oldmap.indexOf(-1);
-            notFoundInOld = newmap.indexOf(-1);
+            remap();
             index = 0;
           } else {
             index++;
@@ -511,10 +512,7 @@ class VNode {
             newvnode.children[notFoundInOld]
           );
         }
-        newmap = mapChildren(newvnode, oldvnode);
-        oldmap = mapChildren(oldvnode, newvnode);
-        notFoundInNew = oldmap.indexOf(-1);
-        notFoundInOld = newmap.indexOf(-1);
+        remap();
       }
     }
     // $onrender
