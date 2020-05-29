@@ -131,46 +131,51 @@ const Home = () => {
   };
   const page = parseInt(h3.route.parts.page || 1);
   const totalPages = Math.ceil(h3.state.total / h3.state.query.limit);
-  const content = h3("div.content.d-flex.flex-1.flex-column", [
-    TabNav(tabnav),
-    h3(
-      "div.top-info-bar.d-flex.flex-row.flex-justify-between.flex-items-center",
-      [
-        h3("div.d-flex.flex-row.flex-items-center", [
-          h3("div.total.d-flex.flex-row.flex-items-center", [
-            h3("span", { $html: `Total ${h3.state.collection}:&nbsp;` }),
-            h3("strong", String(h3.state.total)),
-          ]),
-          h3.state.query.search &&
-            h3("div-search.d-flex.flex-row.flex-items-center", [
-              h3("span", { $html: "&nbsp;&middot;&nbsp;Searching for:&nbsp;" }),
-              h3("strong", h3.state.query.search),
-              h3(
-                "button.btn.btn-invisible",
-                {
-                  style: "margin-bottom: -1px;",
-                  onclick: () => h3.navigateTo(h3.route.path, { reload: true }),
-                },
-                [octicon("x"), "Clear"]
-              ),
+  const content = () =>
+    h3("div.content.d-flex.flex-1.flex-column", [
+      TabNav(tabnav),
+      h3(
+        "div.top-info-bar.d-flex.flex-row.flex-justify-between.flex-items-center",
+        [
+          h3("div.d-flex.flex-row.flex-items-center", [
+            h3("div.total.d-flex.flex-row.flex-items-center", [
+              h3("span", { $html: `Total ${h3.state.collection}:&nbsp;` }),
+              h3("strong", String(h3.state.total)),
             ]),
-        ]),
+            h3.state.query.search &&
+              h3("div-search.d-flex.flex-row.flex-items-center", [
+                h3("span", {
+                  $html: "&nbsp;&middot;&nbsp;Searching for:&nbsp;",
+                }),
+                h3("strong", h3.state.query.search),
+                h3(
+                  "button.btn.btn-invisible",
+                  {
+                    style: "margin-bottom: -1px;",
+                    onclick: () =>
+                      h3.navigateTo(h3.route.path, { reload: true }),
+                  },
+                  [octicon("x"), "Clear"]
+                ),
+              ]),
+          ]),
 
-        totalPages > 1 &&
-          Paginator({
-            current: page,
-            total: totalPages,
-            callback: (n) => h3.navigateTo(`/${h3.state.collection}/${n}`, h3.route.params),
-          }),
-      ]
-    ),
-    MasterDetail({
-      items: h3.state.items,
-      item: h3.state.item,
-      add,
-      collection: h3.state.collection,
-    }),
-  ]);
+          totalPages > 1 &&
+            Paginator({
+              current: page,
+              total: totalPages,
+              callback: (n) =>
+                h3.navigateTo(`/${h3.state.collection}/${n}`, h3.route.params),
+            }),
+        ]
+      ),
+      MasterDetail({
+        items: h3.state.items,
+        item: h3.state.item,
+        add,
+        collection: h3.state.collection,
+      }),
+    ]);
   return Page({
     content,
   });

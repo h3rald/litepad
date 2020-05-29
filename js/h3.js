@@ -442,14 +442,42 @@ class VNode {
     let oldmap = mapChildren(oldvnode, newvnode);
     let notFoundInOld = newmap.indexOf(-1);
     let notFoundInNew = oldmap.indexOf(-1);
-    if (equal(newmap, oldmap) && notFoundInNew >= 0) {
-      // Something changed (some nodes are different at the same position)
-      for (let i = 0; i < newmap.length; i++) {
-        if (newmap[i] === -1 || oldmap[i] === -1) {
-          oldvnode.children[i].redraw({
-            node: node.childNodes[i],
-            vnode: newvnode.children[i],
-          });
+    if (newmap.length === oldmap.length) {
+      if (equal(newmap, oldmap) && notFoundInNew >= 0) {
+        // Something changed (some nodes are different at the same position)
+        for (let i = 0; i < newmap.length; i++) {
+          if (newmap[i] === -1 || oldmap[i] === -1) {
+            oldvnode.children[i].redraw({
+              node: node.childNodes[i],
+              vnode: newvnode.children[i],
+            });
+          }
+        }
+      } else {
+        // Nodes in different position (maps have same nodes)
+        let index = 0;
+        while (
+          //!equal(oldmap, newmap) ||
+          !equal(oldmap, [...Array(oldmap.length).keys()])
+        ) {
+          //  Example: [1, 0, 2, 3, 4, 5, 6, 7, 8]
+          if (newmap[index] !== index) {
+            const child = node.childNodes[newmap[index]];
+            node.removeChild(child);
+            node.insertBefore(child, node.childNodes[index]);
+            const cnode = oldvnode.children[newmap[index]];
+            oldvnode.children = oldvnode.children.filter(
+              (c) => !equal(c, cnode)
+            );
+            oldvnode.children.splice(index, 0, cnode);
+            newmap = mapChildren(newvnode, oldvnode);
+            oldmap = mapChildren(oldvnode, newvnode);
+            notFoundInNew = oldmap.indexOf(-1);
+            notFoundInOld = newmap.indexOf(-1);
+            index = 0;
+          } else {
+            index++;
+          }
         }
       }
     } else {
@@ -493,10 +521,15 @@ class VNode {
         notFoundInOld = newmap.indexOf(-1);
       }
     }
+    // $onrender
+    if (!equal(oldvnode.$onrender, newvnode.$onrender)) {
+      oldvnode.$onrender = newvnode.$onrender;
+    }
     // innerHTML
-    if (newvnode.$html) {
+    if (oldvnode.$html !== newvnode.$html) {
       node.innerHTML = newvnode.$html;
       oldvnode.$html = newvnode.$html;
+      oldvnode.$onrender && oldvnode.$onrender(node);
     }
   }
 }

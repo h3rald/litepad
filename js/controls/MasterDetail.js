@@ -7,7 +7,7 @@ import Empty from "./Empty.js";
 import Field from "./Field.js";
 import Snippet from "../models/Snippet.js";
 import Note from "../models/Item.js";
-import { saveItem } from "../services/api.js";
+import { saveItem, getItems } from "../services/api.js";
 
 const types = {
   snippets: Snippet,
@@ -84,6 +84,10 @@ const updateTask = async (event) => {
   const text = item.data.text.replace(regexp, newTaskList);
   const newItem = await saveItem(...item.id.split("/"), { ...item.data, text });
   h3.dispatch("item/set", newItem);
+  const newItems = await getItems(h3.state.collection, h3.state.query);
+  h3.dispatch("items/set", newItems.results);
+  h3.dispatch("total/set", newItems.total);
+  h3.redraw();
 };
 
 export default ({ items, item, collection, add }) => {
