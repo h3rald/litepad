@@ -64,8 +64,12 @@ const flags = () => {
       alert: null,
       loading: true,
       help: false,
+      reload: false,
       location: "main",
     },
+  }));
+  h3.on("reload/set", (state, reload) => ({
+    flags: { ...state.flags, reload },
   }));
   h3.on("location/set", (state, location) => ({
     flags: { ...state.flags, location },

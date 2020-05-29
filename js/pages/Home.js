@@ -27,9 +27,9 @@ const setup = async (state) => {
   if (
     h3.state.collection !== collection ||
     h3.state.page !== oldPage ||
-    h3.route.params.reload ||
-    h3.route.params.q
+    h3.state.flags.reload
   ) {
+    h3.dispatch("reload/set", false);
     await loadItems(collection);
     h3.dispatch("collection/set", collection);
   }
@@ -152,8 +152,10 @@ const Home = () => {
                   "button.btn.btn-invisible",
                   {
                     style: "margin-bottom: -1px;",
-                    onclick: () =>
-                      h3.navigateTo(h3.route.path, { reload: true }),
+                    onclick: () => {
+                      h3.dispatch("reload/set", true);
+                      h3.navigateTo(h3.route.path);
+                    },
                   },
                   [octicon("x"), "Clear"]
                 ),

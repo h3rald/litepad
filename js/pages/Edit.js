@@ -32,12 +32,12 @@ const save = async (state) => {
     const result = state.id
       ? await saveItem(state.collection, state.id, state.data.get())
       : await addItem(state.collection, state.data.get());
+    h3.dispatch("reload/set", true);
     h3.navigateTo(
       `/${state.collection}/${state.id ? h3.state.page : 1}/${result.id.replace(
         `${state.collection}/`,
         ""
-      )}`,
-      { reload: true }
+      )}`
     );
   }
   h3.redraw();

@@ -37,7 +37,8 @@ mainShortcut("f", () => {
 });
 
 mainShortcut("r", () => {
-  h3.navigateTo(`/${h3.state.collection}`, { reload: true });
+  h3.dispatch("reload/set", true);
+  h3.navigateTo(`/${h3.state.collection}`);
 });
 
 mainShortcut("tab", () => {
@@ -159,7 +160,8 @@ globalShortcut("esc", (e) => {
     return;
   }
   if (h3.route.params.q) {
-    h3.navigateTo(h3.route.path, { reload: true });
+    h3.dispatch("reload/set", true);
+    h3.navigateTo(h3.route.path);
     return;
   }
 });

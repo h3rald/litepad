@@ -20,10 +20,12 @@ export default ({ content }) => {
             type: "text",
             placeholder: `Search ${h3.state.collection}...`,
             onkeypress: (e) => {
-              e.code === "Enter" &&
+              if (e.code === "Enter") {
+                h3.dispatch("reload/set", true);
                 h3.navigateTo(`/${h3.state.collection}`, {
                   q: e.currentTarget.value,
                 });
+              }
             },
           }),
         ]),
