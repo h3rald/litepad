@@ -456,11 +456,7 @@ class VNode {
       } else {
         // Nodes in different position (maps have same nodes)
         let index = 0;
-        while (
-          //!equal(oldmap, newmap) ||
-          !equal(oldmap, [...Array(oldmap.length).keys()])
-        ) {
-          //  Example: [1, 0, 2, 3, 4, 5, 6, 7, 8]
+        while (!equal(oldmap, [...Array(oldmap.length).keys()])) {
           if (newmap[index] !== index) {
             const child = node.childNodes[newmap[index]];
             node.removeChild(child);
