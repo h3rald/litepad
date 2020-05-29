@@ -122,7 +122,7 @@ export default ({ items, item, collection, add }) => {
           )
         ),
         item
-          ? h3("div.detail.px-4.d-flex.flex-column.flex-1", [
+          ? h3("div.detail.pl-4.d-flex.flex-column.flex-1", [
               h3("h2.item-title", item.data.title),
               h3("div.d-flex.flex-column.flex-1.scrollable-area", [
                 collection === "notes" &&
