@@ -1,7 +1,10 @@
+import Snippet from "./Snippet.js";
+import Note from "./Item.js";
+
 export default class Config {
   constructor() {
     this.api = "/docs";
-    (this.shortcuts = {
+    this.shortcuts = {
       main: {
         f: "Focus search box",
         d: "Delete selected item (confirm).",
@@ -25,18 +28,22 @@ export default class Config {
         b: "Go without saving back (confirm).",
         s: "Save current item.",
       },
-    }),
-      (this.collections = {
-        notes: {
-          typeIcon: "file",
-          type: "Note",
-          icon: "markdown",
-        },
-        snippets: {
-          typeIcon: "file-code",
-          type: "Snippet",
-          icon: "code",
-        },
-      });
+    };
+    this.collections = {
+      notes: {
+        typeIcon: "file",
+        type: "Note",
+        icon: "markdown",
+      },
+      snippets: {
+        typeIcon: "file-code",
+        type: "Snippet",
+        icon: "code",
+      },
+    };
+    this.types = {
+      snippets: Snippet,
+      notes: Note,
+    };
   }
 }
