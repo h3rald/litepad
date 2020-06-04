@@ -29,7 +29,9 @@ const walkList = (list, li, line) => {
     } else {
       for (let liChild of item.childNodes) {
         if (liChild.tagName === "UL") {
-          if (walkList(liChild, li, line)[1]) {
+          const [newLine, found] = walkList(liChild, li, line);
+          line = newLine;
+          if (found) {
             return [line, true];
           }
         }
@@ -79,14 +81,8 @@ const updateTask = async (event) => {
 };
 
 const handleUpdateTask = (node) => {
-  const tasks = node.querySelectorAll(
-    ".checklist li input"
-  );
-  tasks.forEach((task) =>
-    task.addEventListener("change", updateTask)
-  );
+  const tasks = node.querySelectorAll(".checklist li input");
+  tasks.forEach((task) => task.addEventListener("change", updateTask));
 };
 
-export {
-  updateTask, handleUpdateTask
-}
+export { updateTask, handleUpdateTask };
