@@ -4,11 +4,9 @@ import DOMPurify from "../../vendor/purify.es.js";
 import marked from "../../vendor/marked.js";
 import UnSelected from "./UnSelected.js";
 import Empty from "./Empty.js";
-import Field from "./Field.js";
-import Snippet from "../models/Snippet.js";
-import Note from "../models/Item.js";
-import { saveItem, getItems } from "../services/api.js";
 import { handleUpdateTask } from "../services/gfmtasks.js";
+
+Prism.languages.json = Prism.languages.javascript;
 
 const state = {};
 
@@ -49,11 +47,21 @@ export default ({ items, item, collection, add }) => {
               h3("div.d-flex.flex-column.flex-1.scrollable-area", [
                 collection === "notes" &&
                   h3("div.markdown", {
-                    $html: marked(DOMPurify.sanitize(item.data.text)),
-                    $onrender: handleUpdateTask,
+                    $html: marked(item.data.text),
+                    $onrender: (node) => {
+                      Prism.highlightAllUnder(node);
+                      handleUpdateTask(node);
+                      node.innerHTML = DOMPurify.sanitize(node.innerHTML);
+                    },
                   }),
                 collection === "snippets" &&
-                  Field({ ...data.code, editable: false }),
+                  h3(
+                    "pre",
+                    h3(
+                      `code.language-${data.language.value}`,
+                      { $onrender: (node) => Prism.highlightElement(node) },
+                    ), data.code.value
+                  ),
               ]),
             ])
           : h3("div.detail.flex-auto", UnSelected({ collection })),
