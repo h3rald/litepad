@@ -45,5 +45,42 @@ export default class Config {
       snippets: Snippet,
       notes: Note,
     };
+    this.languages = {
+      javascript: {
+        name: "JavaScript",
+        extension: "js",
+        mode: "text/javascript",
+      },
+      typescript: {
+        name: "TypeScript",
+        extension: "ts",
+        mode: "application/typescript",
+      },
+      jsx: {
+        name: "JSX",
+        extension: "jsx",
+        mode: "text/jsx",
+      },
+      tsx: {
+        name: "TSX",
+        extension: "tsx",
+        mode: "text/typescript-jsx",
+      },
+      json: {
+        name: "JSON",
+        extension: "json",
+        mode: "application/json",
+      },
+      html: {
+        name: "HTML",
+        extension: "html",
+        mode: "text/html",
+      },
+      css: {
+        name: "CSS",
+        extension: "css",
+        mode: "text/css",
+      },
+    };
   }
 }

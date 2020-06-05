@@ -1,14 +1,5 @@
 import Item from "./Item.js";
-
-const modes = {
-  javascript: "text/javascript",
-  typescript: "application/typescript",
-  jsx: "text/jsx",
-  tsx: "text/typescript-jsx",
-  json: "application/json",
-  html: "text/html",
-  css: "text/css"
-}
+import h3 from "../h3.js";
 
 export default class Snippet extends Item {
   constructor() {
@@ -28,39 +19,13 @@ export default class Snippet extends Item {
       type: "dropdown",
       value: "javascript",
       onchange: (e) => {
-        this.code.mode = modes[e.currentTarget.value];
+        this.code.mode = h3.state.config.languages[e.currentTarget.value].mode;
         this.code.editor.setOption("mode", this.code.mode);
       },
-      options: [
-        {
-          label: "JavaScript",
-          value: "javascript",
-        },
-        {
-          label: "JSON",
-          value: "json",
-        },
-        {
-          label: "TypeScript",
-          value: "typescript",
-        },
-        {
-          label: "JSX",
-          value: "jsx",
-        },
-        {
-          label: "TSX",
-          value: "tsx",
-        },
-        {
-          label: "HTML",
-          value: "html",
-        },
-        {
-          label: "CSS",
-          value: "css",
-        },
-      ],
+      options: Object.entries(h3.state.config.languages).map((e) => ({
+        label: e[1].name,
+        value: e[0],
+      })),
     };
   }
 
@@ -68,7 +33,7 @@ export default class Snippet extends Item {
     super.set(snippet);
     this.language.value = snippet.data.language;
     this.code.value = snippet.data.code;
-    this.code.mode = modes[snippet.data.language];
+    this.code.mode = h3.state.config.languages[snippet.data.language].mode;
   }
 
   get() {
