@@ -59,6 +59,7 @@ const Edit = (state) => {
       icon: "check",
       id: "save",
       label: "Save",
+      primary: true,
     },
     {
       onclick: () => {
@@ -79,7 +80,7 @@ const Edit = (state) => {
     },
   ];
   const content = h3("div.content.d-flex.flex-column.flex-1", [
-    ActionBar(actions),
+    h3("div.hide-sm", ActionBar(actions)),
     h3("div.d-flex.edit-form", [
       h3("div.d-flex.flex-row", [
         state.data.language &&
@@ -93,6 +94,7 @@ const Edit = (state) => {
     ]),
     state.data.text && Field(state.data.text),
     state.data.code && Field(state.data.code),
+    h3("div.show-sm", ActionBar(actions)),
   ]);
   return Page({ content });
 };

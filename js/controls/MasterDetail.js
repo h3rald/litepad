@@ -22,9 +22,9 @@ export default ({ items, item, collection, add }) => {
   }
   return items.length === 0
     ? Empty({ collection: collection, add })
-    : h3("div.master-detail.d-flex.flex-row.flex-1", [
+    : h3(`div.master-detail.d-flex.flex-row.flex-1`, [
         h3(
-          "div.master.d-flex.flex-column",
+          `div.master.d-flex.flex-column${h3.state.selection ? ".hide-sm" : ""}`,
           h3(
             "div.d-flex.flex-column.flex-1.scrollable-area",
             {
@@ -42,7 +42,7 @@ export default ({ items, item, collection, add }) => {
           )
         ),
         item
-          ? h3("div.detail.pl-4.d-flex.flex-column.flex-1", [
+          ? h3(`div.detail.pl-sm-4.d-flex.flex-column.flex-1${h3.state.selection ? "" : ".hide-sm" }`, [
               h3("h1.item-title", item.data.title),
               h3("div.d-flex.flex-column.flex-1.scrollable-area", [
                 collection === "notes" &&
@@ -60,10 +60,11 @@ export default ({ items, item, collection, add }) => {
                     h3(
                       `code.language-${data.language.value}`,
                       { $onrender: (node) => Prism.highlightElement(node) },
-                    ), data.code.value
+                      data.code.value
+                    )
                   ),
               ]),
             ])
-          : h3("div.detail.flex-auto", UnSelected({ collection })),
+          : h3("div.detail.flex-auto.hide-sm", UnSelected({ collection })),
       ]);
 };

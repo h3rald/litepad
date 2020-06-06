@@ -15,7 +15,7 @@ export default ({ tabs, title, extras }) => {
             onclick: tab.onclick,
             "aria-current": tab.selected ? "page" : false,
           },
-          [tab.icon && octicon(tab.icon), tab.title]
+          [tab.icon && octicon(tab.icon), h3("span.hide-sm", tab.title)]
         );
       })
     ),

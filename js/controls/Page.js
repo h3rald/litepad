@@ -15,7 +15,7 @@ export default ({ content }) => {
         ]),
       ]),
       !h3.route.def.match(/(add|edit)$/) &&
-        h3("div.Header-item.flex-1", [
+        h3("div.Header-item", [
           h3("input#search.form-control.input-dark.search", {
             type: "text",
             placeholder: `Search ${h3.state.collection}...`,
@@ -29,6 +29,7 @@ export default ({ content }) => {
             },
           }),
         ]),
+        h3("div.Header-item.flex-1"),
       h3("div.Header-item", [
         h3(
           "a.Header-link",
@@ -44,7 +45,7 @@ export default ({ content }) => {
     ]),
     h3.state.flags.loading
       ? Loading
-      : h3("div.Main.px-6.py-4.d-flex.flex-1.flex-column", [
+      : h3("div.Main.px-1.px-sm-1.px-md-2.px-lg-4.py-md-4.py-1.d-flex.flex-1.flex-column", [
           h3.state.flags.alert && Alert(h3.state.flags.alert),
           content,
         ]),

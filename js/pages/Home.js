@@ -55,10 +55,24 @@ const Home = () => {
   };
   const actions = [
     {
+      onclick: () =>
+        h3.navigateTo(
+          `/${h3.state.collection}/${h3.state.page}/`,
+          h3.route.params
+        ),
+      icon: "reply",
+      id: "back",
+      label: "Back",
+      primary: true,
+      classList: h3.state.selection ? ["show-sm"] : ["hide"],
+    },
+    {
       onclick: () => h3.navigateTo(`/${h3.state.collection}/add`),
       icon: "plus",
       id: "add",
       label: "Add",
+      primary: true,
+      classList: h3.state.selection ? ["hide-sm"] : [],
     },
     {
       onclick: () =>
@@ -133,9 +147,11 @@ const Home = () => {
   const totalPages = Math.ceil(h3.state.total / h3.state.query.limit);
   const content = () =>
     h3("div.content.d-flex.flex-1.flex-column", [
-      TabNav(tabnav),
+      h3("div.d-block.hide-sm", TabNav(tabnav)),
       h3(
-        "div.top-info-bar.d-flex.flex-row.flex-justify-between.flex-items-center",
+        `div.top-info-bar.d-flex.flex-row.flex-justify-between.flex-items-center${
+          h3.state.selection ? ".hide-sm" : ""
+        }`,
         [
           h3("div.d-flex.flex-row.flex-items-center", [
             h3("div.total.d-flex.flex-row.flex-items-center", [
@@ -177,6 +193,7 @@ const Home = () => {
         add,
         collection: h3.state.collection,
       }),
+      h3("div.d-block.show-sm", TabNav(tabnav)),
     ]);
   return Page({
     content,

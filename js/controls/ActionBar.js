@@ -3,16 +3,18 @@ import octicon from "../services/octicon.js";
 
 export default (actions) => {
   return h3(
-    "div.action-bar.form-actions",
+    "div.action-bar.form-actions.p-2",
     actions.map((a, index) =>
       h3(
-        `button.btn.btn-${index === 0 ? "primary" : "invisible"}`,
+        `button.btn.btn-${a.primary ? "primary" : "invisible"}${
+          a.classList && a.classList.length > 0 && "." + a.classList.join(".") || ""
+        }`,
         {
           id: a.id,
           onclick: a.onclick,
           disabled: a.disabled,
         },
-        [octicon(a.icon), a.label]
+        [octicon(a.icon), h3("span.hide-sm", a.label)]
       )
     )
   );
