@@ -15,6 +15,22 @@ const EditorOptions = {
   lineNumbers: true,
 };
 
+// See: https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript
+const isTouchDevice = () => {
+  const prefixes = " -webkit- -moz- -o- -ms- ".split(" ");
+  const mq = (query) => window.matchMedia(query).matches;
+  if (
+    "ontouchstart" in window ||
+    (window.DocumentTouch && document instanceof DocumentTouch)
+  ) {
+    return true;
+  }
+  const query = ["(", prefixes.join("touch-enabled),("), "heartz", ")"].join(
+    ""
+  );
+  return mq(query);
+};
+
 export default (props, oninput) => {
   const { editable, placeholder, mode } = props;
   return h3(
@@ -48,7 +64,7 @@ export default (props, oninput) => {
           if (["text/javascript", "text/html", "text/css"].includes(mode)) {
             editor.constructor.Vim.defineOperator("indentAuto", (cm) => {
               let code;
-              if (cm.options.mode ===  "text/html") {
+              if (cm.options.mode === "text/html") {
                 code = html_beautify(cm.getValue(), {
                   indent_size: 2,
                   preserve_newlines: false,
@@ -73,8 +89,10 @@ export default (props, oninput) => {
               Enter: "newlineAndIndentContinueMarkdownList",
             });
           }
-          editor.constructor.Vim.map(",,", "`", "insert");
-          editor.on("focus", () => editor.setOption("keyMap", "vim"));
+          if (!isTouchDevice() && window.innerWidth > 500) {
+            editor.constructor.Vim.map(",,", "`", "insert");
+            editor.on("focus", () => editor.setOption("keyMap", "vim"));
+          }
           editor.on("blur", () => editor.setOption("keyMap", {}));
           editor.display.wrapper.classList.add("editable");
           if (["text/css", "text/html", "text/javascript"].includes(mode)) {
