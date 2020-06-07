@@ -5,7 +5,7 @@ import octicon from "../services/octicon.js";
 export default ({ collection, add }) => {
   const icon = getIcon(collection);
   const object = getObject(collection);
-  return h3("div.blankslate", [
+  return h3("div.blankslate.d-flex.flex-column.flex-1", [
     h3("div.icons", [
       octicon(icon, {
         class: "blankslate-icon",

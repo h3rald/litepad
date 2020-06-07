@@ -6,7 +6,7 @@ export default (props) => {
   const { item } = props;
   const icon = getTypeIcon(item.id);
   const type = getType(item.id);
-  const date = new Date(item.updated || item.created);
+  const date = new Date(item.modified || item.created);
   const select = (id) => {
     h3.navigateTo(
       `/${h3.state.collection}/${h3.state.page}/${

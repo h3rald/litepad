@@ -1,96 +1,13 @@
 import h3 from "../h3.js";
+import litestore from "./litestore.js";
+import localStorage from "./localStorage.js";
 
-const opts = () => ({
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+const obj =
+  window.location.origin !== "http://localhost:9300" ||
+  window.location.search.match(/localStorage/i)
+    ? localStorage
+    : litestore;
 
-const withLoading = async (cbk) => {
-  h3.dispatch("loading/set", "Loading");
-  h3.redraw();
-  const result = await cbk();
-  h3.dispatch("loading/clear");
-  h3.redraw();
-  return result;
-};
+const { addItem, getItems, getItem, deleteItem, saveItem } = obj;
 
-const withError = async (cbk) => {
-  try {
-    const response = await cbk();
-    let data;
-    try {
-      data = await response.json();
-    } catch (e) {
-      data = {};
-    }
-    if (!response.ok) {
-      throw {
-        title: response.statusText,
-        message: data.message || data.error,
-      };
-    }
-    return data;
-  } catch (e) {
-    h3.dispatch("alert/set", {
-      type: "error",
-      message: e.message || "Something went wrong...",
-      dismiss: true,
-      cancelAction: () => {
-        h3.dispatch("alert/clear");
-        h3.redraw();
-      },
-    });
-    return false;
-  }
-};
-
-const addItem = async (collection, data) => {
-  const url = `${h3.state.config.api}/${collection}/`;
-  const body = JSON.stringify(data);
-  const method = "POST";
-  return await withError(
-    async () => await fetch(url, { ...opts(), method, body })
-  );
-};
-
-const saveItem = async (collection, id, data) => {
-  const url = `${h3.state.config.api}/${collection}/${id}`;
-  const body = JSON.stringify(data);
-  const method = "PUT";
-  return await withError(
-    async () => await fetch(url, { ...opts(), method, body })
-  );
-};
-
-const getItems = async (collection, data) => {
-  const { filter, sort, select, limit, offset } = data;
-  const options = Object.entries(data)
-    .map(([key, value]) => (value ? `${key}=${value}` : ""))
-    .join("&");
-  const url = `${h3.state.config.api}/${collection || "notes"}/${
-    options ? "?" + options : ""
-  }`;
-  return await withError(async () => await fetch(url, { ...opts() }));
-};
-
-const getItem = async (collection, id) => {
-  const url = `${h3.state.config.api}/${collection}/${id}?raw=true`;
-  return await withError(async () => await fetch(url, { ...opts() }));
-};
-
-const deleteItem = async (collection, id) => {
-  const url = `${h3.state.config.api}/${collection}/${id}`;
-  const method = "DELETE";
-  return await withError(async () => await fetch(url, { ...opts(), method }));
-};
-
-export {
-  addItem,
-  withError,
-  withLoading,
-  getItems,
-  getItem,
-  deleteItem,
-  saveItem,
-};
+export { addItem, getItems, getItem, deleteItem, saveItem };
