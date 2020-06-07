@@ -13,11 +13,17 @@ export default ({ collection, add }) => {
       }),
     ]),
     h3("h3", "No data"),
-    h3("p", `There are no ${collection}${h3.route.params.q ? " matching the specified criteria" : ""}.`),
-    !h3.route.params.q && h3(
-      "button.btn.btn-primary",
-      { type: "button", onclick: add },
-      `Add a ${object}`
+    h3(
+      "p",
+      `There are no ${collection}${
+        h3.route.params.q ? " matching the specified criteria" : ""
+      }.`
     ),
+    !h3.route.params.q &&
+      h3(
+        "button.btn.btn-primary.d-flex.flex-self-center",
+        { type: "button", onclick: add },
+        `Add a ${object}`
+      ),
   ]);
 };
