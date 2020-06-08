@@ -46,7 +46,7 @@ export default ({ items, item, collection, add }) => {
               h3("h1.item-title", item.data.title),
               h3("div.d-flex.flex-column.flex-1.scrollable-area", [
                 collection === "notes" &&
-                  h3("div.markdown", {
+                  h3("div#item-content.markdown", {
                     $html: marked(item.data.text),
                     $onrender: (node) => {
                       Prism.highlightAllUnder(node);
@@ -58,7 +58,7 @@ export default ({ items, item, collection, add }) => {
                   h3(
                     "pre",
                     h3(
-                      `code.language-${data.language.value}`,
+                      `code#item-content.language-${data.language.value}`,
                       { $onrender: (node) => Prism.highlightElement(node) },
                       data.code.value
                     )

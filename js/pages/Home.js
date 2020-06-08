@@ -8,6 +8,7 @@ import MasterDetail from "../controls/MasterDetail.js";
 import Paginator from "../controls/Paginator.js";
 import octicon from "../services/octicon.js";
 import { shortcutsFor } from "../services/shortcuts.js";
+import { downloadHTML, downloadFile } from "../services/download.js";
 
 const loadItems = async (collection) => {
   const result = await getItems(collection, h3.state.query);
@@ -114,6 +115,26 @@ const Home = () => {
       icon: "clippy",
       label: "Copy",
       id: "copy",
+      disabled: !h3.state.selection,
+    },
+    {
+      onclick: () => {
+        if (h3.state.collection === "notes") {
+          downloadHTML(
+            h3.state.item.data.title,
+            document.getElementById("item-content").innerHTML
+          );
+        } else {
+          downloadFile(
+            h3.state.item.data.title,
+            h3.state.item.data.code,
+            h3.state.item.data.language
+          );
+        }
+      },
+      icon: "cloud-download",
+      label: "Download",
+      id: "download",
       disabled: !h3.state.selection,
     },
   ];
