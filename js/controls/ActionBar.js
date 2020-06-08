@@ -8,8 +8,9 @@ export default (actions) => {
       h3(
         `button.btn.btn-${a.primary ? "primary" : "invisible"}${
           a.classList && a.classList.length > 0 && "." + a.classList.join(".") || ""
-        }`,
+        }.tooltipped.tooltipped-n`,
         {
+          "aria-label": a.label,
           id: a.id,
           onclick: a.onclick,
           disabled: a.disabled,

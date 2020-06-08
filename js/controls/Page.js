@@ -45,7 +45,7 @@ export default ({ content }) => {
     ]),
     h3.state.flags.loading
       ? Loading
-      : h3("div.Main.px-1.px-sm-1.px-md-2.px-lg-4.py-md-4.py-1.d-flex.flex-1.flex-column", [
+      : h3("div.Main.px-2.px-sm-2.px-md-2.px-lg-4.py-md-4.py-2.d-flex.flex-1.flex-column", [
           h3.state.flags.alert && Alert(h3.state.flags.alert),
           content,
         ]),
