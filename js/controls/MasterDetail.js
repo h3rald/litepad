@@ -50,8 +50,8 @@ export default ({ items, item, collection, add }) => {
                     $html: marked(item.data.text),
                     $onrender: (node) => {
                       Prism.highlightAllUnder(node);
-                      handleUpdateTask(node);
                       node.innerHTML = DOMPurify.sanitize(node.innerHTML);
+                      handleUpdateTask(node);
                     },
                   }),
                 collection === "snippets" &&
