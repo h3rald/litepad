@@ -389,6 +389,12 @@ ul.checklist {
   display: none !important;
 }
 
+@media (max-width: 543px) {
+  .form-group input.form-control {
+    width: 100%;
+  }
+}
+
 /*** iPhone and iOS Form Input Zoom Fixes ***/
 /* Fix Input Zoom on devices older than iPhone 5: */
 @media screen and (device-aspect-ratio: 2/3) {
