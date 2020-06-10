@@ -5,6 +5,8 @@ import marked from "../../vendor/marked.js";
 import UnSelected from "./UnSelected.js";
 import Empty from "./Empty.js";
 import { handleUpdateTask } from "../services/gfmtasks.js";
+import "../services/mdincludes.js";
+import { handleInclusions } from "../services/mdincludes.js";
 
 Prism.languages.json = Prism.languages.javascript;
 
@@ -24,7 +26,9 @@ export default ({ items, item, collection, add }) => {
     ? Empty({ collection: collection, add })
     : h3(`div.master-detail.d-flex.flex-row.flex-1`, [
         h3(
-          `div.master.d-flex.flex-column${h3.state.selection ? ".hide-sm" : ""}`,
+          `div.master.d-flex.flex-column${
+            h3.state.selection ? ".hide-sm" : ""
+          }`,
           h3(
             "div.d-flex.flex-column.flex-1.scrollable-area",
             {
@@ -42,29 +46,35 @@ export default ({ items, item, collection, add }) => {
           )
         ),
         item
-          ? h3(`div.detail.pl-sm-4.d-flex.flex-column.flex-1${h3.state.selection ? "" : ".hide-sm" }`, [
-              h3("h1.item-title", item.data.title),
-              h3("div.d-flex.flex-column.flex-1.scrollable-area", [
-                collection === "notes" &&
-                  h3("div#item-content.markdown", {
-                    $html: marked(item.data.text),
-                    $onrender: (node) => {
-                      Prism.highlightAllUnder(node);
-                      node.innerHTML = DOMPurify.sanitize(node.innerHTML);
-                      handleUpdateTask(node);
-                    },
-                  }),
-                collection === "snippets" &&
-                  h3(
-                    "pre",
+          ? h3(
+              `div.detail.pl-sm-4.d-flex.flex-column.flex-1${
+                h3.state.selection ? "" : ".hide-sm"
+              }`,
+              [
+                h3("h1.item-title", item.data.title),
+                h3("div.d-flex.flex-column.flex-1.scrollable-area", [
+                  collection === "notes" &&
+                    h3("div#item-content.markdown", {
+                      $html: marked(item.data.text),
+                      $onrender: async (node) => {
+                        node.innerHTML = DOMPurify.sanitize(node.innerHTML);
+                        handleInclusions(node);
+                        window.Prism.highlightAllUnder(node);
+                        handleUpdateTask(node);
+                      },
+                    }),
+                  collection === "snippets" &&
                     h3(
-                      `code#item-content.language-${data.language.value}`,
-                      { $onrender: (node) => Prism.highlightElement(node) },
-                      data.code.value
-                    )
-                  ),
-              ]),
-            ])
+                      "pre",
+                      h3(
+                        `code#item-content.language-${data.language.value}`,
+                        { $onrender: (node) => Prism.highlightElement(node) },
+                        data.code.value
+                      )
+                    ),
+                ]),
+              ]
+            )
           : h3("div.detail.flex-auto.hide-sm", UnSelected({ collection })),
       ]);
 };

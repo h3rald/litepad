@@ -69,7 +69,7 @@ a {
 }
 
 .form-group {
-  margin: 0;
+  margin: 5px 0;
   opacity: 1;
 }
 
@@ -151,6 +151,20 @@ a {
 .master .scrollable-area {
   padding-left: 1px;
   border: 1px solid #ccc;
+}
+
+.md-include:before {
+  content: attr(data-item-id);
+  display: block;
+  text-align: right;
+  font-size: 80%;
+  color: #ccc;
+  margin-bottom: -5px;
+}
+
+.md-include {
+  border: 1px dashed #ccc;
+  padding: 0.3rem;
 }
 
 /* Loading */

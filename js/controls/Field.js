@@ -99,7 +99,7 @@ export default (props) => {
     groupBodyClassList = ".d-flex.flex-column.flex-1";
   }
   return h3(
-    `div.form-group${props.invalid ? ".errored" : ""}${groupClassList}`,
+    `div.form-group.d-flex.flex-1.flex-column${props.invalid ? ".errored" : ""}${groupClassList}`,
     [
       editable !== false &&
         h3("div.form-group-header", [h3("label", { for: name }, `${label}:`)]),

@@ -82,7 +82,7 @@ const Edit = (state) => {
   const content = h3("div.content.d-flex.flex-column.flex-1", [
     h3("div.hide-sm", ActionBar(actions)),
     h3("div.d-flex.edit-form", [
-      h3("div.d-flex.flex-row", [
+      h3("div.d-flex.flex-row.flex-1", [
         state.data.language &&
           h3(
             "div",
