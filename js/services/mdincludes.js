@@ -3,20 +3,6 @@ import { getItem } from "./api.js";
 import h3 from "../h3.js";
 import DOMPurify from "../../vendor/purify.es.js";
 
-/*const tokenizer = {
-  text(src) {
-    const match = src.match(/^\{\{((notes|snippets)\/[a-z0-9]+)\}\}$/);
-    if (match) {
-      return {
-        type: "text",
-        raw: match[0],
-        text: match[1],
-      };
-    }
-    return false;
-  },
-};*/
-
 const renderer = {
   text(t) {
     const r = /^\{\{((notes|snippets)\/[a-z0-9]+)\}\}$/;
@@ -36,9 +22,14 @@ const handleInclusions = async (node) => {
   const includes = node.querySelectorAll(".md-include");
   includes.forEach(async (div) => {
     const [collection, id] = div.dataset.itemId.split("/");
-    const data = await getItem(collection, id);
+    const data = (await getItem(collection, id)) || {
+      data: {
+        language: "javascript",
+        text: `Note '${id}' not found.`,
+        code: `Snippet '${id}' not found.`,
+      },
+    };
     let innerHTML;
-    console.log(div);
     if (collection === "snippets") {
       const lang = h3.state.config.languages[data.data.language].extension;
       innerHTML = `<pre class="language-${lang}"><code class="language-${lang}">${data.data.code}</code></pre>`;
