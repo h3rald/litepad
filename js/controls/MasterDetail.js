@@ -5,7 +5,6 @@ import marked from "../../vendor/marked.js";
 import UnSelected from "./UnSelected.js";
 import Empty from "./Empty.js";
 import { handleUpdateTask } from "../services/gfmtasks.js";
-import "../services/mdincludes.js";
 import { handleInclusions } from "../services/mdincludes.js";
 
 Prism.languages.json = Prism.languages.javascript;

@@ -48,6 +48,7 @@ export default ({ content }) => {
       : h3("div.Main.px-2.px-sm-2.px-md-2.px-lg-4.py-md-4.py-2.d-flex.flex-1.flex-column", [
           h3.state.flags.alert && Alert(h3.state.flags.alert),
           content,
+          h3.state.config.storage === "localStorage" && h3("p.storage-notice", "This site persists the contents of notes and snippets to your browser localStorage.")
         ]),
   ]);
 };

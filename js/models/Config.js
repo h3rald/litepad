@@ -4,6 +4,7 @@ import Note from "./Item.js";
 export default class Config {
   constructor() {
     this.api = "/docs";
+    this.storage = "litestore";
     this.shortcuts = {
       main: {
         f: "Focus search box",
