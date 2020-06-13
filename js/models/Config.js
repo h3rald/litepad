@@ -4,6 +4,7 @@ import Note from "./Item.js";
 export default class Config {
   constructor() {
     this.api = "/docs";
+    this.clientId = "aceeb0ae519a948dd0dc";
     this.storage = "litestore";
     this.shortcuts = {
       main: {

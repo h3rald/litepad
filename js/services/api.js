@@ -4,11 +4,10 @@ import localStorage from "./localStorage.js";
 
 let obj;
 
-if (
-  window.location.origin !== "http://localhost:9300" ||
-  window.location.search.match(/localStorage/i)
-) {
+if (window.location.search.match(/localStorage/i)) {
   obj = localStorage;
+} else if (window.location.search.match(/gist/i)) {
+  obj = localStorage; // TODO: implement
 } else {
   obj = litestore;
 }

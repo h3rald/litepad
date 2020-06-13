@@ -9,6 +9,7 @@ import Paginator from "../controls/Paginator.js";
 import octicon from "../services/octicon.js";
 import { shortcutsFor } from "../services/shortcuts.js";
 import { downloadHTML, downloadFile } from "../services/download.js";
+import { processCode } from "../services/auth.js";
 
 const loadItems = async (collection) => {
   const result = await getItems(collection, h3.state.query);
@@ -17,6 +18,7 @@ const loadItems = async (collection) => {
 };
 
 const setup = async (state) => {
+  await processCode();
   shortcutsFor("main");
   h3.dispatch("location/set", "main");
   const collection = h3.route.parts.collection || "notes";
