@@ -5,7 +5,7 @@ body,
   max-height: 100%;
 }
 body {
-  font-size: 16px;
+  font-size: 14px;
 }
 input,
 select,
@@ -21,6 +21,7 @@ h5,
 h6 {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 
 a {
@@ -85,6 +86,9 @@ a {
   border-top: 1px solid #e1e4e8;
   cursor: pointer;
 }
+.tile:last-child {
+  border-bottom: 1px solid #e1e4e8;
+}
 
 .tile:first-child {
   border: none;
@@ -96,11 +100,12 @@ a {
 
 .tile.selected,
 .tile.selected:hover {
-  background-color: #d6ebff;
+  background-color: #f6f8fa;
+  box-shadow: inset 2px 0 0 #0366d6;
 }
 
 .tile:hover {
-  background-color: #f1f8ff;
+  background-color: #f6f8fa;
 }
 
 .tile-title {
@@ -109,8 +114,12 @@ a {
   overflow: hidden;
   width: 280px;
   display: block;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 120%;
+}
+
+.tile-data {
+  font-size: 90%;
 }
 
 .form-actions .btn.btn-primary {
@@ -150,7 +159,6 @@ a {
 }
 
 .master .scrollable-area {
-  padding-left: 1px;
   border: 1px solid #ccc;
 }
 
