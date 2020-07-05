@@ -2,6 +2,7 @@ import h3 from "../h3.js";
 import Editor from "./Editor.js";
 
 export default (props) => {
+  props.placeholder = props.placeholder || "";
   const {
     label,
     name,
