@@ -1,5 +1,5 @@
 import Item from "./Item.js";
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 
 export default class Snippet extends Item {
   constructor() {

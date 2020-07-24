@@ -1,4 +1,4 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 import Page from "../controls/Page.js";
 import { addItem, getItem, saveItem } from "../services/api.js";
 import Field from "../controls/Field.js";
@@ -79,12 +79,12 @@ const Edit = (state) => {
       label: "Back",
     },
   ];
-  const content = h3("div.content.d-flex.flex-column.flex-1", [
-    h3("div.hide-sm", ActionBar(actions)),
-    h3("div.d-flex.edit-form", [
-      h3("div.d-flex.flex-row.flex-1", [
+  const content = h("div.content.d-flex.flex-column.flex-1", [
+    h("div.hide-sm", ActionBar(actions)),
+    h("div.d-flex.edit-form", [
+      h("div.d-flex.flex-row.flex-1", [
         state.data.language &&
-          h3(
+          h(
             "div",
             { style: "width: 150px; margin-right: 15px;" },
             Field(state.data.language)
@@ -94,7 +94,7 @@ const Edit = (state) => {
     ]),
     state.data.text && Field(state.data.text),
     state.data.code && Field(state.data.code),
-    h3("div.show-sm", ActionBar(actions)),
+    h("div.show-sm", ActionBar(actions)),
   ]);
   return Page({ content });
 };

@@ -1,4 +1,4 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 import Tile from "./Tile.js";
 import DOMPurify from "../../vendor/purify.es.js";
 import marked from "../../vendor/marked.js";
@@ -23,12 +23,12 @@ export default ({ items, item, collection, add }) => {
   }
   return items.length === 0
     ? Empty({ collection: collection, add })
-    : h3(`div.master-detail.d-flex.flex-row.flex-1`, [
-        h3(
+    : h(`div.master-detail.d-flex.flex-row.flex-1`, [
+        h(
           `div.master.d-flex.flex-column${
             h3.state.selection ? ".hide-sm" : ""
           }`,
-          h3(
+          h(
             "div.d-flex.flex-column.flex-1.scrollable-area",
             {
               data: { collection },
@@ -45,15 +45,15 @@ export default ({ items, item, collection, add }) => {
           )
         ),
         item
-          ? h3(
+          ? h(
               `div.detail.pl-sm-4.d-flex.flex-column.flex-1${
                 h3.state.selection ? "" : ".hide-sm"
               }`,
               [
-                h3("h1.item-title", item.data.title),
-                h3("div.d-flex.flex-column.flex-1.scrollable-area", [
+                h("h1.item-title", item.data.title),
+                h("div.d-flex.flex-column.flex-1.scrollable-area", [
                   collection === "notes" &&
-                    h3("div#item-content.markdown", {
+                    h("div#item-content.markdown", {
                       $html: marked(item.data.text),
                       $onrender: async (node) => {
                         node.innerHTML = DOMPurify.sanitize(node.innerHTML);
@@ -63,9 +63,9 @@ export default ({ items, item, collection, add }) => {
                       },
                     }),
                   collection === "snippets" &&
-                    h3(
+                    h(
                       "pre",
-                      h3(
+                      h(
                         `code#item-content.language-${data.language.value}`,
                         { $onrender: (node) => Prism.highlightElement(node) },
                         data.code.value
@@ -74,6 +74,6 @@ export default ({ items, item, collection, add }) => {
                 ]),
               ]
             )
-          : h3("div.detail.flex-auto.hide-sm", UnSelected({ collection })),
+          : h("div.detail.flex-auto.hide-sm", UnSelected({ collection })),
       ]);
 };

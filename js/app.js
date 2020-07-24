@@ -1,4 +1,4 @@
-import h3 from "./h3.js";
+import { h3, h } from "./h3.js";
 import modules from "./modules.js";
 import Home from "./pages/Home.js";
 import Edit from "./pages/Edit.js";

@@ -1,4 +1,4 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 import Page from "../controls/Page.js";
 import { getItems, getItem, deleteItem } from "../services/api.js";
 import { getIcon, getObject } from "../services/utils.js";
@@ -167,25 +167,25 @@ const Home = () => {
   const page = parseInt(h3.route.parts.page || 1);
   const totalPages = Math.ceil(h3.state.total / h3.state.query.limit);
   const content = () =>
-    h3("div.content.d-flex.flex-1.flex-column", [
-      h3("div.d-block.hide-sm", TabNav(tabnav)),
-      h3(
+    h("div.content.d-flex.flex-1.flex-column", [
+      h("div.d-block.hide-sm", TabNav(tabnav)),
+      h(
         `div.top-info-bar.d-flex.flex-row.flex-justify-between.flex-items-center${
           h3.state.selection ? ".hide-sm" : ""
         }`,
         [
-          h3("div.d-flex.flex-row.flex-items-center", [
-            h3("div.total.d-flex.flex-row.flex-items-center", [
-              h3("span", { $html: `Total ${h3.state.collection}:&nbsp;` }),
-              h3("strong", String(h3.state.total)),
+          h("div.d-flex.flex-row.flex-items-center", [
+            h("div.total.d-flex.flex-row.flex-items-center", [
+              h("span", { $html: `Total ${h3.state.collection}:&nbsp;` }),
+              h("strong", String(h3.state.total)),
             ]),
             h3.state.query.search &&
-              h3("div-search.d-flex.flex-row.flex-items-center", [
-                h3("span", {
+              h("div-search.d-flex.flex-row.flex-items-center", [
+                h("span", {
                   $html: "&nbsp;&middot;&nbsp;Searching for:&nbsp;",
                 }),
-                h3("strong", h3.state.query.search),
-                h3(
+                h("strong", h3.state.query.search),
+                h(
                   "button.btn.btn-invisible",
                   {
                     style: "margin-bottom: -1px;",
@@ -214,7 +214,7 @@ const Home = () => {
         add,
         collection: h3.state.collection,
       }),
-      h3("div.d-block.show-sm", TabNav(tabnav)),
+      h("div.d-block.show-sm", TabNav(tabnav)),
     ]);
   return Page({
     content,

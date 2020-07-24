@@ -1,15 +1,21 @@
 /**
- * H3 v0.9.0 "Impeccable Iconian"
+ * H3 v0.10.0 "Jittery Jem'Hadar"
  * Copyright 2020 Fabio Cevasco <h3rald@h3rald.com>
- * 
+ *
  * @license MIT
  * For the full license, see: https://github.com/h3rald/h3/blob/master/LICENSE
  */
+
+export const settings = {
+  $onrenderCallbacks: false,
+};
+export let $onrenderCallbacks = [];
+
 const checkProperties = (obj1, obj2) => {
+  if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+    return false;
+  }
   for (const key in obj1) {
-    if (!(key in obj2)) {
-      return false;
-    }
     if (!equal(obj1[key], obj2[key])) {
       return false;
     }
@@ -35,14 +41,7 @@ const equal = (obj1, obj2) => {
   if (obj1.constructor !== obj2.constructor) {
     return false;
   }
-  if (typeof obj1 === "function") {
-    if (obj1.toString() !== obj2.toString()) {
-      return false;
-    }
-  }
-  if ([String, Number, Boolean].includes(obj1.constructor)) {
-    if (obj1 !== obj2) {
-    }
+  if ([String, Number, Boolean, Function].includes(obj1.constructor)) {
     return obj1 === obj2;
   }
   if (obj1.constructor === Array) {
@@ -56,18 +55,15 @@ const equal = (obj1, obj2) => {
     }
     return true;
   }
-  return checkProperties(obj1, obj2); // && checkProperties(obj2, obj1);
+  return checkProperties(obj1, obj2);
 };
 
 const selectorRegex = /^([a-z][a-z0-9:_=-]*)?(#[a-z0-9:_=-]+)?(\.[^ ]+)*$/i;
 
-let $onrenderCallbacks = [];
-
-// Virtual Node Implementation with HyperScript-like syntax
 class VNode {
   constructor(...args) {
     this.type = undefined;
-    this.attributes = {};
+    this.props = {};
     this.data = {};
     this.id = undefined;
     this.$html = undefined;
@@ -133,25 +129,34 @@ class VNode {
           this.processProperties(data);
         }
       }
-    } else if (args.length === 3) {
+    } else {
       let [selector, props, children] = args;
+      if (args.length > 3) {
+        children = args.slice(2);
+      }
+      children = Array.isArray(children) ? children : [children];
       if (typeof selector !== "string") {
         throw new Error(
           "[VNode] Invalid first argument passed to VNode constructor."
         );
       }
       this.processSelector(selector);
-      if (typeof props !== "object" || props === null) {
-        throw new Error(
-          "[VNode] Invalid second argument passed to VNode constructor."
-        );
+      if (
+        props instanceof Function ||
+        props instanceof VNode ||
+        typeof props === "string"
+      ) {
+        // 2nd argument is a child
+        children = [props].concat(children);
+      } else {
+        if (typeof props !== "object" || props === null) {
+          throw new Error(
+            "[VNode] Invalid second argument passed to VNode constructor."
+          );
+        }
+        this.processProperties(props);
       }
-      this.processProperties(props);
       this.processChildren(children);
-    } else {
-      throw new Error(
-        "[VNode] Too many arguments passed to VNode constructor."
-      );
     }
   }
 
@@ -166,7 +171,7 @@ class VNode {
     this.value = data.value;
     this.eventListeners = data.eventListeners;
     this.children = data.children;
-    this.attributes = data.attributes;
+    this.props = data.props;
     this.classList = data.classList;
   }
 
@@ -185,7 +190,7 @@ class VNode {
       attrs.classList && attrs.classList.length > 0
         ? attrs.classList
         : this.classList;
-    this.attributes = attrs;
+    this.props = attrs;
     Object.keys(attrs)
       .filter((a) => a.startsWith("on") && attrs[a])
       .forEach((key) => {
@@ -195,19 +200,19 @@ class VNode {
           );
         }
         this.eventListeners[key.slice(2)] = attrs[key];
-        delete this.attributes[key];
+        delete this.props[key];
       });
-    delete this.attributes.value;
-    delete this.attributes.$html;
-    delete this.attributes.$onrender;
-    delete this.attributes.id;
-    delete this.attributes.data;
-    delete this.attributes.style;
-    delete this.attributes.classList;
+    delete this.props.value;
+    delete this.props.$html;
+    delete this.props.$onrender;
+    delete this.props.id;
+    delete this.props.data;
+    delete this.props.style;
+    delete this.props.classList;
   }
 
   processSelector(selector) {
-    if (!selector.match(selectorRegex)) {
+    if (!selector.match(selectorRegex) || selector.length === 0) {
       throw new Error(`[VNode] Invalid selector: ${selector}`);
     }
     const [, type, id, classes] = selector.match(selectorRegex);
@@ -263,16 +268,16 @@ class VNode {
     if (this.id) {
       node.id = this.id;
     }
-    Object.keys(this.attributes).forEach((attr) => {
-      // Set attributes (only if non-empty strings)
-      if (this.attributes[attr] && typeof this.attributes[attr] === "string") {
+    Object.keys(this.props).forEach((attr) => {
+      // Set props (only if non-empty strings)
+      if (this.props[attr] && typeof this.props[attr] === "string") {
         const a = document.createAttribute(attr);
-        a.value = this.attributes[attr];
+        a.value = this.props[attr];
         node.setAttributeNode(a);
       }
       // Set properties
-      if (typeof this.attributes[attr] !== "string" || !node[attr]) {
-        node[attr] = this.attributes[attr];
+      if (typeof this.props[attr] !== "string" || !node[attr]) {
+        node[attr] = this.props[attr];
       }
     });
     // Event Listeners
@@ -299,7 +304,9 @@ class VNode {
     this.children.forEach((c) => {
       const cnode = c.render();
       node.appendChild(cnode);
-      c.$onrender && $onrenderCallbacks.push(() => c.$onrender(cnode));
+      typeof $onrenderCallbacks !== "undefined" &&
+        c.$onrender &&
+        $onrenderCallbacks.push(() => c.$onrender(cnode));
     });
     if (this.$html) {
       node.innerHTML = this.$html;
@@ -370,36 +377,34 @@ class VNode {
       });
       oldvnode.data = newvnode.data;
     }
-    // Attributes
-    if (!equal(oldvnode.attributes, newvnode.attributes)) {
-      Object.keys(oldvnode.attributes).forEach((a) => {
-        if (newvnode.attributes[a] === false) {
+    // props
+    if (!equal(oldvnode.props, newvnode.props)) {
+      Object.keys(oldvnode.props).forEach((a) => {
+        if (newvnode.props[a] === false) {
           node[a] = false;
         }
-        if (!newvnode.attributes[a]) {
+        if (!newvnode.props[a]) {
           node.removeAttribute(a);
         } else if (
-          newvnode.attributes[a] &&
-          newvnode.attributes[a] !== oldvnode.attributes[a]
+          newvnode.props[a] &&
+          newvnode.props[a] !== oldvnode.props[a]
         ) {
-          node.setAttribute(a, newvnode.attributes[a]);
+          node.setAttribute(a, newvnode.props[a]);
         }
       });
-      Object.keys(newvnode.attributes).forEach((a) => {
-        if (!oldvnode.attributes[a] && newvnode.attributes[a]) {
-          node.setAttribute(a, newvnode.attributes[a]);
+      Object.keys(newvnode.props).forEach((a) => {
+        if (!oldvnode.props[a] && newvnode.props[a]) {
+          node.setAttribute(a, newvnode.props[a]);
         }
       });
-      oldvnode.attributes = newvnode.attributes;
+      oldvnode.props = newvnode.props;
     }
     // Event listeners
     if (!equal(oldvnode.eventListeners, newvnode.eventListeners)) {
       Object.keys(oldvnode.eventListeners).forEach((a) => {
         if (!newvnode.eventListeners[a]) {
           node.removeEventListener(a, oldvnode.eventListeners[a]);
-        } else if (
-          !equal(newvnode.eventListeners[a], oldvnode.eventListeners[a])
-        ) {
+        } else {
           node.removeEventListener(a, oldvnode.eventListeners[a]);
           node.addEventListener(a, newvnode.eventListeners[a]);
         }
@@ -414,32 +419,57 @@ class VNode {
     // Children
     function mapChildren(oldvnode, newvnode) {
       let map = [];
-      let oldNodesFound = 0;
-      let newNodesFound = 0;
-      // First look for existing nodes
-      for (let oldIndex = 0; oldIndex < oldvnode.children.length; oldIndex++) {
+      let nodesFound = 0;
+      /* 
+        Construct a map of operations to be performed on the current DOM node children (
+        corresponding to oldvnode.children), therefore it has to be the same length as
+        max(newvnode.children, oldvnode.children).
+      */
+      let maxChildrenNode;
+      let minChildrenNode;
+      if (newvnode.children >= oldvnode.children) {
+        maxChildrenNode = newvnode;
+        minChildrenNode = oldvnode;
+      } else {
+        maxChildrenNode = oldvnode;
+        minChildrenNode = newvnode;
+      }
+      for (
+        let maxIndex = 0;
+        maxIndex < maxChildrenNode.children.length;
+        maxIndex++
+      ) {
         let found = -1;
-        for (let index = 0; index < newvnode.children.length; index++) {
+        for (
+          let minIndex = 0;
+          minIndex < minChildrenNode.children.length;
+          minIndex++
+        ) {
           if (
-            equal(oldvnode.children[oldIndex], newvnode.children[index]) &&
-            !map.includes(index)
+            equal(
+              minChildrenNode.children[minIndex],
+              maxChildrenNode.children[maxIndex]
+            ) &&
+            !map.includes(maxIndex)
           ) {
-            found = index;
-            newNodesFound++;
-            oldNodesFound++;
+            found = maxIndex;
+            nodesFound++;
             break;
           }
         }
+        if (maxIndex > minChildrenNode.children.length-1)
         map.push(found);
       }
-      if (
-        newNodesFound === oldNodesFound &&
-        newvnode.children.length === oldvnode.children.length
-      ) {
-        // something changed but everything else is the same
+      // Resulting map of found nodes... something like: [2, -1, -1, 3, 1, -1]
+      // -1 could be "different nodes" or "missing nodes"
+      if (newvnode.children.length === oldvnode.children.length) {
+        // If the length of children arrays is the same there are no added/removed nodes
         return map;
       }
-      if (newNodesFound === newvnode.children.length) {
+      if (newvnode.children >= oldvnode.children) {
+
+      }
+      if (nodesFound === newvnode.children.length) {
         // All children in newvnode exist in oldvnode
         // All nodes that are not found must be removed
         for (let i = 0; i < map.length; i++) {
@@ -448,7 +478,7 @@ class VNode {
           }
         }
       }
-      if (oldNodesFound === oldvnode.children.length) {
+      if (nodesFound === oldvnode.children.length) {
         // All children in oldvnode exist in newvnode
         // Check where the missing newvnodes children need to be added
         for (
@@ -533,13 +563,34 @@ class VNode {
   }
 }
 
+export const h = (...args) => {
+  return new VNode(...args);
+};
+
+export const update = (oldvnode, newvnode) => {
+  if (oldvnode instanceof HTMLElement) {
+    // First time
+    const element = newvnode.render();
+    oldvnode.parentNode.replaceChild(element, oldvnode);
+    newvnode.element = element;
+    return newvnode;
+  }
+  if (!oldvnode.element) {
+    throw new Error(
+      "[update] Old VNode does not include a reference to its corresponding DOM element."
+    );
+  }
+  oldvnode.redraw({ node: oldvnode.element, vnode: newvnode });
+  return oldvnode;
+};
+
 /**
  * The code of the following class is heavily based on Storeon
  * Modified according to the terms of the MIT License
  * <https://github.com/storeon/storeon/blob/master/LICENSE>
  * Copyright 2019 Andrey Sitnik <andrey@sitnik.ru>
  */
-class Store {
+export class Store {
   constructor() {
     this.events = {};
     this.state = {};
@@ -581,17 +632,18 @@ class Route {
   }
 }
 
-class Router {
-  constructor({ element, routes, store, location }) {
-    this.element = element;
-    this.redraw = null;
-    this.store = store;
-    this.location = location || window.location;
+export class Router {
+  constructor({ element, routes, store, location, $onrenderCallbacks }) {
     if (!routes || Object.keys(routes).length === 0) {
       throw new Error("[Router] No routes defined.");
     }
-    const defs = Object.keys(routes);
+    this.element = element || document.body;
     this.routes = routes;
+    this.redraw = null;
+    this.redrawing = false;
+    this.store = store;
+    this.$onrenderCallbacks = $onrenderCallbacks;
+    this.location = location || window.location;
   }
 
   setRedraw(vnode, state) {
@@ -600,79 +652,83 @@ class Router {
         node: this.element.childNodes[0],
         vnode: this.routes[this.route.def](state),
       });
-      this.store.dispatch("$redraw");
+      this.store && this.store.dispatch("$redraw");
     };
   }
 
-  async start() {
-    const processPath = async (data) => {
-      const oldRoute = this.route;
-      const fragment =
-        (data &&
-          data.newURL &&
-          data.newURL.match(/(#.+)$/) &&
-          data.newURL.match(/(#.+)$/)[1]) ||
-        this.location.hash;
-      const path = fragment.replace(/\?.+$/, "").slice(1);
-      const rawQuery = fragment.match(/\?(.+)$/);
-      const query = rawQuery && rawQuery[1] ? rawQuery[1] : "";
-      const pathParts = path.split("/").slice(1);
+  async processPath(event) {
+    const oldRoute = this.route;
+    const fragment =
+      (event &&
+        event.newURL &&
+        event.newURL.match(/(#.+)$/) &&
+        event.newURL.match(/(#.+)$/)[1]) ||
+      this.location.hash;
+    const path = fragment.replace(/\?.+$/, "").slice(1);
+    const rawQuery = fragment.match(/\?(.+)$/);
+    const query = rawQuery && rawQuery[1] ? rawQuery[1] : "";
+    const pathParts = path.split("/").slice(1);
+    let parts = {};
+    this.route = null;
+    for (let def of Object.keys(this.routes)) {
+      let routeParts = def.split("/").slice(1);
+      let match = true;
+      let index = 0;
+      parts = {};
+      while (match && routeParts[index]) {
+        const rP = routeParts[index];
+        const pP = pathParts[index];
+        if (rP.startsWith(":") && pP) {
+          parts[rP.slice(1)] = pP;
+        } else {
+          match = rP === pP;
+        }
+        index++;
+      }
+      if (match) {
+        this.route = new Route({ query, path, def, parts });
+        break;
+      }
+    }
+    if (!this.route) {
+      this.route = oldRoute;
+      return; // Halt navigation;
+    }
+    // Old route component teardown
+    if (oldRoute) {
+      const oldRouteComponent = this.routes[oldRoute.def];
+      oldRouteComponent.state =
+        oldRouteComponent.teardown &&
+        (await oldRouteComponent.teardown(oldRouteComponent.state));
+    }
+    // New route component setup
+    const newRouteComponent = this.routes[this.route.def];
+    newRouteComponent.state = {};
+    newRouteComponent.setup &&
+      (await newRouteComponent.setup(newRouteComponent.state));
+    // Redrawing...
+    this.redrawing = true;
+    this.store && this.store.dispatch("$navigation", this.route);
+    while (this.element.firstChild) {
+      this.element.removeChild(this.element.firstChild);
+    }
+    const vnode = newRouteComponent(newRouteComponent.state);
+    const node = vnode.render();
+    this.element.appendChild(node);
+    this.setRedraw(vnode, newRouteComponent.state);
+    this.redrawing = false;
+    vnode.$onrender && vnode.$onrender(node);
+    if (this.$onrenderCallbacks) {
+      this.$onrenderCallbacks.forEach((cbk) => cbk());
+      this.$onrenderCallbacks = [];
+    }
+    window.scrollTo(0, 0);
+    this.store && this.store.dispatch("$redraw");
+  }
 
-      let parts = {};
-      for (let def of Object.keys(this.routes)) {
-        let routeParts = def.split("/").slice(1);
-        let match = true;
-        let index = 0;
-        parts = {};
-        while (match && routeParts[index]) {
-          const rP = routeParts[index];
-          const pP = pathParts[index];
-          if (rP.startsWith(":") && pP) {
-            parts[rP.slice(1)] = pP;
-          } else {
-            match = rP === pP;
-          }
-          index++;
-        }
-        if (match) {
-          this.route = new Route({ query, path, def, parts });
-          break;
-        }
-      }
-      if (!this.route) {
-        throw new Error(`[Router] No route matches '${fragment}'`);
-      }
-      // Old route component teardown
-      if (oldRoute) {
-        const oldRouteComponent = this.routes[oldRoute.def];
-        oldRouteComponent.state =
-          oldRouteComponent.teardown &&
-          (await oldRouteComponent.teardown(oldRouteComponent.state));
-      }
-      // New route component setup
-      const newRouteComponent = this.routes[this.route.def];
-      newRouteComponent.state = {};
-      newRouteComponent.setup &&
-        (await newRouteComponent.setup(newRouteComponent.state));
-      // Redrawing...
-      redrawing = true;
-      this.store.dispatch("$navigation", this.route);
-      while (this.element.firstChild) {
-        this.element.removeChild(this.element.firstChild);
-      }
-      const vnode = newRouteComponent(newRouteComponent.state);
-      const node = vnode.render();
-      this.element.appendChild(node);
-      this.setRedraw(vnode, newRouteComponent.state);
-      redrawing = false;
-      vnode.$onrender && vnode.$onrender(node);
-      $onrenderCallbacks.forEach((cbk) => cbk());
-      $onrenderCallbacks = [];
-      window.scrollTo(0, 0);
-      this.store.dispatch("$redraw");
-    };
-    window.addEventListener("hashchange", processPath);
-    await processPath();
+  async start() {
+    window.addEventListener("hashchange", (e) => this.processPath(e));
+    await this.processPath();
   }
 
   navigateTo(path, params) {
@@ -684,14 +740,12 @@ class Router {
   }
 }
 
-// High Level API
-const h3 = (...args) => {
-  return new VNode(...args);
-};
+/*** High Level API ***/
+export const h3 = {};
 
+settings.$onrenderCallbacks = true;
 let store = null;
 let router = null;
-let redrawing = false;
 
 h3.init = (config) => {
   let { element, routes, modules, preStart, postStart, location } = config;
@@ -715,7 +769,7 @@ h3.init = (config) => {
   });
   store.dispatch("$init");
   // Initialize router
-  router = new Router({ element, routes, store, location });
+  router = new Router({ element, routes, store, location, $onrenderCallbacks });
   return Promise.resolve(preStart && preStart())
     .then(() => router.start())
     .then(() => postStart && postStart());
@@ -776,12 +830,12 @@ h3.redraw = (setRedrawing) => {
       "[h3.redraw] No application initialized, unable to redraw."
     );
   }
-  if (redrawing) {
+  if (router.redrawing) {
     return;
   }
-  redrawing = true;
+  router.redrawing = true;
   router.redraw();
-  redrawing = setRedrawing || false;
+  router.redrawing = setRedrawing || false;
 };
 
 export default h3;

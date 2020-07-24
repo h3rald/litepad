@@ -1,4 +1,4 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 import litestore from "./litestore.js";
 import localStorage from "./localStorage.js";
 

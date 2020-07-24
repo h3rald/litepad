@@ -1,5 +1,5 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 
 export default () => {
-  return h3("div.spinner", h3("div.loading", h3("div")));
+  return h("div.spinner", h("div.loading", h("div")));
 };

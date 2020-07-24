@@ -1,4 +1,4 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 
 const EditorOptions = {
   tabSize: 2,
@@ -33,7 +33,7 @@ const isTouchDevice = () => {
 
 export default (props, oninput) => {
   const { editable, placeholder, mode } = props;
-  return h3(
+  return h(
     `textarea.form-control`,
     {
       placeholder,

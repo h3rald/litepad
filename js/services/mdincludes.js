@@ -1,6 +1,6 @@
 import marked from "../../vendor/marked.js";
 import { getItem } from "./api.js";
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 import DOMPurify from "../../vendor/purify.es.js";
 
 const renderer = {
