@@ -6,7 +6,6 @@
  * For the full license, see: https://github.com/h3rald/h3/blob/master/LICENSE
  */
 
-
 export const settings = {
     $onrenderCallbacks: false,
 };
@@ -42,9 +41,11 @@ const equal = (obj1, obj2) => {
     if (obj1.constructor !== obj2.constructor) {
         return false;
     }
+    /////FC
     if (obj1.constructor === Function) {
         return true; // consider functions equal, they'll be re-added every time.
     }
+    //////
     if ([String, Number, Boolean, Function].includes(obj1.constructor)) {
         return obj1 === obj2;
     }
@@ -182,7 +183,7 @@ class VNode {
     }
 
     equal(a, b) {
-        return equal(a, b === undefined ? this : b);
+        return equal(a, b === undefined ? this : b, { ignoreFunctions: true });
     }
 
     processProperties(attrs) {
@@ -413,6 +414,7 @@ class VNode {
             oldvnode.props = newvnode.props;
         }
         // Event listeners
+        /////FC
         Object.keys(oldvnode.eventListeners).forEach((a) => {
             if (!newvnode.eventListeners[a]) {
                 node.removeEventListener(a, oldvnode.eventListeners[a]);
@@ -427,13 +429,16 @@ class VNode {
             }
         });
         oldvnode.eventListeners = newvnode.eventListeners;
+        /////
         // Children
         function mapChildren(oldvnode, newvnode) {
             let map = [];
             let nodesFound = 0;
-            // Construct a map of operations to be performed on the current DOM node children (
-            // corresponding to oldvnode.children), therefore it has to be the same length as
-            //max(newvnode.children, oldvnode.children).
+            /* 
+        Construct a map of operations to be performed on the current DOM node children (
+        corresponding to oldvnode.children), therefore it has to be the same length as
+        max(newvnode.children, oldvnode.children).
+      */
             let maxChildrenNode;
             let minChildrenNode;
             if (newvnode.children >= oldvnode.children) {
@@ -471,25 +476,16 @@ class VNode {
             if (newvnode.children.length === oldvnode.children.length) {
                 // If the length of children arrays is the same there are no added/removed nodes
                 return map;
+            } else if (newvnode.children.length >= oldvnode.children.length) {
+                if (nodesFound === oldvnode.children.length) {
+                    map = map.map((n) => (n === -1 ? -2 : n)); // Add extra nodes
+                }
             } else {
-                const newMap = [];
-                let toAddOrRemove =
-                    maxChildrenNode.children.length -
-                    minChildrenNode.children.length;
-                map.forEach((e) => {
-                    if (e > 0) {
-                        newMap.push(e);
-                    } else {
-                        if (toAddOrRemove > 0) {
-                            newMap.push(maxChildrenNode === newvnode ? -2 : -3);
-                            toAddOrRemove--;
-                        } else {
-                            newMap.push(-1);
-                        }
-                    }
-                });
-                return newMap;
+                if (nodesFound === newvnode.children.length) {
+                    map = map.map((n) => (n === -1 ? -3 : n)); // Remove extra nodes
+                }
             }
+            return map;
         }
         let childMap = mapChildren(oldvnode, newvnode);
         let resultMap = [
@@ -550,7 +546,9 @@ class VNode {
             resultMap = [...Array(childMap.length).keys()];
         }
         // $onrender
+        //// FC
         oldvnode.$onrender = newvnode.$onrender;
+        /////
         // innerHTML
         if (oldvnode.$html !== newvnode.$html) {
             node.innerHTML = newvnode.$html;
@@ -581,8 +579,6 @@ export const update = (oldvnode, newvnode) => {
     return oldvnode;
 };
 
-
-
 /**
  * The code of the following class is heavily based on Storeon
  * Modified according to the terms of the MIT License
@@ -590,30 +586,29 @@ export const update = (oldvnode, newvnode) => {
  * Copyright 2019 Andrey Sitnik <andrey@sitnik.ru>
  */
 export class Store {
-  constructor() {
-    this.events = {};
-    this.state = {};
-  }
-  dispatch(event, data) {
-    if (event !== "$log") this.dispatch("$log", { event, data });
-    if (this.events[event]) {
-      let changes = {};
-      let changed;
-      this.events[event].forEach((i) => {
-        this.state = { ...this.state, ...i(this.state, data) };
-      });
+    constructor() {
+        this.events = {};
+        this.state = {};
     }
-  }
+    dispatch(event, data) {
+        if (event !== "$log") this.dispatch("$log", { event, data });
+        if (this.events[event]) {
+            let changes = {};
+            let changed;
+            this.events[event].forEach((i) => {
+                this.state = { ...this.state, ...i(this.state, data) };
+            });
+        }
+    }
 
-  on(event, cb) {
-    (this.events[event] || (this.events[event] = [])).push(cb);
+    on(event, cb) {
+        (this.events[event] || (this.events[event] = [])).push(cb);
 
-    return () => {
-      this.events[event] = this.events[event].filter((i) => i !== cb);
-    };
-  }
+        return () => {
+            this.events[event] = this.events[event].filter((i) => i !== cb);
+        };
+    }
 }
-
 
 class Route {
     constructor({ path, def, query, parts }) {
@@ -744,7 +739,6 @@ export class Router {
         this.location.hash = `#${path}${query}`;
     }
 }
-
 
 /*** High Level API ***/
 export const h3 = {};
