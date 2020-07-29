@@ -1,7 +1,7 @@
 import { h3, h } from "./h3.js";
 import modules from "./modules.js";
-import Home from "./pages/Home.js";
-import Edit from "./pages/Edit.js";
+import Home from "./screens/Home.js";
+import Edit from "./screens/Edit.js";
 
 h3.init({
   preStart: async () => {
