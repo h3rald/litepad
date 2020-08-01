@@ -16,6 +16,9 @@ ul,ol {
 ul.checklist {
     list-style-type: none;
 }  
+.go2top {
+  font-size: 50%;
+}
 pre[class^=language-] {
     background: #eee;
     border-radius: 2px;
@@ -26,50 +29,51 @@ pre[class^=language-] {
 `;
 
 const downloadFile = (title, text, language) => {
-  const lang = h3.state.config.languages[language];
-  const data = new Blob([text], { type: lang.mode });
-  const a = document.createElement("a");
-  a.style.display = "none";
-  const url = window.URL.createObjectURL(data);
-  a.href = url;
-  a.download = `${title}.${lang.extension}`;
-  document.body.appendChild(a);
-  a.click();
-  window.URL.revokeObjectURL(url);
+    const lang = h3.state.config.languages[language];
+    const data = new Blob([text], { type: lang.mode });
+    const a = document.createElement("a");
+    a.style.display = "none";
+    const url = window.URL.createObjectURL(data);
+    a.href = url;
+    a.download = `${title}.${lang.extension}`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
 };
 
 const addCss = (doc, css) => {
-  const style = document.createElement("style");
-  style.type = "text/css";
-  style.appendChild(document.createTextNode(css));
-  doc.head.appendChild(style);
+    const style = document.createElement("style");
+    style.type = "text/css";
+    style.appendChild(document.createTextNode(css));
+    doc.head.appendChild(style);
 };
 
 const fetchCss = async (doc, file) => {
-  const css = await (await fetch(file)).text();
-  addCss(doc, css);
+    const css = await (await fetch(file)).text();
+    addCss(doc, css);
 };
 
 const downloadHTML = async (title, content) => {
-  const doc = document.implementation.createHTMLDocument(title);
-  const h1 = doc.createElement("h1");
-  h1.appendChild(document.createTextNode(title));
-  const div = doc.createElement("div");
-  div.innerHTML = content;
-  await fetchCss(doc, "vendor/primer/primer.min.css");
-  addCss(doc, basicCss);
-  const viewport = document.createElement("meta");
-  viewport.name = "viewport";
-  viewport.content =
-    "width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=0";
-  const generator = document.createElement("meta");
-  generator.name = "generator";
-  generator.content = "LitePad";
-  doc.head.appendChild(viewport);
-  doc.head.appendChild(generator);
-  doc.body.appendChild(h1);
-  doc.body.appendChild(div);
-  return downloadFile(title, doc.documentElement.outerHTML, "html");
+    const doc = document.implementation.createHTMLDocument(title);
+    const h1 = doc.createElement("h1");
+    h1.appendChild(document.createTextNode(title));
+    const div = doc.createElement("div");
+    div.innerHTML = content;
+    await fetchCss(doc, "vendor/primer/primer.min.css");
+    addCss(doc, basicCss);
+    const viewport = document.createElement("meta");
+    viewport.name = "viewport";
+    viewport.content =
+        "width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=0";
+    const generator = document.createElement("meta");
+    generator.name = "generator";
+    generator.content = "LitePad";
+    doc.head.appendChild(viewport);
+    doc.head.appendChild(generator);
+    doc.body.appendChild(h1);
+    doc.body.appendChild(div);
+    doc.body.id = "top";
+    return downloadFile(title, doc.documentElement.outerHTML, "html");
 };
 
 export { downloadHTML, downloadFile };
