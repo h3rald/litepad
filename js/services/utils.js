@@ -1,4 +1,4 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 
 const getType = (id) => {
   const collection = id.match(/([^\/]+)\/?/)[1];
