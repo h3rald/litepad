@@ -1,4 +1,4 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 
 const data = {
   alert: {
@@ -1710,7 +1710,7 @@ Object.keys(data).forEach((key) => {
 });
 
 const octicon = (name, options) => {
-  return h3("span.icon", { $html: data[name].toSVG(options) });
+  return h("span.icon", { $html: data[name].toSVG(options) });
 };
 
 export default octicon;

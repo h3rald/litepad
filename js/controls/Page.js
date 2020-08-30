@@ -1,22 +1,22 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 import Loading from "./Loading.js";
 import Alert from "./Alert.js";
 import octicon from "../services/octicon.js";
 import Help from "./Help.js";
 
 export default ({ content }) => {
-  return h3("div.page.d-flex.flex-column", [
+  return h("div.page.d-flex.flex-column", [
     h3.state.flags.help && Help,
-    h3("div.Header", [
-      h3("div.Header-item", [
-        h3("a.Header-link.logo", { onclick: () => h3.navigateTo("/") }, [
+    h("div.Header", [
+      h("div.Header-item", [
+        h("a.Header-link.logo", { onclick: () => h3.navigateTo("/") }, [
           octicon("repo", { height: 24 }),
           "LitePad",
         ]),
       ]),
       !h3.route.def.match(/(add|edit)$/) &&
-        h3("div.Header-item", [
-          h3("input#search.form-control.input-dark.search", {
+        h("div.Header-item", [
+          h("input#search.form-control.input-dark.search", {
             type: "text",
             placeholder: `Search ${h3.state.collection}...`,
             onkeypress: (e) => {
@@ -29,9 +29,9 @@ export default ({ content }) => {
             },
           }),
         ]),
-        h3("div.Header-item.flex-1"),
-      h3("div.Header-item", [
-        h3(
+        h("div.Header-item.flex-1"),
+      h("div.Header-item", [
+        h(
           "a.Header-link",
           {
             onclick: () => {
@@ -45,10 +45,10 @@ export default ({ content }) => {
     ]),
     h3.state.flags.loading
       ? Loading
-      : h3("div.Main.px-2.px-sm-2.px-md-2.px-lg-4.py-md-4.py-2.d-flex.flex-1.flex-column", [
+      : h("div.Main.px-2.px-sm-2.px-md-2.px-lg-4.py-md-4.py-2.d-flex.flex-1.flex-column", [
           h3.state.flags.alert && Alert(h3.state.flags.alert),
           content,
-          h3.state.config.storage === "localStorage" && h3("p.storage-notice", "This site persists the contents of notes and snippets to your browser localStorage.")
+          h3.state.config.storage === "localStorage" && h("p.storage-notice", "This site persists the contents of notes and snippets to your browser localStorage.")
         ]),
   ]);
 };

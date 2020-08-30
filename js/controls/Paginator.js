@@ -1,23 +1,23 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 
 export default ({ current, total, callback, classList }) => {
-  return h3(
+  return h(
     "nav.paginate-container",
     { "aria-label": "Pagination", classList },
     [
-      h3("div.pagination", [
+      h("div.pagination", [
         current === 1 &&
-          h3("span.previous-page", { "aria-disabled": true }, "Previous"),
+          h("span.previous-page", { "aria-disabled": true }, "Previous"),
         current !== 1 &&
-          h3(
+          h(
             "a.previous-page",
             { rel: "previous", onclick: () => callback(current - 1) },
             "Previous"
           ),
         ...[...Array(total).keys()].map((n) =>
           current === n + 1
-            ? h3("em", { "aria-current": "page" }, String(n + 1))
-            : h3(
+            ? h("em", { "aria-current": "page" }, String(n + 1))
+            : h(
                 "a",
                 {
                   "aria-label": `Page ${n + 1}`,
@@ -27,9 +27,9 @@ export default ({ current, total, callback, classList }) => {
               )
         ),
         current === total &&
-          h3("span.next-page", { "aria-disabled": true }, "Next"),
+          h("span.next-page", { "aria-disabled": true }, "Next"),
         current !== total &&
-          h3(
+          h(
             "a.next-page",
             { rel: "next", onclick: () => callback(current + 1) },
             "Next"

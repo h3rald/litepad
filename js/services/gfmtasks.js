@@ -1,6 +1,6 @@
 import marked from "../../vendor/marked.js";
 import { saveItem, getItems } from "./api.js";
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 
 // Marked extension (requires small modification to marked.js to pass token as last parameter to list function)
 

@@ -1,4 +1,4 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 import octicon from "../services/octicon.js";
 import { getType, getTypeIcon } from "../services/utils.js";
 
@@ -16,7 +16,7 @@ export default (props) => {
     );
   };
   const id = item.id.replace(`${h3.state.collection}/`, "");
-  return h3(
+  return h(
     `div.tile.d-flex.flex-row${h3.state.selection === id ? ".selected" : ""}`,
     {
       data: { id },
@@ -26,13 +26,13 @@ export default (props) => {
       onclick: (e) => select(e.currentTarget.dataset.id),
     },
     [
-      h3(
+      h(
         "div.tile-icon.d-flex.flex-column.flex-items-center.flex-justify-center.p-2",
         octicon(icon, { height: 32 })
       ),
-      h3("div.tile-body", [
-        h3("p.tile-title", item.data.title),
-        h3("div.tile-data", {
+      h("div.tile-body", [
+        h("p.tile-title", item.data.title),
+        h("div.tile-data", {
           $html: `${type} &middot; ${date.toDateString()} @ ${date.toLocaleTimeString()}`,
         }),
       ]),

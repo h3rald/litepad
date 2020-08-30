@@ -1,7 +1,8 @@
-import h3 from "../h3.js";
+import { h3, h } from "../h3.js";
 import Editor from "./Editor.js";
 
 export default (props) => {
+  props.placeholder = props.placeholder || "";
   const {
     label,
     name,
@@ -41,14 +42,14 @@ export default (props) => {
   }
   const controls = {};
   controls.textbox = () =>
-    h3(`input.form-control.focusable-input`, {
+    h(`input.form-control.focusable-input`, {
       type: "text",
       placeholder,
       value: props.value,
       oninput,
     });
   controls.textarea = () =>
-    h3(
+    h(
       `textarea.form-control`,
       {
         placeholder,
@@ -58,29 +59,29 @@ export default (props) => {
     );
   controls.editor = () => Editor(props, oninput);
   controls.radio = () =>
-    h3(
+    h(
       `div`,
       options.map((o) => {
-        return h3("label.radio", [
-          h3(`input`, { type: "radio", name, value: o.value, oninput }),
+        return h("label.radio", [
+          h(`input`, { type: "radio", name, value: o.value, oninput }),
           ` ${o.label || o.value}`,
         ]);
       })
     );
   controls.dropdown = () =>
-    h3(
+    h(
       "div.select",
-      h3(
+      h(
         "select.form-control.focusable-input",
         { name, oninput, value },
         options.map((o) =>
-          h3("option", { value: o.value, selected: o.value === value }, o.label)
+          h("option", { value: o.value, selected: o.value === value }, o.label)
         )
       )
     );
   controls.checkbox = () =>
-    h3("div", [
-      h3(`input.form-control`, {
+    h("div", [
+      h(`input.form-control`, {
         type: "checkbox",
         checked: !!props.value,
         value: props.value,
@@ -98,14 +99,14 @@ export default (props) => {
     groupClassList = ".d-flex.flex-column.flex-1";
     groupBodyClassList = ".d-flex.flex-column.flex-1";
   }
-  return h3(
+  return h(
     `div.form-group.d-flex.flex-1.flex-column${props.invalid ? ".errored" : ""}${groupClassList}`,
     [
       editable !== false &&
-        h3("div.form-group-header", [h3("label", { for: name }, `${label}:`)]),
-      h3(`div.form-group-body${groupBodyClassList}`, [
+        h("div.form-group-header", [h("label", { for: name }, `${label}:`)]),
+      h(`div.form-group-body${groupBodyClassList}`, [
         control,
-        props.invalid && h3(`p.note.error.${type}`, props.invalid),
+        props.invalid && h(`p.note.error.${type}`, props.invalid),
       ]),
     ]
   );
